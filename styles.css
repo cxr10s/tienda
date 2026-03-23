@@ -2026,7 +2026,7 @@ body.modal-open {
 }
 
 .Contactos::before {
-    content: 'Síguenos';
+    content: 'Contáctanos';
     display: block;
     font-size: 0.78rem;
     text-transform: uppercase;
