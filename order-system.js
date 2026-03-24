@@ -5,11 +5,30 @@ const SUPABASE_URL = 'https://qvaaistunotxgpyqebya.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
 
 // =============================================
-// ⚠️ PON AQUÍ TU LLAVE PÚBLICA DE WOMPI
-// La encuentras en: https://comercios.wompi.co → Desarrolladores → Llaves
+// CONFIGURACIÓN WOMPI
+//
+// SANDBOX (activo ahora — solo para pruebas):
+//   Checkout: https://checkout.wompi.co/p/
+//   Llave pública: pub_test_...
+//   Llave integridad: test_integrity_...
+//
+// PRODUCCIÓN (cuando Wompi te habilite):
+//   1. Comenta las líneas de SANDBOX
+//   2. Descomenta las líneas de PRODUCCIÓN
+//   3. Haz lo mismo en pago-resultado.html (wompiIntegritySecret)
 // =============================================
-const WOMPI_PUBLIC_KEY = 'pub_test_9kFqdnduO7A4r7WelX97pzJgjA7aBpGV'; // 👈 reemplaza esto
+
+// — SANDBOX —
+const WOMPI_PUBLIC_KEY       = 'pub_test_9kFqdnduO7A4r7WelX97pzJgjA7aBpGV';
 const WOMPI_INTEGRITY_SECRET = 'test_integrity_itRExQlNZCY87qnVRdvNrXqXX7TEmPEr';
+const WOMPI_CHECKOUT_URL     = 'https://checkout.wompi.co/p/';
+
+// — PRODUCCIÓN (descomenta cuando llegue el momento) —
+// const WOMPI_PUBLIC_KEY       = 'pub_prod_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+// const WOMPI_INTEGRITY_SECRET = 'prod_integrity_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+// const WOMPI_CHECKOUT_URL     = 'https://checkout.wompi.co/p/';  // La URL es la misma en producción
+
+
 // =============================================
 // GUARDAR PEDIDO EN SUPABASE
 // =============================================
@@ -38,31 +57,32 @@ async function guardarPedidoEnSupabase(pedido) {
 // =============================================
 async function redirigirAWompi(pedido) {
     const totalCentavos = Math.round(pedido.total * 100);
-    const referencia = pedido.id;
-    const urlRetorno = 'https://cxr10s.github.io/tienda/pago-resultado.html';
+    const referencia    = pedido.id;
+    const urlRetorno    = 'https://cxr10s.github.io/tienda/pago-resultado.html';
 
     // Generar firma de integridad SHA-256
+    // Cadena: referencia + monto + moneda + secret
     const cadena = `${referencia}${totalCentavos}COP${WOMPI_INTEGRITY_SECRET}`;
     const encoder = new TextEncoder();
-    const data = encoder.encode(cadena);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(cadena));
+    const signature = Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
 
     const params = new URLSearchParams({
-        'public-key':              WOMPI_PUBLIC_KEY,
-        'currency':                'COP',
-        'amount-in-cents':         totalCentavos,
-        'reference':               referencia,
-        'redirect-url':            urlRetorno,
-        'signature:integrity':     signature,
-        'customer-data:email':     pedido.email,
-        'customer-data:full-name': pedido.nombre,
+        'public-key':                 WOMPI_PUBLIC_KEY,
+        'currency':                   'COP',
+        'amount-in-cents':            totalCentavos,
+        'reference':                  referencia,
+        'redirect-url':               urlRetorno,
+        'signature:integrity':        signature,
+        'customer-data:email':        pedido.email,
+        'customer-data:full-name':    pedido.nombre,
         'customer-data:phone-number': pedido.telefono,
     });
 
-    window.location.href = `https://checkout.wompi.co/p/?${params.toString()}`;
+    window.location.href = `${WOMPI_CHECKOUT_URL}?${params.toString()}`;
 }
+
 // =============================================
 // SUBMIT DEL FORMULARIO → SUPABASE → WOMPI
 // =============================================
@@ -80,7 +100,7 @@ async function submitReservation(event) {
         .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
 
     const telefono  = document.getElementById('reservation-phone').value.trim();
-    const email     = document.getElementById('reservation-email').value.trim().toLowerCase(); // siempre minúsculas
+    const email     = document.getElementById('reservation-email').value.trim();
     const direccion = document.getElementById('reservation-address').value.trim();
     const notas     = document.getElementById('reservation-notes').value.trim();
 
@@ -89,8 +109,8 @@ async function submitReservation(event) {
         showNotification('Por favor completa todos los campos obligatorios');
         return;
     }
-    if (!validateName(nombre)) {
-        showNotification('El nombre debe tener al menos 3 letras y solo puede contener letras y espacios.');
+    if (!validateName(nombre.replace(/\s+/g, ''))) {
+        showNotification('El nombre solo puede contener letras y espacios.');
         return;
     }
     if (!validateEmail(email)) {
@@ -101,10 +121,6 @@ async function submitReservation(event) {
         showNotification('El teléfono debe tener exactamente 10 dígitos.');
         return;
     }
-    if (!validateAddress(direccion)) {
-        showNotification('La dirección debe incluir la vía principal (Calle, Carrera, Avenida…) y las coordenadas. Ej: Calle 10 # 12 - 34');
-        return;
-    }
 
     // Calcular totales
     const subtotal = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
@@ -112,7 +128,7 @@ async function submitReservation(event) {
     const envio = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
     const total = subtotal - descuento + envio;
 
-    // Construir objeto pedido (ahora incluye estado_pago)
+    // Construir objeto pedido
     const pedido = {
         nombre,
         telefono,
@@ -130,8 +146,8 @@ async function submitReservation(event) {
         descuento,
         envio,
         total,
-        estado: 'pendiente',
-        estado_pago: 'pendiente'   // 👈 nuevo campo
+        estado:      'pendiente',
+        estado_pago: 'pendiente'
     };
 
     // Deshabilitar botón mientras se guarda
@@ -147,8 +163,12 @@ async function submitReservation(event) {
         // Obtener el ID real que asignó Supabase
         const pedidoGuardado = {
             ...pedido,
-            id: Array.isArray(result) && result[0] ? result[0].id : ('local-' + Date.now()),
-            created_at: Array.isArray(result) && result[0] ? result[0].created_at : new Date().toISOString()
+            id: Array.isArray(result) && result[0]
+                ? result[0].id
+                : ('local-' + Date.now()),
+            created_at: Array.isArray(result) && result[0]
+                ? result[0].created_at
+                : new Date().toISOString()
         };
 
         // Limpiar carrito ANTES de redirigir
@@ -164,8 +184,8 @@ async function submitReservation(event) {
         // Cerrar modal del formulario
         closeReservationModal();
 
-        // ✅ Redirigir a Wompi con el ID real del pedido
-        redirigirAWompi(pedidoGuardado);
+        // Redirigir a Wompi con el ID real del pedido
+        await redirigirAWompi(pedidoGuardado);
 
     } catch (error) {
         console.error('Error al guardar pedido:', error);
