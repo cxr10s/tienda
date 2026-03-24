@@ -255,7 +255,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         let estadoFinal = 'error';
 
         if (transaccionId) {
-            const wompiRes = await fetch(`https://production.wompi.co/v1/transactions/${transaccionId}`);
+            const wompiRes = await fetch(`https://sandbox.wompi.co/v1/transactions/${transaccionId}`);
             const wompiData = await wompiRes.json();
             const status = wompiData?.data?.status;
 
