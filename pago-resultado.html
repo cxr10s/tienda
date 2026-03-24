@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado del Pago — Tienda Deportiva</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111;
+            --border: #222;
+            --accent: #c8ff00;
+            --text: #f0f0f0;
+            --muted: #666;
+            --verde: #22c55e;
+            --rojo: #ef4444;
+            --amarillo: #f59e0b;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 48px 40px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .icon { font-size: 56px; margin-bottom: 20px; }
+
+        .title {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .ref-box {
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .ref-box span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            margin-bottom: 10px;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--muted);
+        }
+
+        .spinner {
+            font-size: 48px;
+            margin-bottom: 20px;
+            animation: spin 1s linear infinite;
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to   { transform: rotate(360deg); }
+        }
+
+        .badge-pagado {
+            display: inline-block;
+            background: rgba(34,197,94,0.15);
+            color: var(--verde);
+            border: 1px solid rgba(34,197,94,0.3);
+            border-radius: 100px;
+            padding: 4px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .badge-pendiente {
+            display: inline-block;
+            background: rgba(245,158,11,0.15);
+            color: var(--amarillo);
+            border: 1px solid rgba(245,158,11,0.3);
+            border-radius: 100px;
+            padding: 4px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card" id="card-content">
+    <!-- Estado: cargando -->
+    <div id="estado-cargando">
+        <div class="spinner">⏳</div>
+        <div class="title">Verificando pago...</div>
+        <div class="subtitle">Estamos confirmando tu transacción con Wompi.<br>Esto solo tarda unos segundos.</div>
+    </div>
+
+    <!-- Estado: pagado -->
+    <div id="estado-pagado" style="display:none;">
+        <div class="icon">✅</div>
+        <div class="badge-pagado">PAGO CONFIRMADO</div>
+        <div class="title">¡Pago exitoso!</div>
+        <div class="subtitle">Tu pedido ha sido pagado y confirmado.<br>Te contactaremos pronto para coordinar la entrega.</div>
+        <div class="ref-box">Pedido: <span id="ref-pagado"></span></div>
+        <a id="link-mis-pedidos-pagado" href="#" class="btn btn-primary">📦 Ver mi pedido</a>
+        <a href="https://cxr10s.github.io/tienda/" class="btn btn-secondary">← Volver a la tienda</a>
+    </div>
+
+    <!-- Estado: pendiente / en proceso -->
+    <div id="estado-pendiente" style="display:none;">
+        <div class="icon">🕐</div>
+        <div class="badge-pendiente">EN PROCESO</div>
+        <div class="title">Pago en proceso</div>
+        <div class="subtitle">Tu pago está siendo procesado.<br>Revisa tus pedidos en unos minutos para ver el estado actualizado.</div>
+        <div class="ref-box">Pedido: <span id="ref-pendiente"></span></div>
+        <a id="link-mis-pedidos-pendiente" href="#" class="btn btn-primary">📦 Ver mi pedido</a>
+        <a href="https://cxr10s.github.io/tienda/" class="btn btn-secondary">← Volver a la tienda</a>
+    </div>
+
+    <!-- Estado: error / rechazado -->
+    <div id="estado-error" style="display:none;">
+        <div class="icon">❌</div>
+        <div class="title">Pago no completado</div>
+        <div class="subtitle">Tu pago fue rechazado o cancelado.<br>Tu pedido quedó guardado. Puedes intentarlo de nuevo.</div>
+        <div class="ref-box">Pedido: <span id="ref-error"></span></div>
+        <a href="https://cxr10s.github.io/tienda/" class="btn btn-primary">← Volver a la tienda</a>
+    </div>
+</div>
+
+<script>
+const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
+
+// ─── Actualizar estado_pago en Supabase ───────────────────
+async function actualizarPagoEnSupabase(pedidoId, estadoPago) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos?id=eq.${pedidoId}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+            'Prefer': 'return=representation'
+        },
+        body: JSON.stringify({ estado_pago: estadoPago })
+    });
+    if (!res.ok) throw new Error('Error actualizando pago');
+    return res.json();
+}
+
+// ─── Obtener email del pedido para el link de mis-pedidos ─
+async function obtenerEmailPedido(pedidoId) {
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos?id=eq.${pedidoId}&select=email`, {
+            headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }
+        });
+        const data = await res.json();
+        return Array.isArray(data) && data[0] ? data[0].email : null;
+    } catch { return null; }
+}
+
+// ─── Mostrar un estado en pantalla ───────────────────────
+function mostrarEstado(estado, refCorta, email) {
+    document.getElementById('estado-cargando').style.display = 'none';
+
+    const misPedidosUrl = email
+        ? `https://cxr10s.github.io/tienda/mis-pedidos.html?email=${encodeURIComponent(email)}`
+        : `https://cxr10s.github.io/tienda/mis-pedidos.html`;
+
+    if (estado === 'pagado') {
+        document.getElementById('ref-pagado').textContent = refCorta;
+        document.getElementById('link-mis-pedidos-pagado').href = misPedidosUrl;
+        document.getElementById('estado-pagado').style.display = 'block';
+
+    } else if (estado === 'pendiente') {
+        document.getElementById('ref-pendiente').textContent = refCorta;
+        document.getElementById('link-mis-pedidos-pendiente').href = misPedidosUrl;
+        document.getElementById('estado-pendiente').style.display = 'block';
+
+    } else {
+        document.getElementById('ref-error').textContent = refCorta;
+        document.getElementById('estado-error').style.display = 'block';
+    }
+}
+
+// ─── Lógica principal ─────────────────────────────────────
+window.addEventListener('DOMContentLoaded', async () => {
+    // Wompi devuelve estos parámetros en la URL al redirigir
+    const params = new URLSearchParams(window.location.search);
+
+    const referencia     = params.get('id');           // ID del pedido (lo mandamos como 'reference')
+    const transaccionId  = params.get('transaction_id'); // ID de la transacción de Wompi
+    const refCorta       = referencia ? referencia.substring(0, 8).toUpperCase() : '—';
+
+    if (!referencia) {
+        mostrarEstado('error', '—', null);
+        return;
+    }
+
+    try {
+        // Consultar la transacción directamente a la API pública de Wompi
+        // Wompi redirige con ?id=TRANSACTION_ID en la URL
+        // Consultamos el estado real de la transacción
+        let estadoFinal = 'error';
+
+        if (transaccionId) {
+            const wompiRes = await fetch(`https://production.wompi.co/v1/transactions/${transaccionId}`);
+            const wompiData = await wompiRes.json();
+            const status = wompiData?.data?.status;
+
+            // Estados de Wompi: APPROVED, PENDING, DECLINED, VOIDED, ERROR
+            if (status === 'APPROVED') {
+                estadoFinal = 'pagado';
+            } else if (status === 'PENDING') {
+                estadoFinal = 'pendiente';
+            } else {
+                estadoFinal = 'error';
+            }
+        } else {
+            // Si no hay transaction_id, Wompi a veces solo manda la referencia
+            // Dejamos como pendiente para no bloquear al usuario
+            estadoFinal = 'pendiente';
+        }
+
+        // Actualizar en Supabase si fue aprobado o está pendiente
+        if (estadoFinal === 'pagado' || estadoFinal === 'pendiente') {
+            await actualizarPagoEnSupabase(referencia, estadoFinal);
+        }
+
+        // Obtener email para el link de mis pedidos
+        const email = await obtenerEmailPedido(referencia);
+
+        mostrarEstado(estadoFinal, refCorta, email);
+
+    } catch (err) {
+        console.error('Error verificando pago:', err);
+        // Aunque falle la verificación, mostrar como pendiente para no alarmar al usuario
+        const email = await obtenerEmailPedido(referencia).catch(() => null);
+        mostrarEstado('pendiente', refCorta, email);
+    }
+});
+</script>
+
+</body>
+</html>
