@@ -8,7 +8,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // ⚠️ PON AQUÍ TU LLAVE PÚBLICA DE WOMPI
 // La encuentras en: https://comercios.wompi.co → Desarrolladores → Llaves
 // =============================================
-const WOMPI_PUBLIC_KEY = 'pub_test_9kFqdnduO7A4r7WelX97pzJgjA7aBpGV'; // 👈 reemplaza esto
+const WOMPI_PUBLIC_KEY = 'pub_test_9kFqdndu07A4r7WelX97pzJgjA7aBpGV'; // 👈 reemplaza esto
 const WOMPI_INTEGRITY_SECRET = 'test_integrity_itRExQlNZCY87qnVRdvNrXqXX7TEmPEr';
 
 // =============================================
