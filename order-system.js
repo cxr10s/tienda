@@ -5,6 +5,12 @@ const SUPABASE_URL = 'https://qvaaistunotxgpyqebya.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
 
 // =============================================
+// ⚠️ PON AQUÍ TU LLAVE PÚBLICA DE WOMPI
+// La encuentras en: https://comercios.wompi.co → Desarrolladores → Llaves
+// =============================================
+const WOMPI_PUBLIC_KEY = 'pub_test_9kFqdnduO7A4r7WelX97pzJgjA7aBpGV'; // 👈 reemplaza esto
+
+// =============================================
 // GUARDAR PEDIDO EN SUPABASE
 // =============================================
 async function guardarPedidoEnSupabase(pedido) {
@@ -28,7 +34,33 @@ async function guardarPedidoEnSupabase(pedido) {
 }
 
 // =============================================
-// SUBMIT DEL FORMULARIO → SUPABASE
+// REDIRIGIR A WOMPI
+// =============================================
+function redirigirAWompi(pedido) {
+    // Wompi recibe el total en CENTAVOS (multiplica por 100)
+    const totalCentavos = Math.round(pedido.total * 100);
+
+    // URL a la que Wompi regresa al usuario después del pago
+    const urlRetorno = `https://cxr10s.github.io/tienda/pago-resultado.html`;
+
+    // Construir URL de Wompi con todos los parámetros
+    const params = new URLSearchParams({
+        'public-key':           WOMPI_PUBLIC_KEY,
+        'currency':             'COP',
+        'amount-in-cents':      totalCentavos,
+        'reference':            pedido.id,           // ID del pedido como referencia única
+        'redirect-url':         urlRetorno,
+        'customer-data:email':  pedido.email,
+        'customer-data:full-name': pedido.nombre,
+        'customer-data:phone-number': pedido.telefono,
+    });
+
+    // Redirigir a la página de pago de Wompi
+    window.location.href = `https://checkout.wompi.co/p/?${params.toString()}`;
+}
+
+// =============================================
+// SUBMIT DEL FORMULARIO → SUPABASE → WOMPI
 // =============================================
 async function submitReservation(event) {
     event.preventDefault();
@@ -72,7 +104,7 @@ async function submitReservation(event) {
     const envio = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
     const total = subtotal - descuento + envio;
 
-    // Construir objeto pedido
+    // Construir objeto pedido (ahora incluye estado_pago)
     const pedido = {
         nombre,
         telefono,
@@ -90,28 +122,28 @@ async function submitReservation(event) {
         descuento,
         envio,
         total,
-        estado: 'pendiente'
+        estado: 'pendiente',
+        estado_pago: 'pendiente'   // 👈 nuevo campo
     };
 
     // Deshabilitar botón mientras se guarda
     const btn = document.querySelector('.payment-submit-btn');
     if (btn) {
         btn.disabled = true;
-        btn.querySelector('.submit-btn-text').textContent = 'Guardando...';
+        btn.querySelector('.submit-btn-text').textContent = 'Procesando...';
     }
 
     try {
         const result = await guardarPedidoEnSupabase(pedido);
 
-        // Guardar pedido completo PRIMERO antes de limpiar nada
+        // Obtener el ID real que asignó Supabase
         const pedidoGuardado = {
             ...pedido,
             id: Array.isArray(result) && result[0] ? result[0].id : ('local-' + Date.now()),
             created_at: Array.isArray(result) && result[0] ? result[0].created_at : new Date().toISOString()
         };
-        window._ultimoPedido = pedidoGuardado;
 
-        // Limpiar carrito y localStorage completamente
+        // Limpiar carrito ANTES de redirigir
         cart = [];
         window._lastRemovedGiftId = null;
         try {
@@ -121,19 +153,15 @@ async function submitReservation(event) {
         updateCartDisplay();
         updateCartIcon();
 
-        // Cerrar modal
+        // Cerrar modal del formulario
         closeReservationModal();
 
-        // Limpiar formulario
-        document.getElementById('reservation-form').reset();
-
-        // Mostrar modal de éxito
-        mostrarExito(email);
+        // ✅ Redirigir a Wompi con el ID real del pedido
+        redirigirAWompi(pedidoGuardado);
 
     } catch (error) {
         console.error('Error al guardar pedido:', error);
         showNotification('❌ Error al guardar el pedido. Intenta de nuevo.');
-    } finally {
         if (btn) {
             btn.disabled = false;
             btn.querySelector('.submit-btn-text').textContent = 'Realizar Pedido';
@@ -148,54 +176,3 @@ document.addEventListener('DOMContentLoaded', function () {
         form.addEventListener('submit', submitReservation);
     }
 });
-
-// =============================================
-// MODAL DE ÉXITO CON LINK A MIS PEDIDOS
-// =============================================
-function mostrarExito(email) {
-    const existing = document.getElementById('exito-modal');
-    if (existing) existing.remove();
-
-    const modal = document.createElement('div');
-    modal.id = 'exito-modal';
-    modal.innerHTML = `
-        <div style="
-            position:fixed; inset:0; background:rgba(0,0,0,0.8);
-            backdrop-filter:blur(4px); z-index:99999;
-            display:flex; align-items:center; justify-content:center;">
-            <div style="
-                background:#111; border:1px solid #222; border-radius:20px;
-                padding:40px 32px; max-width:380px; width:90%; text-align:center;
-                box-shadow:0 20px 60px rgba(0,0,0,0.5);">
-                <div style="font-size:52px; margin-bottom:16px;">✅</div>
-                <h2 style="font-size:22px; font-weight:800; margin-bottom:8px; color:#f0f0f0;">¡Pedido realizado!</h2>
-                <p style="color:#666; font-size:14px; line-height:1.6; margin-bottom:28px;">
-                    Tu pedido fue registrado con éxito.<br>Te contactaremos pronto para coordinar la entrega.
-                </p>
-                <a href="https://cxr10s.github.io/tienda/mis-pedidos.html?email=${encodeURIComponent(email)}"
-                    style="
-                        display:block; width:100%; padding:14px;
-                        background:#c8ff00; color:#000; border-radius:12px;
-                        font-family:'Syne',sans-serif; font-size:15px; font-weight:700;
-                        text-decoration:none; margin-bottom:10px; box-sizing:border-box;">
-                    📦 Ver mi pedido
-                </a>
-                <button id="btn-factura-exito" onclick="if(window._ultimoPedido){generarFacturaPDF(window._ultimoPedido);}else{alert('Factura no disponible, intenta desde Mis Pedidos.');}" style="
-                        display:block; width:100%; padding:13px;
-                        background:transparent; color:#f0f0f0; border-radius:12px;
-                        border:1px solid #333;
-                        font-family:'Syne',sans-serif; font-size:14px; font-weight:700;
-                        cursor:pointer; margin-bottom:10px; box-sizing:border-box;">
-                    📄 Descargar Factura
-                </button>
-                <button onclick="document.getElementById('exito-modal').remove()" style="
-                    width:100%; padding:12px; background:transparent;
-                    border:1px solid #222; border-radius:12px; color:#666;
-                    font-family:'Syne',sans-serif; font-size:14px; cursor:pointer;">
-                    Cerrar
-                </button>
-            </div>
-        </div>
-    `;
-    document.body.appendChild(modal);
-}
