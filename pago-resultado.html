@@ -183,7 +183,6 @@
 const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
 
-// ─── Actualizar estado_pago en Supabase ───────────────────
 async function actualizarPagoEnSupabase(pedidoId, estadoPago) {
     const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos?id=eq.${pedidoId}`, {
         method: 'PATCH',
@@ -199,7 +198,6 @@ async function actualizarPagoEnSupabase(pedidoId, estadoPago) {
     return res.json();
 }
 
-// ─── Obtener email del pedido para el link de mis-pedidos ─
 async function obtenerEmailPedido(pedidoId) {
     try {
         const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos?id=eq.${pedidoId}&select=email`, {
@@ -210,10 +208,8 @@ async function obtenerEmailPedido(pedidoId) {
     } catch { return null; }
 }
 
-// ─── Mostrar un estado en pantalla ───────────────────────
 function mostrarEstado(estado, refCorta, email) {
     document.getElementById('estado-cargando').style.display = 'none';
-
     const misPedidosUrl = email
         ? `https://cxr10s.github.io/tienda/mis-pedidos.html?email=${encodeURIComponent(email)}`
         : `https://cxr10s.github.io/tienda/mis-pedidos.html`;
@@ -222,71 +218,61 @@ function mostrarEstado(estado, refCorta, email) {
         document.getElementById('ref-pagado').textContent = refCorta;
         document.getElementById('link-mis-pedidos-pagado').href = misPedidosUrl;
         document.getElementById('estado-pagado').style.display = 'block';
-
     } else if (estado === 'pendiente') {
         document.getElementById('ref-pendiente').textContent = refCorta;
         document.getElementById('link-mis-pedidos-pendiente').href = misPedidosUrl;
         document.getElementById('estado-pendiente').style.display = 'block';
-
     } else {
         document.getElementById('ref-error').textContent = refCorta;
         document.getElementById('estado-error').style.display = 'block';
     }
 }
 
-// ─── Lógica principal ─────────────────────────────────────
 window.addEventListener('DOMContentLoaded', async () => {
-    // Wompi devuelve estos parámetros en la URL al redirigir
     const params = new URLSearchParams(window.location.search);
 
-    const referencia     = params.get('id');           // ID del pedido (lo mandamos como 'reference')
-    const transaccionId  = params.get('transaction_id'); // ID de la transacción de Wompi
-    const refCorta       = referencia ? referencia.substring(0, 8).toUpperCase() : '—';
+    // Debug: ver qué manda Wompi
+    console.log('Parámetros de Wompi:');
+    params.forEach((value, key) => console.log(`  ${key} = ${value}`));
 
-    if (!referencia) {
+    const transaccionId = params.get('id') || params.get('transaction_id');
+    const referencia    = params.get('reference');
+    const refCorta      = referencia ? referencia.substring(0, 8).toUpperCase() : '—';
+
+    console.log('transaccionId:', transaccionId);
+    console.log('referencia (pedido):', referencia);
+
+    if (!referencia && !transaccionId) {
         mostrarEstado('error', '—', null);
         return;
     }
 
     try {
-        // Consultar la transacción directamente a la API pública de Wompi
-        // Wompi redirige con ?id=TRANSACTION_ID en la URL
-        // Consultamos el estado real de la transacción
-        let estadoFinal = 'error';
+        let estadoFinal = 'pendiente';
 
         if (transaccionId) {
             const wompiRes = await fetch(`https://sandbox.wompi.co/v1/transactions/${transaccionId}`);
             const wompiData = await wompiRes.json();
             const status = wompiData?.data?.status;
+            console.log('Estado Wompi:', status);
 
-            // Estados de Wompi: APPROVED, PENDING, DECLINED, VOIDED, ERROR
-            if (status === 'APPROVED') {
-                estadoFinal = 'pagado';
-            } else if (status === 'PENDING') {
-                estadoFinal = 'pendiente';
-            } else {
-                estadoFinal = 'error';
-            }
-        } else {
-            // Si no hay transaction_id, Wompi a veces solo manda la referencia
-            // Dejamos como pendiente para no bloquear al usuario
-            estadoFinal = 'pendiente';
+            if (status === 'APPROVED') estadoFinal = 'pagado';
+            else if (status === 'PENDING') estadoFinal = 'pendiente';
+            else estadoFinal = 'error';
         }
 
-        // Actualizar en Supabase si fue aprobado o está pendiente
+        const pedidoId = referencia || transaccionId;
         if (estadoFinal === 'pagado' || estadoFinal === 'pendiente') {
-            await actualizarPagoEnSupabase(referencia, estadoFinal);
+            await actualizarPagoEnSupabase(pedidoId, estadoFinal);
         }
 
-        // Obtener email para el link de mis pedidos
-        const email = await obtenerEmailPedido(referencia);
-
+        const email = await obtenerEmailPedido(pedidoId);
         mostrarEstado(estadoFinal, refCorta, email);
 
     } catch (err) {
         console.error('Error verificando pago:', err);
-        // Aunque falle la verificación, mostrar como pendiente para no alarmar al usuario
-        const email = await obtenerEmailPedido(referencia).catch(() => null);
+        const pedidoId = referencia || transaccionId;
+        const email = await obtenerEmailPedido(pedidoId).catch(() => null);
         mostrarEstado('pendiente', refCorta, email);
     }
 });
