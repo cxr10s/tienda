@@ -9,6 +9,7 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // La encuentras en: https://comercios.wompi.co → Desarrolladores → Llaves
 // =============================================
 const WOMPI_PUBLIC_KEY = 'pub_test_9kFqdnduO7A4r7WelX97pzJgjA7aBpGV'; // 👈 reemplaza esto
+const WOMPI_INTEGRITY_SECRET = 'test_integrity_itRExQlNZCY87qnVRdvNrXqXX7TEmPEr';
 
 // =============================================
 // GUARDAR PEDIDO EN SUPABASE
@@ -36,26 +37,31 @@ async function guardarPedidoEnSupabase(pedido) {
 // =============================================
 // REDIRIGIR A WOMPI
 // =============================================
-function redirigirAWompi(pedido) {
-    // Wompi recibe el total en CENTAVOS (multiplica por 100)
+async function redirigirAWompi(pedido) {
     const totalCentavos = Math.round(pedido.total * 100);
+    const referencia = pedido.id;
+    const urlRetorno = 'https://cxr10s.github.io/tienda/pago-resultado.html';
 
-    // URL a la que Wompi regresa al usuario después del pago
-    const urlRetorno = `https://cxr10s.github.io/tienda/pago-resultado.html`;
+    // Generar firma de integridad SHA-256
+    const cadena = `${referencia}${totalCentavos}COP${WOMPI_INTEGRITY_SECRET}`;
+    const encoder = new TextEncoder();
+    const data = encoder.encode(cadena);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    const signature = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
 
-    // Construir URL de Wompi con todos los parámetros
     const params = new URLSearchParams({
-        'public-key':           WOMPI_PUBLIC_KEY,
-        'currency':             'COP',
-        'amount-in-cents':      totalCentavos,
-        'reference':            pedido.id,           // ID del pedido como referencia única
-        'redirect-url':         urlRetorno,
-        'customer-data:email':  pedido.email,
+        'public-key':              WOMPI_PUBLIC_KEY,
+        'currency':                'COP',
+        'amount-in-cents':         totalCentavos,
+        'reference':               referencia,
+        'redirect-url':            urlRetorno,
+        'signature:integrity':     signature,
+        'customer-data:email':     pedido.email,
         'customer-data:full-name': pedido.nombre,
         'customer-data:phone-number': pedido.telefono,
     });
 
-    // Redirigir a la página de pago de Wompi
     window.location.href = `https://checkout.wompi.co/p/?${params.toString()}`;
 }
 
