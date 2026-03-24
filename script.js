@@ -674,21 +674,33 @@ function buildCartLinesForMessage() {
 
 // Funciones de validación
 function validateName(name) {
-    // Permitir letras, espacios y tildes
-    const nameRegex = /^[A-Za-zÁáÉéÍíÓóÚúÑñ\s]+$/;
-    return nameRegex.test(name);
+    // Solo letras (con tildes y ñ) y espacios — mínimo 3 caracteres
+    const nameRegex = /^[A-Za-zÁáÉéÍíÓóÚúÑñ\s]{3,}$/;
+    return nameRegex.test(name.trim());
 }
 
 function validateEmail(email) {
-    // Permitir @gmail.com, @hotmail.com y @outlook.com
+    // Acepta cualquier combinación de mayúsculas/minúsculas
+    // La validación se hace sobre la versión en minúsculas
+    const lower = email.trim().toLowerCase();
     const emailRegex = /^[a-z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com)$/;
-    return emailRegex.test(email);
+    return emailRegex.test(lower);
 }
 
 function validatePhone(phone) {
     // Exactamente 10 dígitos numéricos, sin letras, espacios ni caracteres especiales
     const phoneRegex = /^[0-9]{10}$/;
     return phoneRegex.test(phone);
+}
+
+function validateAddress(address) {
+    // Debe contener una vía principal: Calle, Carrera, Avenida, Diagonal, Transversal, Circular
+    // seguida de al menos un número (las coordenadas tipo # 12 - 34)
+    const addr = address.trim();
+    const tieneVia = /\b(calle|carrera|avenida|diagonal|transversal|circular|cll|cra|av|kr|diag|trans)\b/i.test(addr);
+    const tieneCoordenada = /\d+/.test(addr); // al menos un número
+    const tieneCruce = /#\s*\d+|\d+\s*[-–]\s*\d+/i.test(addr); // # 12 o 12-34
+    return tieneVia && tieneCoordenada && tieneCruce;
 }
 
 // Sistema de notificaciones
