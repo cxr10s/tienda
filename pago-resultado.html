@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultado del Pago — STORE</title>
+    <link rel="icon" type="image/svg+xml" href="icon.svg">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: #f0f0f0;
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card {
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 24px;
+            padding: 48px 40px;
+            width: 420px;
+            text-align: center;
+        }
+
+        .icon { font-size: 64px; margin-bottom: 24px; display: block; }
+
+        .title { font-size: 26px; font-weight: 800; margin-bottom: 12px; }
+        .title.success { color: #22c55e; }
+        .title.error   { color: #ef4444; }
+        .title.pending { color: #f59e0b; }
+        .title.loading { color: #c8ff00; }
+
+        .desc {
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 32px;
+        }
+
+        .order-id {
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 28px;
+            background: #1a1a1a;
+            padding: 10px 16px;
+            border-radius: 8px;
+            display: inline-block;
+        }
+
+        .btn {
+            display: block;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+            width: 100%;
+            text-align: center;
+        }
+
+        .btn + .btn { margin-top: 12px; }
+        .btn:hover { opacity: 0.85; }
+        .btn-primary  { background: #c8ff00; color: #000; }
+        .btn-secondary { background: transparent; border: 1px solid #333; color: #888; }
+
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid #222;
+            border-top-color: #c8ff00;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 24px;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<div class="card" id="card">
+    <div class="spinner"></div>
+    <div class="title loading">Verificando pago...</div>
+    <div class="desc">Por favor espera mientras confirmamos el estado de tu transacción.</div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
+
+// Sandbox → cambia a production cuando corresponda
+const WOMPI_API = 'https://sandbox.wompi.co/v1/transactions/';
+// const WOMPI_API = 'https://production.wompi.co/v1/transactions/'; // ← Producción
+
+// ── LEER PARÁMETROS DE WOMPI ──────────────────────────────
+// Wompi redirige con: ?id=TX_ID&reference=PEDIDO_ID&status=APPROVED
+const params      = new URLSearchParams(window.location.search);
+const wompiTxId   = params.get('id') || '';        // ID de transacción en Wompi
+const referencia  = params.get('reference') || ''; // ID del pedido en Supabase
+const statusParam = (params.get('status') || '').toUpperCase();
+
+// ── VERIFICAR CON API DE WOMPI ────────────────────────────
+// Consultamos el estado real directamente en Wompi usando el TX ID.
+// Más confiable que el ?status de la URL.
+async function verificarTransaccionWompi(txId) {
+    const res = await fetch(`${WOMPI_API}${txId}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    return (data?.data?.status || '').toUpperCase();
+    // Posibles: APPROVED, DECLINED, VOIDED, ERROR, PENDING
+}
+
+// ── ACTUALIZAR SUPABASE ───────────────────────────────────
+async function actualizarEstadoPago(pedidoId, nuevoEstado) {
+    if (!pedidoId) return;
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos?id=eq.${pedidoId}`, {
+        method: 'PATCH',
+        headers: {
+            'apikey': SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ estado_pago: nuevoEstado })
+    });
+    if (!res.ok) {
+        const txt = await res.text();
+        throw new Error(`Supabase error: ${txt}`);
+    }
+}
+
+// ── RENDERIZAR PANTALLA ───────────────────────────────────
+function renderResultado(tipo) {
+    const card = document.getElementById('card');
+
+    if (tipo === 'pagado') {
+        card.innerHTML = `
+            <span class="icon">✅</span>
+            <div class="title success">¡Pago exitoso!</div>
+            <p class="desc">Tu pago fue procesado correctamente.<br>
+            Pronto recibirás confirmación por correo electrónico.</p>
+            ${referencia ? `<div class="order-id">Pedido #${referencia.substring(0,8).toUpperCase()}</div>` : ''}
+            <a href="index.html" class="btn btn-primary">Volver a la tienda</a>
+            <a href="mis-pedidos.html" class="btn btn-secondary">Ver mis pedidos</a>
+        `;
+    } else if (tipo === 'error') {
+        card.innerHTML = `
+            <span class="icon">❌</span>
+            <div class="title error">Pago no completado</div>
+            <p class="desc">Tu pago fue rechazado, cancelado o no se completó.<br>
+            Puedes intentarlo de nuevo o contactarnos para ayudarte.</p>
+            ${referencia ? `<div class="order-id">Pedido #${referencia.substring(0,8).toUpperCase()}</div>` : ''}
+            <a href="index.html" class="btn btn-primary">Volver a la tienda</a>
+        `;
+    } else {
+        card.innerHTML = `
+            <span class="icon">⚠️</span>
+            <div class="title pending">Sin información</div>
+            <p class="desc">No encontramos información de un pago reciente.<br>
+            Si realizaste un pedido, consulta en "Mis pedidos".</p>
+            <a href="index.html" class="btn btn-primary">Ir a la tienda</a>
+            <a href="mis-pedidos.html" class="btn btn-secondary">Ver mis pedidos</a>
+        `;
+    }
+}
+
+// ── FLUJO PRINCIPAL ───────────────────────────────────────
+(async () => {
+
+    // Sin parámetros → acceso directo, no tocar Supabase
+    if (!referencia && !wompiTxId) {
+        renderResultado('sin-info');
+        return;
+    }
+
+    let estadoFinal = 'error'; // valor por defecto seguro
+
+    try {
+        if (wompiTxId) {
+            // CASO IDEAL: tenemos el TX ID → verificamos con Wompi directamente
+            const wompiStatus = await verificarTransaccionWompi(wompiTxId);
+            estadoFinal = wompiStatus === 'APPROVED' ? 'pagado' : 'error';
+        } else if (statusParam) {
+            // FALLBACK: no hay TX ID pero sí el ?status en la URL
+            estadoFinal = statusParam === 'APPROVED' ? 'pagado' : 'error';
+        }
+    } catch (e) {
+        // Si Wompi falla, usar el ?status como respaldo
+        console.warn('Wompi API falló, usando ?status como fallback:', e);
+        estadoFinal = statusParam === 'APPROVED' ? 'pagado' : 'error';
+    }
+
+    // Actualizar Supabase
+    if (referencia) {
+        try {
+            await actualizarEstadoPago(referencia, estadoFinal);
+        } catch (e) {
+            console.error('Error actualizando Supabase:', e);
+            // No bloqueamos la UI aunque falle Supabase
+        }
+    }
+
+    renderResultado(estadoFinal);
+})();
+</script>
+</body>
+</html>
