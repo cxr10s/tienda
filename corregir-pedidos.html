@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corregir Pedidos — STORE.</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: #0a0a0a;
+            color: #f0f0f0;
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            padding: 40px 24px;
+        }
+
+        .wrap { max-width: 700px; margin: 0 auto; }
+
+        h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #c8ff00;
+            margin-bottom: 8px;
+        }
+
+        .sub {
+            color: #555;
+            font-size: 13px;
+            font-family: 'Space Mono', monospace;
+            margin-bottom: 32px;
+        }
+
+        .warning {
+            background: rgba(245,158,11,0.1);
+            border: 1px solid rgba(245,158,11,0.3);
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-size: 13px;
+            color: #f59e0b;
+            margin-bottom: 28px;
+            line-height: 1.6;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover { opacity: 0.85; }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-primary { background: #c8ff00; color: #000; }
+        .btn-danger  { background: #ef4444; color: #fff; margin-left: 12px; }
+
+        .log {
+            margin-top: 28px;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .log-header {
+            padding: 14px 20px;
+            border-bottom: 1px solid #222;
+            font-size: 11px;
+            letter-spacing: 2px;
+            color: #555;
+        }
+
+        .log-body {
+            padding: 16px 20px;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            line-height: 2;
+            min-height: 60px;
+        }
+
+        .log-row { display: flex; gap: 12px; align-items: flex-start; }
+        .log-row .id  { color: #555; min-width: 80px; }
+        .log-row .msg { flex: 1; }
+        .ok      { color: #22c55e; }
+        .err     { color: #ef4444; }
+        .info    { color: #3b82f6; }
+        .neutral { color: #888; }
+
+        .summary {
+            margin-top: 20px;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 14px;
+            padding: 20px 24px;
+            display: none;
+        }
+
+        .summary h3 { font-size: 16px; font-weight: 700; margin-bottom: 16px; }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid #1a1a1a;
+        }
+
+        .summary-row:last-child { border-bottom: none; }
+        .summary-row .label { color: #888; }
+        .summary-row .val   { font-weight: 700; font-family: 'Space Mono', monospace; }
+        .val.green  { color: #22c55e; }
+        .val.red    { color: #ef4444; }
+        .val.yellow { color: #f59e0b; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+
+    <h1>🔧 Corrector de Pedidos</h1>
+    <p class="sub">Consulta el estado real en Wompi y actualiza Supabase</p>
+
+    <div class="warning">
+        ⚠️ <strong>Uso único:</strong> Esta herramienta es solo para corregir pedidos históricos
+        que quedaron en <code>pendiente</code> incorrectamente. Úsala una sola vez y luego
+        elimina este archivo de tu repositorio. No la subas como parte del sitio público.
+    </div>
+
+    <button class="btn btn-primary" id="btn-corregir" onclick="iniciarCorreccion()">
+        🔍 Consultar y corregir pedidos pendientes
+    </button>
+
+    <div class="log" id="log" style="display:none;">
+        <div class="log-header">REGISTRO DE EJECUCIÓN</div>
+        <div class="log-body" id="log-body"></div>
+    </div>
+
+    <div class="summary" id="summary">
+        <h3>Resumen</h3>
+        <div class="summary-row">
+            <span class="label">Pedidos encontrados en Supabase</span>
+            <span class="val" id="s-total">—</span>
+        </div>
+        <div class="summary-row">
+            <span class="label">Consultados en Wompi</span>
+            <span class="val" id="s-consultados">—</span>
+        </div>
+        <div class="summary-row">
+            <span class="label">Actualizados a <strong style="color:#22c55e">pagado</strong></span>
+            <span class="val green" id="s-pagados">—</span>
+        </div>
+        <div class="summary-row">
+            <span class="label">Actualizados a <strong style="color:#ef4444">error</strong></span>
+            <span class="val red" id="s-errores">—</span>
+        </div>
+        <div class="summary-row">
+            <span class="label">Sin transacción en Wompi (sin ID)</span>
+            <span class="val yellow" id="s-sinid">—</span>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
+
+// Sandbox → cambia a production cuando corresponda
+const WOMPI_API = 'https://sandbox.wompi.co/v1/transactions/by-reference/';
+// const WOMPI_API = 'https://production.wompi.co/v1/transactions/by-reference/';
+
+// ── LOG ───────────────────────────────────────────────────
+function log(id, msg, tipo = 'neutral') {
+    const body = document.getElementById('log-body');
+    const row  = document.createElement('div');
+    row.className = 'log-row';
+    row.innerHTML = `<span class="id">${id}</span><span class="msg ${tipo}">${msg}</span>`;
+    body.appendChild(row);
+}
+
+// ── CONSULTAR WOMPI POR REFERENCIA ────────────────────────
+// Wompi tiene un endpoint que busca transacciones por referencia (= ID del pedido en Supabase).
+// No necesitamos el ID de la transacción, solo la referencia que guardamos al crear el pedido.
+async function consultarWompiPorReferencia(pedidoId) {
+    const res = await fetch(`${WOMPI_API}${pedidoId}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    // Wompi devuelve un array de transacciones para esa referencia
+    // Tomamos la más reciente
+    const txs = data?.data;
+    if (!Array.isArray(txs) || txs.length === 0) return null;
+    // Ordenar por fecha descendente y tomar la primera
+    txs.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+    return txs[0].status; // APPROVED, DECLINED, VOIDED, ERROR, PENDING
+}
+
+// ── ACTUALIZAR SUPABASE ───────────────────────────────────
+async function actualizarSupabase(pedidoId, nuevoEstado) {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos?id=eq.${pedidoId}`, {
+        method: 'PATCH',
+        headers: {
+            'apikey': SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+            'Content-Type': 'application/json',
+            'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ estado_pago: nuevoEstado })
+    });
+    if (!res.ok) throw new Error(`Supabase HTTP ${res.status}`);
+}
+
+// ── FLUJO PRINCIPAL ───────────────────────────────────────
+async function iniciarCorreccion() {
+    const btn = document.getElementById('btn-corregir');
+    btn.disabled = true;
+    btn.textContent = 'Procesando...';
+
+    document.getElementById('log').style.display = 'block';
+    document.getElementById('log-body').innerHTML = '';
+
+    let total = 0, consultados = 0, pagados = 0, errores = 0, sinId = 0;
+
+    try {
+        // 1. Obtener todos los pedidos con estado_pago = pendiente
+        log('…', 'Consultando Supabase...', 'info');
+        const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/pedidos?estado_pago=eq.pendiente&select=id,nombre,total&order=created_at.desc`,
+            { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
+        );
+        const pedidos = await res.json();
+        total = pedidos.length;
+
+        if (total === 0) {
+            log('✓', 'No hay pedidos pendientes en Supabase. Todo está correcto.', 'ok');
+            document.getElementById('s-total').textContent = '0';
+            document.getElementById('summary').style.display = 'block';
+            btn.textContent = 'Sin pendientes';
+            return;
+        }
+
+        log('→', `${total} pedidos con estado_pago = pendiente encontrados`, 'info');
+        log('', '─────────────────────────────────────', 'neutral');
+
+        // 2. Por cada pedido, consultar Wompi y actualizar Supabase
+        for (const pedido of pedidos) {
+            const idCorto = pedido.id.substring(0, 8).toUpperCase();
+
+            try {
+                consultados++;
+                const wompiStatus = await consultarWompiPorReferencia(pedido.id);
+
+                if (wompiStatus === null) {
+                    // No hay transacción en Wompi para este pedido
+                    // (pedido creado pero nunca llegó a la pasarela)
+                    sinId++;
+                    log(idCorto, `Sin transacción en Wompi — se deja como pendiente`, 'neutral');
+                    continue;
+                }
+
+                const nuevoEstado = wompiStatus === 'APPROVED' ? 'pagado' : 'error';
+                await actualizarSupabase(pedido.id, nuevoEstado);
+
+                if (nuevoEstado === 'pagado') {
+                    pagados++;
+                    log(idCorto, `✓ Wompi: ${wompiStatus} → actualizado a PAGADO  ($${Number(pedido.total).toLocaleString('es-CO')} COP)`, 'ok');
+                } else {
+                    errores++;
+                    log(idCorto, `✗ Wompi: ${wompiStatus} → actualizado a RECHAZADO`, 'err');
+                }
+
+            } catch (e) {
+                sinId++;
+                log(idCorto, `⚠ Error consultando Wompi: ${e.message}`, 'neutral');
+            }
+
+            // Pequeña pausa entre peticiones para no saturar la API
+            await new Promise(r => setTimeout(r, 300));
+        }
+
+        log('', '─────────────────────────────────────', 'neutral');
+        log('✓', 'Proceso completado.', 'ok');
+
+        // 3. Mostrar resumen
+        document.getElementById('s-total').textContent       = total;
+        document.getElementById('s-consultados').textContent = consultados;
+        document.getElementById('s-pagados').textContent     = pagados;
+        document.getElementById('s-errores').textContent     = errores;
+        document.getElementById('s-sinid').textContent       = sinId;
+        document.getElementById('summary').style.display     = 'block';
+
+        btn.textContent = '✓ Completado';
+
+    } catch (e) {
+        log('ERROR', `Error general: ${e.message}`, 'err');
+        btn.disabled = false;
+        btn.textContent = 'Reintentar';
+    }
+}
+</script>
+</body>
+</html>
