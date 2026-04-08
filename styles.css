@@ -17,11 +17,28 @@
     display: block;
     margin: 0 auto;
 }
+.share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background: #121212;
+  color: #ffbe61;
+  font-size: 18px;
+  text-decoration: none;
+  transition: 0.3s ease;
+}
 
+.share-btn:hover {
+  transform: scale(1.1);
+  background: #1e1e1e;
+}
 
 .wrapper {
     text-align: center;
-    margin: 30px auto;
+    margin: 0px auto;
     max-width: 500px;
     padding: 16px 24px;
     background: #1e1e1e;
@@ -41,8 +58,7 @@
         }
 
         .wrapper a:hover {
-            transform: translateY(-6px);
-            color: #b09490;
+            color: greenyellow;
         }
 
 .notification {
@@ -86,13 +102,13 @@ img {
     font-family: 'Times New Roman', Times, serif;
     font-size: 1.4rem;
     font-weight: 900;
-    color: #1a1a1a;
+    color: #F2F2F2;
     letter-spacing: -0.5px;
 }
 
 .logo-dot {
     color: #917771;
-    font-size: 1.6rem;
+    font-size: 1.2rem;
 }
 
 #Regalos-btn{
@@ -101,32 +117,32 @@ img {
     font-weight: bold;
     background: #2a2a2a;
     color: #DED7D7;
-    border: 2px solid #DED7D7;
-    border-radius: 25px;
-    padding: 6px 14px;
+    border: 2px dashed #d3d7d7;
+    border-radius: 20px;
+    padding: 4px 14px;
     text-decoration: none;
     white-space: nowrap;
 }
 #Regalos-btn::after {
-    background: none;
+    border-style: 2px greenyellow;
 }
 .navbar {
     position: fixed;
-    top: 20px;
+    top: 18px;
     left: 50%;
     transform: translateX(-50%);
-    width: 90%;
+    width: 60%;
     max-width: 1100px;
-    background: #DED7D7;
-    backdrop-filter: blur(15px);
+    background: #222222;
+    backdrop-filter: blur(20px);
     padding: 15px 30px;
-    border-radius: 50px;
+    border-radius: 20px;
     display: flex;
     flex-wrap: nowrap;
     justify-content: space-between;
     align-items: center;
     gap: 1rem;
-    box-shadow: 0 10px 30px #888;
+    box-shadow: 0 10px 30px greenyellow;
     animation: anime 1s ease forwards;
     z-index: 500;
 }
@@ -157,7 +173,7 @@ img {
 }
 
 .nav-menu a {
-    color: #2a2a2a;
+    color: #ADADAD;
     text-decoration: none;
     font-weight: 500;
     transition: all 0.3s ease;
@@ -165,7 +181,7 @@ img {
 }
 
 .nav-menu a:hover {
-    color: #888;
+    color: greenyellow;
     transform: translateY(-2px);
 }
 
@@ -176,7 +192,7 @@ img {
     left: 0;
     width: 0;
     height: 2px;
-    background: #888;
+    background: greenyellow;
     transition: width 0.3s ease;
 }
 
@@ -187,14 +203,27 @@ img {
 
 /* Hero Section */
 .hero {
-    background: #111;
+    background: url("bici-removebg-preview.jpg") center/cover no-repeat;
     min-height: 100vh;
     display: flex;
     align-items: center;
     padding: 0 3rem;
-    margin-top: 80px;
+    margin-top: 0px;
     overflow: hidden;
     position: relative;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to right,
+        rgba(0,0,0,0.85) 30%,
+        rgba(0,0,0,0.4) 60%,
+        rgba(0,0,0,0.1)
+    );
+    z-index: 1;
 }
 
 /* Grid de fondo decorativo */
@@ -252,7 +281,7 @@ img {
 }
 
 .hero-accent {
-    color: #917771;
+    color: greenyellow;
     display: block;
 }
 
@@ -385,21 +414,16 @@ img {
 
 .btn-primary {
     font-family: 'Times New Roman', Times, serif;
-    background: #D3D7D7;
-    color: #1a1a1a;
-    border: none;
+    background: transparent;
+    color: #DED7D7;
+    border: 2px solid rgba(222,215,215,0.3);
     padding: 1rem 2rem;
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 600;
     border-radius: 50px;
     cursor: pointer;
     transition: all 0.3s ease;
-    text-transform: uppercase;
     letter-spacing: 1px;
-    box-shadow: 0 4px 15px #888;
-    position: relative;
-    overflow: hidden;
-    z-index: 1;
 }
 
 .btn-primary:hover {
@@ -407,21 +431,6 @@ img {
     box-shadow: 0 5px 17px #888;
 }
 
-.btn-primary:before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: #bcc1c1;
-    transition: all 0.5s ease;
-    z-index: -1;
-}
-
-.btn-primary:hover:before {
-    left: 0;
-}
 
 
 /* Products Sections */
@@ -2020,7 +2029,7 @@ body.modal-open {
 
 /* Contactos section label */
 .Contactos {
-    background: #111;
+    background: #000;
     padding: 2rem 1rem 3rem;
     text-align: center;
 }
@@ -2028,11 +2037,11 @@ body.modal-open {
 .Contactos::before {
     content: 'Contáctanos';
     display: block;
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    color: #a0948e;
-    margin-bottom: 0.8rem;
+    font-size: 2rem;
+    text-transform: capitalize;
+    letter-spacing: 0px;
+    color: #D3D7D7;
+    margin-bottom: 1.0rem;
     font-weight: 600;
 }
 
