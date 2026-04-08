@@ -27,11 +27,13 @@ async function generarFacturaPDF(pedido) {
     let y = 20;
 
     // ── Colores ──────────────────────────────
-    const negro   = [10, 10, 10];
-    const gris    = [100, 100, 100];
-    const grisClaro = [230, 230, 230];
-    const verde   = [34, 197, 94];
-    const blanco  = [255, 255, 255];
+    const negro      = [10, 10, 10];
+    const gris       = [100, 100, 100];
+    const grisClaro  = [230, 230, 230];
+    const verde      = [34, 197, 94];
+    const rojo       = [239, 68, 68];
+    const amarillo   = [245, 158, 11];
+    const blanco     = [255, 255, 255];
 
     // ── Fondo header ─────────────────────────
     doc.setFillColor(...negro);
@@ -96,7 +98,7 @@ async function generarFacturaPDF(pedido) {
 
     y += 52;
 
-    // ── Estado ───────────────────────────────
+    // ── Estado del pedido ─────────────────────
     const estadoColors = {
         pendiente: [245, 158, 11],
         enviado:   [59, 130, 246],
@@ -106,13 +108,39 @@ async function generarFacturaPDF(pedido) {
     const estadoColor = estadoColors[pedido.estado] || negro;
 
     doc.setFillColor(...estadoColor);
-    doc.roundedRect(margin, y - 6, 40, 10, 2, 2, 'F');
+    doc.roundedRect(margin, y - 6, 44, 10, 2, 2, 'F');
     doc.setTextColor(...blanco);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(8);
-    doc.text(pedido.estado.toUpperCase(), margin + 20, y + 1, { align: 'center' });
+    doc.text(pedido.estado.toUpperCase(), margin + 22, y + 1, { align: 'center' });
 
-    y += 12;
+    // ── Estado del PAGO (al lado del estado del pedido) ──
+    const estadoPago = pedido.estado_pago || 'pendiente';
+    let pagoColor, pagoLabel, pagoIcon;
+
+    if (estadoPago === 'pagado') {
+        pagoColor = verde;
+        pagoLabel = 'PAGO CONFIRMADO';
+        pagoIcon  = '[OK]';
+    } else if (estadoPago === 'error') {
+        pagoColor = rojo;
+        pagoLabel = 'PAGO RECHAZADO';
+        pagoIcon  = '[X]';
+    } else {
+        pagoColor = amarillo;
+        pagoLabel = 'PAGO PENDIENTE';
+        pagoIcon  = '[...]';
+    }
+
+    // Fondo del badge de pago
+    doc.setFillColor(pagoColor[0], pagoColor[1], pagoColor[2]);
+    doc.roundedRect(margin + 50, y - 6, 60, 10, 2, 2, 'F');
+    doc.setTextColor(...blanco);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(8);
+    doc.text(`${pagoIcon} ${pagoLabel}`, margin + 80, y + 1, { align: 'center' });
+
+    y += 16;
 
     // ── Tabla productos ───────────────────────
     doc.setTextColor(...gris);
@@ -202,6 +230,36 @@ async function generarFacturaPDF(pedido) {
     doc.text(`$${fmt(pedido.total)} COP`, W - margin - 2, y + 2.5, { align: 'right' });
 
     y += 20;
+
+    // ── Bloque estado de pago detallado ───────
+    // Fondo coloreado según el estado del pago
+    doc.setFillColor(pagoColor[0], pagoColor[1], pagoColor[2], 0.15);
+    const pagoBoxHeight = pedido.estado_pago === 'error' ? 26 : 22;
+    doc.roundedRect(margin, y, W - margin * 2, pagoBoxHeight, 3, 3, 'F');
+
+    // Borde izquierdo de color sólido
+    doc.setFillColor(...pagoColor);
+    doc.rect(margin, y, 4, pagoBoxHeight, 'F');
+
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(9);
+    doc.setTextColor(...pagoColor);
+    doc.text(`${pagoIcon} ${pagoLabel}`, margin + 10, y + 8);
+
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...gris);
+
+    if (estadoPago === 'pagado') {
+        doc.text('El pago fue procesado correctamente a través de Wompi.', margin + 10, y + 16);
+    } else if (estadoPago === 'error') {
+        doc.text('El pago fue rechazado, cancelado o no fue completado.', margin + 10, y + 16);
+        doc.text('Contacta al cliente para coordinar el pago.', margin + 10, y + 22);
+    } else {
+        doc.text('El pago aún no ha sido procesado o está en espera de confirmación.', margin + 10, y + 16);
+    }
+
+    y += pagoBoxHeight + 10;
 
     // ── ID del pedido ─────────────────────────
     doc.setFillColor(245, 245, 245);
