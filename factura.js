@@ -121,15 +121,15 @@ async function generarFacturaPDF(pedido) {
     if (estadoPago === 'pagado') {
         pagoColor = verde;
         pagoLabel = 'PAGO CONFIRMADO';
-        pagoIcon  = '[OK]';
+        pagoIcon  = '✅';
     } else if (estadoPago === 'error') {
         pagoColor = rojo;
         pagoLabel = 'PAGO RECHAZADO';
-        pagoIcon  = '[X]';
+        pagoIcon  = '❌';
     } else {
         pagoColor = amarillo;
         pagoLabel = 'PAGO PENDIENTE';
-        pagoIcon  = '[...]';
+        pagoIcon  = '⏳';
     }
 
     // Fondo del badge de pago
