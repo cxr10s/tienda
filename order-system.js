@@ -58,7 +58,7 @@ async function guardarPedidoEnSupabase(pedido) {
 async function redirigirAWompi(pedido) {
     const totalCentavos = Math.round(pedido.total * 100);
     const referencia    = pedido.id;
-    const urlRetorno    = 'https://cxr10s.github.io/tienda/pago-resultado.html';
+    const urlRetorno    = 'https://cxr10s.github.io/Orga/Scripts/pago-resultado.html';
 
     // Generar firma de integridad SHA-256
     // Cadena: referencia + monto + moneda + secret
@@ -185,7 +185,7 @@ async function submitReservation(event) {
         closeReservationModal();
 
         // Redirigir a Wompi con el ID real del pedido
-        await redirigirAWompi(pedidoGuardado);
+        await mostrarAlertaFactura(pedidoGuardado);
 
     } catch (error) {
         console.error('Error al guardar pedido:', error);
@@ -204,3 +204,67 @@ document.addEventListener('DOMContentLoaded', function () {
         form.addEventListener('submit', submitReservation);
     }
 });
+
+// =============================================
+// ALERTA DE DESCARGA DE FACTURA
+// =============================================
+function mostrarAlertaFactura(pedido) {
+    return new Promise((resolve) => {
+        // Crear overlay
+        const overlay = document.createElement('div');
+        overlay.id = 'factura-alert-overlay';
+        overlay.style.cssText = `
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.82);
+            z-index: 99999;
+            display: flex; align-items: center; justify-content: center;
+            padding: 1rem;
+            animation: facturaFadeIn 0.3s ease;
+        `;
+
+        const idCorto = pedido.id.substring(0, 8).toUpperCase();
+        const total = Math.round(pedido.total).toLocaleString('es-CO');
+
+        overlay.innerHTML = `
+            <style>
+                @keyframes facturaFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+                #factura-alert-box { background:#111; border:1px solid rgba(255,255,255,0.1); border-radius:18px; max-width:420px; width:100%; padding:2rem 1.8rem; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.7); }
+                #factura-alert-box .fa-icon { font-size:3rem; margin-bottom:1rem; }
+                #factura-alert-box h2 { color:#fff; font-size:1.3rem; margin:0 0 0.5rem; }
+                #factura-alert-box p { color:#aaa; font-size:0.92rem; margin:0 0 1.4rem; line-height:1.6; }
+                #factura-alert-box .order-id { display:inline-block; background:#1e1e1e; border:1px solid #333; border-radius:8px; padding:0.35rem 1rem; font-family:monospace; font-size:1rem; color:#adff2f; margin-bottom:1.4rem; letter-spacing:1px; }
+                #factura-alert-box .btn-download { display:block; width:100%; padding:0.85rem; background:#adff2f; color:#000; font-weight:700; font-size:1rem; border:none; border-radius:10px; cursor:pointer; margin-bottom:0.75rem; transition:opacity 0.2s; }
+                #factura-alert-box .btn-download:hover { opacity:0.85; }
+                #factura-alert-box .btn-skip { display:block; width:100%; padding:0.7rem; background:transparent; color:#666; font-size:0.88rem; border:none; cursor:pointer; }
+                #factura-alert-box .btn-skip:hover { color:#999; }
+            </style>
+            <div id="factura-alert-box">
+                <div class="fa-icon">🧾</div>
+                <h2>¡Pedido registrado!</h2>
+                <p>Tu pedido por <strong style="color:#fff">$${total} COP</strong> fue guardado correctamente.<br>Descarga tu factura antes de continuar al pago.</p>
+                <div class="order-id">ID: ${idCorto}</div>
+                <button class="btn-download" id="btn-dl-factura">⬇ Descargar Factura PDF</button>
+                <button class="btn-skip" id="btn-skip-factura">Continuar sin descargar</button>
+            </div>
+        `;
+
+        document.body.appendChild(overlay);
+
+        document.getElementById('btn-dl-factura').addEventListener('click', async () => {
+            try {
+                await generarFacturaPDF(pedido);
+            } catch(e) {
+                console.error('Error generando factura:', e);
+            }
+            document.body.removeChild(overlay);
+            resolve();
+            await redirigirAWompi(pedido);
+        });
+
+        document.getElementById('btn-skip-factura').addEventListener('click', async () => {
+            document.body.removeChild(overlay);
+            resolve();
+            await redirigirAWompi(pedido);
+        });
+    });
+}
