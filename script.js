@@ -340,6 +340,14 @@ function updateCartIcon() {
     }
     
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+
+    // Actualizar contador en la barra de navegación
+    const navCount = document.getElementById('nav-cart-count');
+    if (navCount) navCount.textContent = totalItems;
+
+    // Actualizar el pill dentro del sidebar
+    const pill = document.getElementById('cart-count-pill');
+    if (pill) pill.textContent = totalItems;
     
     // Crear el ícono del carrito
     cartIcon.innerHTML = `
@@ -530,58 +538,58 @@ function getCatalogProducts(category) {
     // Productos adicionales para el catálogo
     const catalogProducts = {
         'camisetas': [
-            { id: 'camiseta-cat-1', name: 'Camiseta Adidas Liverpool ', price: 74900, image: 'Camiseta adidas4.png' },
-            { id: 'camiseta-cat-2', name: 'Camiseta Adidas Black ', price: 49900, image: 'Camiseta Adidas2.png' },
-            { id: 'camiseta-cat-3', name: 'Camiseta Adidas Arsenal Club ', price: 79500, image: 'Camiseta Arsenal.png' },
-            { id: 'camiseta-cat-4', name: 'Camiseta Adidas Retro Brasil ', price:99000, image: 'CamisetaBrasil.png' },
-            { id: 'camiseta-cat-5', name: 'Camiseta Adidas Madrid Blue ', price: 78400, image: 'Madridblue.png' },
-            { id: 'camiseta-cat-6', name: 'Camiseta Adidas Colombia ', price: 52000, image: 'Colombia.png' }
+            { id: 'camiseta-cat-1', name: 'Imagenes/Camiseta Adidas Liverpool ', price: 74900, image: 'Camiseta adidas4.png' },
+            { id: 'camiseta-cat-2', name: 'Imagenes/Camiseta Adidas Black ', price: 49900, image: 'Camiseta Adidas2.png' },
+            { id: 'camiseta-cat-3', name: 'Imagenes/Camiseta Adidas Arsenal Club ', price: 79500, image: 'Camiseta Arsenal.png' },
+            { id: 'camiseta-cat-4', name: 'Imagenes/Camiseta Adidas Retro Brasil ', price:99000, image: 'CamisetaBrasil.png' },
+            { id: 'camiseta-cat-5', name: 'Imagenes/Camiseta Adidas Madrid Blue ', price: 78400, image: 'Madridblue.png' },
+            { id: 'camiseta-cat-6', name: 'Imagenes/Camiseta Adidas Colombia ', price: 52000, image: 'Colombia.png' }
         ],
         'tenis': [
-            { id: 'tenis-cat-1', name: 'Tenis Adidas Yeezy', price: 295900, image: 'Tenis Adidas yeezy.png' },
-            { id: 'tenis-cat-2', name: 'Tenis Adidas Boost', price: 229000, image: 'Tenis Adidas Boost.png' },
-            { id: 'tenis-cat-3', name: 'Tenis Adidas Red', price: 172000, image: 'tenisadidas6.png' },
-            { id: 'tenis-cat-4', name: 'Tenis Adidas Black', price: 110000, image: 'tenisadidas5.png' },
-            { id: 'tenis-cat-5', name: 'Tenis Adidas White', price: 214900, image: 'tenisadidas1.png' },
-            { id: 'tenis-cat-6', name: 'Tenis Adidas I', price: 149000, image: 'tenisadidas3.png' },
-            { id: 'tenis-cat-7', name: 'Tenis Adidas II', price: 105000, image: 'tenisadidas2.png' },
-            { id: 'tenis-cat-8', name: 'Tenis Adidas III', price: 99200, image: 'tenisadidas4.png' }
+            { id: 'tenis-cat-1', name: 'Imagenes/Tenis Adidas Yeezy', price: 295900, image: 'Tenis Adidas yeezy.png' },
+            { id: 'tenis-cat-2', name: 'Imagenes/Tenis Adidas Boost', price: 229000, image: 'Tenis Adidas Boost.png' },
+            { id: 'tenis-cat-3', name: 'Imagenes/Tenis Adidas Red', price: 172000, image: 'tenisadidas6.png' },
+            { id: 'tenis-cat-4', name: 'Imagenes/Tenis Adidas Black', price: 110000, image: 'tenisadidas5.png' },
+            { id: 'tenis-cat-5', name: 'Imagenes/Tenis Adidas White', price: 214900, image: 'tenisadidas1.png' },
+            { id: 'tenis-cat-6', name: 'Imagenes/Tenis Adidas I', price: 149000, image: 'tenisadidas3.png' },
+            { id: 'tenis-cat-7', name: 'Imagenes/Tenis Adidas II', price: 105000, image: 'tenisadidas2.png' },
+            { id: 'tenis-cat-8', name: 'Imagenes/Tenis Adidas III', price: 99200, image: 'tenisadidas4.png' }
         ],
         'jeans': [
-            { id: 'jeans-cat-1', name: 'Jeans Clasicos', price: 70800, image: 'Jeans clasico hombre l.png' },
-            { id: 'jeans-cat-2', name: 'Jeans Clasicos II', price: 68200, image: 'Jeans clasico hombre ll.png' },
-            { id: 'jeans-cat-3', name: 'Jeans Vintage', price: 80000, image: 'jeans ventage dama l.png' },
-            { id: 'jeans-cat-4', name: 'Jeans Vintage II', price: 80000, image: 'jeans vintage dama ll.png' },
-            { id: 'jeans-cat-5', name: 'Jeans Rotos', price: 72800, image: 'jeans rotos ll.png' },
-            { id: 'jeans-cat-6', name: 'Jeans Relaxed', price: 88700, image: 'jeans relaxed ll.png' },
-            { id: 'jeans-cat-7', name: 'Jeans Modernos', price: 73900, image: 'Jeans moderno ll.png' },
+            { id: 'jeans-cat-1', name: 'Imagenes/Jeans Clasicos', price: 70800, image: 'Jeans clasico hombre l.png' },
+            { id: 'jeans-cat-2', name: 'Imagenes/Jeans Clasicos II', price: 68200, image: 'Jeans clasico hombre ll.png' },
+            { id: 'jeans-cat-3', name: 'Imagenes/Jeans Vintage', price: 80000, image: 'jeans ventage dama l.png' },
+            { id: 'jeans-cat-4', name: 'Imagenes/Jeans Vintage II', price: 80000, image: 'jeans vintage dama ll.png' },
+            { id: 'jeans-cat-5', name: 'Imagenes/Jeans Rotos', price: 72800, image: 'jeans rotos ll.png' },
+            { id: 'jeans-cat-6', name: 'Imagenes/Jeans Relaxed', price: 88700, image: 'jeans relaxed ll.png' },
+            { id: 'jeans-cat-7', name: 'Imagenes/Jeans Modernos', price: 73900, image: 'Jeans moderno ll.png' },
         ],
         'cascos': [
-            { id: 'casco-cat-1', name: 'Casco Moto croos', price: 220600, image: 'cross azul.png' },
-            { id: 'casco-cat-2', name: 'Casco Motocicleta', price: 113500, image: 'rojo.png' },
-            { id: 'casco-cat-3', name: 'Casco Carreras', price: 420900, image: 'Casco Racing l.png' },
-            { id: 'casco-cat-4', name: 'Casco Carreras ll', price: 410400, image: 'Casco Racing ll.png' },
-            { id: 'casco-cat-5', name: 'Casco TodoT', price: 199200, image: 'Casco Touring l.png' },
-            { id: 'casco-cat-6', name: 'Casco TodoT ll', price: 189900, image: 'Casco Touring ll.png' }
+            { id: 'casco-cat-1', name: 'Imagenes/Casco Moto croos', price: 220600, image: 'cross azul.png' },
+            { id: 'casco-cat-2', name: 'Imagenes/Casco Motocicleta', price: 113500, image: 'rojo.png' },
+            { id: 'casco-cat-3', name: 'Imagenes/Casco Carreras', price: 420900, image: 'Casco Racing l.png' },
+            { id: 'casco-cat-4', name: 'Imagenes/Casco Carreras ll', price: 410400, image: 'Casco Racing ll.png' },
+            { id: 'casco-cat-5', name: 'Imagenes/Casco TodoT', price: 199200, image: 'Casco Touring l.png' },
+            { id: 'casco-cat-6', name: 'Imagenes/Casco TodoT ll', price: 189900, image: 'Casco Touring ll.png' }
         ],
         'deportes': [
-            { id: 'deportes-cat-1', name: 'Bicicleta Mount Bike I', price: 890000, image: 'BicicletaCata.png' },
-            { id: 'deportes-cat-2', name: 'Bicicleta Mount Bike II', price: 760000, image: 'BicicletaBike3.png' },
-            { id: 'deportes-cat-3', name: 'Bicicleta Mount Bike III', price: 900000, image: 'BicicletaBike4.png' },
-            { id: 'deportes-cat-4', name: 'Bicicleta Mount Bike IIII', price: 1000000, image: 'BicicletaBike2.png' },
-            { id: 'deportes-cat-5', name: 'Equipo Ciclismo ', price: 188200, image: 'Equipo Completo 1.png' },
-            { id: 'deportes-cat-6', name: 'Equipo Ciclismo II', price: 183500, image: 'Equipo Completo 2.png' },
-            { id: 'deportes-cat-7', name: 'Equipo Ciclismo III', price: 179900, image: 'Equipo Completo 3.png' },
-            { id: 'deportes-cat-8', name: 'Accesorios Deport I', price: 50000, image: 'AcesoriosBici.png' },
-            { id: 'deportes-cat-9', name: 'Accesorios Deport II', price: 55000, image: 'AcesoriosBici2.png' },
-            { id: 'deportes-cat-10', name: 'Accesorios Deport III', price: 30000, image: 'AcesoriosBici3.png' },
-            { id: 'deportes-cat-11', name: 'Guantes Ciclismo', price: 30000, image: 'GuantesCiclismo.png' },
-            { id: 'deportes-cat-12', name: 'Mancuerna 2KG', price: 25000, image: 'Mancuerna2KG.png' },
-            { id: 'deportes-cat-13', name: 'Mancuerna 5KG', price: 55900, image: 'Mancuerna5KG.png' },
-            { id: 'deportes-cat-14', name: 'Mancuerna 10KG', price: 110500, image: 'Mancuerna10KG.png' },
-            { id: 'deportes-cat-15', name: 'Mancuerna 20KG', price: 210900, image: 'Mancuerna20KG.png' },
-            { id: 'deportes-cat-16', name: 'Mancuerna 25KG', price: 259200, image: 'Mancuerna25KG.png' },
-            { id: 'deportes-cat-17', name: 'Mancuerna 30KG', price: 289400, image: 'Mancuerna30KG.png' }
+            { id: 'deportes-cat-1', name: 'Imagenes/Bicicleta Mount Bike I', price: 890000, image: 'BicicletaCata.png' },
+            { id: 'deportes-cat-2', name: 'Imagenes/Bicicleta Mount Bike II', price: 760000, image: 'BicicletaBike3.png' },
+            { id: 'deportes-cat-3', name: 'Imagenes/Bicicleta Mount Bike III', price: 900000, image: 'BicicletaBike4.png' },
+            { id: 'deportes-cat-4', name: 'Imagenes/Bicicleta Mount Bike IIII', price: 1000000, image: 'BicicletaBike2.png' },
+            { id: 'deportes-cat-5', name: 'Imagenes/Equipo Ciclismo ', price: 188200, image: 'Equipo Completo 1.png' },
+            { id: 'deportes-cat-6', name: 'Imagenes/Equipo Ciclismo II', price: 183500, image: 'Equipo Completo 2.png' },
+            { id: 'deportes-cat-7', name: 'Imagenes/Equipo Ciclismo III', price: 179900, image: 'Equipo Completo 3.png' },
+            { id: 'deportes-cat-8', name: 'Imagenes/Accesorios Deport I', price: 50000, image: 'AcesoriosBici.png' },
+            { id: 'deportes-cat-9', name: 'Imagenes/Accesorios Deport II', price: 55000, image: 'AcesoriosBici2.png' },
+            { id: 'deportes-cat-10', name: 'Imagenes/Accesorios Deport III', price: 30000, image: 'AcesoriosBici3.png' },
+            { id: 'deportes-cat-11', name: 'Imagenes/Guantes Ciclismo', price: 30000, image: 'GuantesCiclismo.png' },
+            { id: 'deportes-cat-12', name: 'Imagenes/Mancuerna 2KG', price: 25000, image: 'Mancuerna2KG.png' },
+            { id: 'deportes-cat-13', name: 'Imagenes/Mancuerna 5KG', price: 55900, image: 'Mancuerna5KG.png' },
+            { id: 'deportes-cat-14', name: 'Imagenes/Mancuerna 10KG', price: 110500, image: 'Mancuerna10KG.png' },
+            { id: 'deportes-cat-15', name: 'Imagenes/Mancuerna 20KG', price: 210900, image: 'Mancuerna20KG.png' },
+            { id: 'deportes-cat-16', name: 'Imagenes/Mancuerna 25KG', price: 259200, image: 'Mancuerna25KG.png' },
+            { id: 'deportes-cat-17', name: 'Imagenes/Mancuerna 30KG', price: 289400, image: 'Mancuerna30KG.png' }
         ]
     };
     
@@ -745,8 +753,8 @@ function closeAllModals() {
 // COMPARTIR LA PÁGINA
 // =============================================
 function shareVia(platform) {
-    const imgUrl = 'https://cxr10s.github.io/tienda/Img.png'; // Imagen representativa para compartir
-    const url   = 'https://cxr10s.github.io/tienda/';
+    const imgUrl = 'https://cxr10s.github.io/Orga/Icono/Img.png'; // Imagen representativa para compartir
+    const url   = 'https://cxr10s.github.io/Orga/Scripts/';
     const title = 'Tienda Deportiva';
     const text  = 'Mira esta tienda deportiva: Camisetas, Tenis, Jeans, Cascos y más. Envío gratis desde $150.000 COP.';
 
