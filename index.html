@@ -478,24 +478,54 @@
     <!-- Backdrop para carrito -->
     <div id="cart-backdrop" class="cart-backdrop" onclick="toggleCart()"></div>
 
-    <!-- Carrito de Compras -->
+    <!-- Carrito de Compras — rediseñado -->
     <div id="cart-sidebar" class="cart-sidebar">
+
+        <!-- Header -->
         <div class="cart-header">
-            <h3>Carrito de Compras</h3>
-            <button class="close-cart" onclick="toggleCart()">×</button>
+            <div class="cart-header-left">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                <h3>Tu carrito</h3>
+                <span class="cart-count-pill" id="cart-count-pill">0</span>
+            </div>
+            <button class="close-cart" onclick="toggleCart()" aria-label="Cerrar carrito">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
         </div>
-        <div class="cart-items" id="cart-items">
-            <!-- Los productos se agregarán dinámicamente aquí -->
+
+        <!-- Auth banner: visible solo si no hay sesión -->
+        <div class="cart-auth-banner" id="cart-auth-banner">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            <span>Inicia sesión para poder realizar pedidos</span>
+            <button onclick="toggleCart(); openAuthModal();">Ingresar</button>
         </div>
+
+        <!-- Productos -->
+        <div class="cart-items" id="cart-items"></div>
+
+        <!-- Resumen y checkout -->
         <div class="cart-summary">
             <div class="cart-total">
-                <p>Subtotal: <span id="cart-subtotal">$0 COP</span></p>
-                <p class="discount-info" id="discount-info" style="display: none;">Descuento aplicado:  <span id="discount-amount">$0 COP</span></p>
-                <p class="shipping-info" id="shipping-info">Envío:  <span id="shipping-amount">$0 COP</span></p>
-                <p class="gift-info" id="gift-info" style="display: none;"> </p>
-                <p class="total">Total: <span id="cart-total">$0 COP</span></p>
+                <div class="cart-total-row"><span>Subtotal</span><span id="cart-subtotal">$0 COP</span></div>
+                <div class="cart-total-row discount-info" id="discount-info" style="display:none;">
+                    <span>Descuento</span><span id="discount-amount" style="color:#adff2f;">-$0 COP</span>
+                </div>
+                <div class="cart-total-row" id="shipping-info">
+                    <span>Envío</span><span id="shipping-amount">$0 COP</span>
+                </div>
+                <div class="cart-total-row gift-info" id="gift-info" style="display:none;"></div>
+                <div class="cart-total-row total">
+                    <span>Total</span><span id="cart-total">$0 COP</span>
+                </div>
             </div>
-            <button class="checkout-btn" onclick="openReservationModal()">Reservar compra</button>
+            <button class="checkout-btn" id="checkout-btn" onclick="handleCheckout()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                Reservar compra
+            </button>
+            <p class="cart-secure-note">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Pago seguro vía Wompi
+            </p>
         </div>
     </div>
 
@@ -521,63 +551,59 @@
             <!-- Header -->
             <div class="modal-header">
                 <div class="payment-header-info">
-                    <span class="payment-header-icon">🛒</span>
-                    <h3>Finalizar Pedido</h3>
+                    <div class="payment-header-icon-wrap">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    </div>
+                    <div>
+                        <h3>Finalizar pedido</h3>
+                        <span class="payment-header-sub">Completa tus datos de entrega</span>
+                    </div>
                 </div>
-                <button class="close-modal" onclick="closeReservationModal()">×</button>
+                <button class="close-modal" onclick="closeReservationModal()" aria-label="Cerrar">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
             </div>
 
             <div class="modal-body">
 
                 <!-- Resumen del pedido -->
                 <div class="payment-summary">
-                    <div class="summary-title">
-                        <span class="summary-icon">📋</span>
-                        <h4>Resumen de tu Pedido</h4>
-                    </div>
-                    <div id="reservation-items"></div>
+                    <p class="summary-label">Resumen del pedido</p>
+                    <div id="reservation-items" class="reservation-items-list"></div>
                     <div class="payment-total">
-                        <p>Total a pagar: <span id="reservation-total-amount"></span></p>
+                        <span>Total a pagar</span>
+                        <span id="reservation-total-amount" class="payment-total-amount"></span>
                     </div>
                     <div class="payment-benefits">
                         <div class="benefit-item">
-                            <span class="benefit-icon">🚚</span>
-                            <span class="benefit-text">Envío Gratis a partir de $150.000</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#adff2f" stroke-width="2.5"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                            <span>Envío gratis desde $150.000</span>
                         </div>
                         <div class="benefit-item">
-                            <span class="benefit-icon">🏷️</span>
-                            <span class="benefit-text">5% desde $150k · 8% desde $250k · 12% desde $400k · 15% desde $600k · 20% desde $900k</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#adff2f" stroke-width="2.5"><line x1="19" y1="5" x2="5" y2="19"/><circle cx="6.5" cy="6.5" r="2.5"/><circle cx="17.5" cy="17.5" r="2.5"/></svg>
+                            <span>5% · 8% · 12% · 15% · 20% de descuento</span>
                         </div>
                     </div>
                 </div>
 
-                <!-- Formulario de contacto -->
+                <!-- Formulario -->
                 <div class="payment-methods">
-                    <div class="contact-section-title">
-                        <span>📬</span>
-                        <h4>Información de Contacto</h4>
-                    </div>
+                    <p class="contact-section-label">Información de entrega</p>
                     <form id="reservation-form">
 
-                        <!-- Nombre -->
                         <div class="pm-field-group">
-                            <label for="reservation-name">
-                                <span class="field-icon">👤</span> Nombre Completo
-                            </label>
+                            <label for="reservation-name">Nombre completo</label>
                             <div class="pm-input-wrap">
                                 <input type="text" id="reservation-name"
                                     placeholder="Ej: Carlos Martínez"
                                     pattern="[A-Za-zÁáÉéÍíÓóÚúÑñ\s]+"
-                                    title="Solo se permiten letras y espacios" required>
+                                    title="Solo letras y espacios" required>
                             </div>
                         </div>
 
-                        <!-- Teléfono + Email -->
                         <div class="pm-row">
                             <div class="pm-field-group">
-                                <label for="reservation-phone">
-                                    <span class="field-icon">📞</span> Teléfono
-                                </label>
+                                <label for="reservation-phone">Teléfono</label>
                                 <div class="pm-input-wrap">
                                     <input type="tel" id="reservation-phone"
                                         placeholder="3001234567"
@@ -585,51 +611,41 @@
                                 </div>
                             </div>
                             <div class="pm-field-group">
-                                <label for="reservation-email">
-                                    <span class="field-icon">✉️</span> Correo
-                                </label>
+                                <label for="reservation-email">Correo</label>
                                 <div class="pm-input-wrap">
                                     <input type="email" id="reservation-email"
                                         placeholder="correo@gmail.com"
                                         required inputmode="email" autocomplete="email"
                                         autocapitalize="none" spellcheck="false"
                                         pattern="^[a-z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com)$"
-                                        title="Usa un correo válido en minúsculas que termine en @gmail.com, @hotmail.com o @outlook.com">
+                                        title="@gmail.com, @hotmail.com o @outlook.com">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Dirección -->
                         <div class="pm-field-group">
-                            <label for="reservation-address">
-                                <span class="field-icon">📍</span> Dirección de Entrega
-                            </label>
+                            <label for="reservation-address">Dirección de entrega</label>
                             <div class="pm-input-wrap">
                                 <input type="text" id="reservation-address"
-                                    placeholder="Ej: Calle 10 # 12 - 34, Apto 201"
-                                    title="Debe contener Calle o Carrera con número" required>
+                                    placeholder="Ej: Calle 10 # 12 - 34, Apto 201" required>
                             </div>
                         </div>
 
-                        <!-- Notas -->
                         <div class="pm-field-group">
-                            <label for="reservation-notes">
-                                <span class="field-icon">📝</span> Notas adicionales <span class="optional-tag">(opcional)</span>
-                            </label>
+                            <label for="reservation-notes">Notas <span class="optional-tag">(opcional)</span></label>
                             <div class="pm-input-wrap">
                                 <textarea id="reservation-notes" rows="2"
                                     placeholder="Indicaciones especiales de entrega..."></textarea>
                             </div>
                         </div>
 
-                        <!-- Botón submit con animación -->
                         <button type="submit" class="payment-submit-btn">
-                            <span class="submit-btn-text">Realizar Pedido</span>
-                            <span class="submit-btn-arrow">→</span>
+                            <span class="submit-btn-text">Realizar pedido</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                         </button>
 
                         <div class="secure-payment">
-                            <span>🔒</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
                             <span>Datos seguros — Solo usamos tu info para el pedido</span>
                         </div>
                     </form>
@@ -827,10 +843,8 @@ function compartirWeb() {
     // ── Auth Guard for addToCart ────────────────────────────────────
     function addToCartGuarded(productId, productName, price, image) {
         if (!window._currentUser) {
-            // Shake the registro button visually
             const btn = document.getElementById('nav-registro-btn');
             if (btn) { btn.classList.add('shake'); setTimeout(()=> btn.classList.remove('shake'), 600); }
-            // Show auth modal with a message
             openAuthModal();
             const subtitle = document.querySelector('#auth-logged-out .auth-subtitle');
             if (subtitle) subtitle.textContent = '⚠️ Debes iniciar sesión para agregar productos al carrito.';
@@ -838,6 +852,53 @@ function compartirWeb() {
         }
         if (typeof addToCart === 'function') addToCart(productId, productName, price, image);
     }
+
+    // ── Auth Guard for checkout ─────────────────────────────────────
+    function handleCheckout() {
+        if (!window._currentUser) {
+            // Pulse the auth banner
+            const banner = document.getElementById('cart-auth-banner');
+            if (banner) { banner.classList.add('pulse'); setTimeout(()=> banner.classList.remove('pulse'), 700); }
+            // Show auth modal
+            toggleCart();
+            setTimeout(() => {
+                openAuthModal();
+                const subtitle = document.querySelector('#auth-logged-out .auth-subtitle');
+                if (subtitle) subtitle.textContent = '⚠️ Debes iniciar sesión para realizar pedidos.';
+            }, 350);
+            return;
+        }
+        // User is logged in — open reservation modal and prefill email
+        if (typeof openReservationModal === 'function') openReservationModal();
+        setTimeout(() => {
+            const emailInput = document.getElementById('reservation-email');
+            const nameInput  = document.getElementById('reservation-name');
+            if (emailInput && window._currentUser.email && !emailInput.value) {
+                emailInput.value = window._currentUser.email;
+                emailInput.setAttribute('readonly', true);
+                emailInput.style.opacity = '0.6';
+                emailInput.title = 'Correo de tu cuenta Google';
+            }
+            if (nameInput && window._currentUser.displayName && !nameInput.value) {
+                nameInput.value = window._currentUser.displayName;
+            }
+        }, 100);
+    }
+
+    // ── Update cart auth banner visibility ─────────────────────────
+    // Poll to keep banner in sync with auth state
+    setInterval(function() {
+        const banner = document.getElementById('cart-auth-banner');
+        const checkoutBtn = document.getElementById('checkout-btn');
+        if (!banner || !checkoutBtn) return;
+        if (window._currentUser) {
+            banner.style.display = 'none';
+            checkoutBtn.classList.remove('checkout-btn--locked');
+        } else {
+            banner.style.display = 'flex';
+            checkoutBtn.classList.add('checkout-btn--locked');
+        }
+    }, 500);
     </script>
     <script src="script.js"></script>
     <script src="order-system.js"></script>
