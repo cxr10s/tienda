@@ -1,0 +1,964 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Pedidos — STORE.</title>
+    <link rel="icon" type="image/svg+xml" href="icon-mis-pedidos.svg">
+    <link rel="apple-touch-icon" href="icon-mis-pedidos.svg">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap');
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111;
+            --surface2: #1a1a1a;
+            --border: #222;
+            --accent: #c8ff00;
+            --text: #f0f0f0;
+            --muted: #666;
+            --pendiente: #f59e0b;
+            --enviado: #3b82f6;
+            --entregado: #22c55e;
+            --cancelado: #ef4444;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            font-variant-numeric: lining-nums tabular-nums;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-logo {
+            font-size: 11px;
+            font-family: 'Space Mono', monospace;
+            color: var(--accent);
+            letter-spacing: 3px;
+            text-decoration: none;
+            font-weight: 700;
+        }
+
+        .header-back {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .header-back:hover { color: var(--accent); }
+
+        /* ── MAIN ── */
+        .main {
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+        }
+
+        /* ── SEARCH HERO ── */
+        #buscar-screen { display: block; }
+
+        .search-hero {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .search-tag {
+            display: inline-block;
+            font-size: 10px;
+            letter-spacing: 3px;
+            color: var(--accent);
+            background: rgba(200,255,0,0.08);
+            padding: 5px 14px;
+            border-radius: 100px;
+            margin-bottom: 18px;
+        }
+
+        .search-hero h1 {
+            font-size: 38px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 10px;
+        }
+
+        .search-hero p {
+            color: var(--muted);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .search-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 28px;
+        }
+
+        .search-label {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .search-input-wrap {
+            display: flex;
+            gap: 10px;
+        }
+
+        .email-input {
+            flex: 1;
+            padding: 13px 16px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            outline: none;
+            transition: border 0.2s;
+            min-width: 0;
+        }
+
+        .email-input:focus { border-color: var(--accent); }
+
+        .buscar-btn {
+            padding: 13px 20px;
+            background: var(--accent);
+            color: #000;
+            border: none;
+            border-radius: 12px;
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .buscar-btn:hover { opacity: 0.85; }
+        .buscar-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .buscar-btn-dark {
+            background: var(--surface2);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .buscar-btn-dark:hover { background: #222; }
+
+        /* ── SEARCH TABS ── */
+        .search-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 22px;
+        }
+        .search-tab {
+            flex: 1;
+            padding: 11px 14px;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--muted);
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            letter-spacing: 0.3px;
+        }
+        .search-tab:hover { color: var(--text); border-color: #444; }
+        .search-tab.active {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+        .search-panel { animation: panelIn 0.2s ease; }
+        @keyframes panelIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+
+        .search-error {
+            color: #ef4444;
+            font-size: 12px;
+            margin-top: 10px;
+            display: none;
+            padding: 8px 12px;
+            background: rgba(239,68,68,0.08);
+            border-radius: 8px;
+            border: 1px solid rgba(239,68,68,0.2);
+        }
+
+        /* ── RESULTADOS ── */
+        #resultados-screen { display: none; }
+
+        .resultados-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            gap: 12px;
+        }
+
+        .resultados-title { font-size: 20px; font-weight: 800; }
+
+        .resultados-email {
+            font-size: 12px;
+            color: var(--muted);
+            margin-top: 3px;
+            font-family: 'Space Mono', monospace;
+        }
+
+        .resultados-actions {
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .volver-btn {
+            padding: 8px 14px;
+            background: transparent;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--muted);
+            font-family: 'Syne', sans-serif;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .volver-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+        /* ── PEDIDO CARD ── */
+        .pedido-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 14px;
+            overflow: hidden;
+            transition: border-color 0.2s;
+        }
+
+        .pedido-card:hover { border-color: #2e2e2e; }
+
+        .pedido-card-header {
+            padding: 18px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            gap: 12px;
+            user-select: none;
+        }
+
+        .pedido-card-left { flex: 1; min-width: 0; }
+
+        .pedido-num {
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            color: var(--muted);
+            margin-bottom: 3px;
+        }
+
+        .pedido-fecha { font-size: 12px; color: var(--muted); }
+
+        .pedido-total {
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--accent);
+            white-space: nowrap;
+            margin-right: 10px;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 5px 12px;
+            border-radius: 100px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .badge-pendiente { background: rgba(245,158,11,0.15); color: var(--pendiente); }
+        .badge-enviado   { background: rgba(59,130,246,0.15); color: var(--enviado); }
+        .badge-entregado { background: rgba(34,197,94,0.15);  color: var(--entregado); }
+        .badge-cancelado { background: rgba(239,68,68,0.15);  color: var(--cancelado); }
+
+        .pedido-chevron {
+            color: var(--muted);
+            transition: transform 0.3s;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .pedido-card.open .pedido-chevron { transform: rotate(180deg); }
+
+        .pedido-card-body {
+            display: none;
+            border-top: 1px solid var(--border);
+            padding: 22px 20px;
+        }
+        .pedido-card.open .pedido-card-body { display: block; }
+
+        /* ── BANNER PAGO ── */
+        .pago-banner {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 22px;
+        }
+        .pago-banner-pagado   { background: rgba(34,197,94,0.08);  color: #22c55e; border: 1px solid rgba(34,197,94,0.2); }
+        .pago-banner-pendiente{ background: rgba(245,158,11,0.08); color: #f59e0b; border: 1px solid rgba(245,158,11,0.2); }
+        .pago-banner-error    { background: rgba(239,68,68,0.08);  color: #ef4444; border: 1px solid rgba(239,68,68,0.2); }
+        .pago-banner-icon     { font-size: 18px; }
+        .pago-banner-text     { flex: 1; }
+        .pago-banner-sub      { font-size: 11px; font-weight: 400; opacity: 0.8; margin-top: 2px; }
+
+        /* ── TIMELINE ── */
+        .estado-timeline {
+            display: flex;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .timeline-step {
+            flex: 1;
+            text-align: center;
+            position: relative;
+        }
+
+        .timeline-step:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            top: 15px;
+            left: 50%;
+            width: 100%;
+            height: 2px;
+            background: var(--border);
+            z-index: 0;
+        }
+        .timeline-step.done:not(:last-child)::after { background: var(--accent); }
+
+        .timeline-dot {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--surface2);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 6px;
+            font-size: 12px;
+            position: relative;
+            z-index: 1;
+        }
+        .timeline-step.done .timeline-dot    { background: var(--accent); border-color: var(--accent); color: #000; }
+        .timeline-step.current .timeline-dot { border-color: var(--accent); color: var(--accent); }
+
+        .timeline-label {
+            font-size: 9px;
+            letter-spacing: 1px;
+            color: var(--muted);
+        }
+        .timeline-step.done .timeline-label,
+        .timeline-step.current .timeline-label { color: var(--text); font-weight: 700; }
+
+        /* ── PRODUCTOS ── */
+        .productos-title {
+            font-size: 10px;
+            letter-spacing: 2px;
+            color: var(--muted);
+            margin-bottom: 10px;
+        }
+
+        .producto-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px;
+            background: var(--surface2);
+            border-radius: 10px;
+            margin-bottom: 6px;
+        }
+        .producto-name { font-size: 13px; font-weight: 600; }
+        .producto-qty  { font-size: 11px; color: var(--muted); margin-top: 2px; }
+        .producto-price { font-size: 13px; color: var(--accent); font-weight: 700; }
+
+        /* ── TOTALES ── */
+        .pedido-totales {
+            border-top: 1px solid var(--border);
+            padding-top: 14px;
+            margin-top: 10px;
+            margin-bottom: 16px;
+        }
+        .total-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            margin-bottom: 7px;
+            color: var(--muted);
+        }
+        .total-row.final {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--accent);
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ── ACCIONES PEDIDO ── */
+        .pedido-acciones {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 4px;
+        }
+
+        .accion-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 14px;
+            border-radius: 12px;
+            font-family: 'Syne', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            text-align: center;
+        }
+
+        .accion-factura {
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            color: var(--text);
+        }
+        .accion-factura:hover { border-color: var(--accent); color: var(--accent); }
+
+        .accion-whatsapp {
+            background: rgba(37,211,102,0.1);
+            border: 1px solid rgba(37,211,102,0.3);
+            color: #25d366;
+        }
+        .accion-whatsapp:hover { background: rgba(37,211,102,0.2); }
+
+        /* ── PAGO PENDIENTE CTA ── */
+        .pago-cta {
+            background: rgba(245,158,11,0.06);
+            border: 1px solid rgba(245,158,11,0.2);
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .pago-cta-icon { font-size: 22px; }
+        .pago-cta-text { flex: 1; }
+        .pago-cta-title { font-size: 13px; font-weight: 700; color: #f59e0b; }
+        .pago-cta-sub   { font-size: 11px; color: var(--muted); margin-top: 2px; line-height: 1.4; }
+        .pago-cta-btn {
+            padding: 8px 14px;
+            background: #f59e0b;
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Syne', sans-serif;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
+            flex-shrink: 0;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        /* ── LOADING / EMPTY ── */
+        .loading-msg {
+            text-align: center;
+            padding: 48px;
+            color: var(--muted);
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+        }
+
+        .empty-msg {
+            text-align: center;
+            padding: 48px 24px;
+            color: var(--muted);
+        }
+        .empty-msg i { font-size: 42px; margin-bottom: 14px; opacity: 0.15; display: block; }
+        .empty-msg p { font-size: 14px; line-height: 1.6; }
+
+        /* ── AYUDA FOOTER ── */
+        .ayuda-footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 24px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+        }
+        .ayuda-footer p { font-size: 13px; color: var(--muted); margin-bottom: 12px; }
+        .ayuda-footer a {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(37,211,102,0.1);
+            border: 1px solid rgba(37,211,102,0.3);
+            border-radius: 100px;
+            color: #25d366;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 700;
+            transition: background 0.2s;
+        }
+        .ayuda-footer a:hover { background: rgba(37,211,102,0.2); }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .search-input-wrap { flex-direction: column; }
+            .buscar-btn { width: 100%; }
+            .search-hero h1 { font-size: 28px; }
+            .pedido-card-header { flex-wrap: wrap; }
+            .pedido-total { order: -1; width: 100%; margin-bottom: 6px; margin-right: 0; }
+            .timeline-label { font-size: 8px; }
+            .pedido-acciones { grid-template-columns: 1fr; }
+            .resultados-header { flex-direction: column; }
+            .resultados-actions { width: 100%; }
+            .volver-btn { flex: 1; text-align: center; }
+            .pago-cta { flex-direction: column; text-align: center; }
+            .main { padding: 24px 16px 60px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <a href="https://cxr10s.github.io" class="header-logo">STORE.</a>
+    <a href="https://cxr10s.github.io" class="header-back">
+        <i class="fa-solid fa-arrow-left"></i> Volver a la tienda
+    </a>
+</div>
+
+<div class="main">
+
+    <!-- PANTALLA BUSCAR -->
+    <div id="buscar-screen">
+        <div class="search-hero">
+            <div class="search-tag">MIS PEDIDOS</div>
+            <h1>Consulta tu<br>pedido</h1>
+            <p>Ingresa tu correo o el ID de tu factura<br>para ver el estado de tu compra.</p>
+        </div>
+
+        <div class="search-box">
+            <!-- Tabs selector -->
+            <div class="search-tabs">
+                <button class="search-tab active" id="tab-email" onclick="switchSearchTab('email')">
+                    ✉️ Por correo
+                </button>
+                <button class="search-tab" id="tab-id" onclick="switchSearchTab('id')">
+                    # Por código
+                </button>
+            </div>
+
+            <!-- Panel: Correo -->
+            <div id="panel-email" class="search-panel">
+                <label class="search-label">CORREO ELECTRÓNICO</label>
+                <div class="search-input-wrap">
+                    <input
+                        class="email-input"
+                        type="email"
+                        id="email-input"
+                        placeholder="correo@gmail.com"
+                        autocomplete="email"
+                        onkeydown="if(event.key==='Enter') buscarPedidos()">
+                    <button class="buscar-btn" id="btn-email" onclick="buscarPedidos()">
+                        <i class="fa-solid fa-magnifying-glass"></i> Buscar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Panel: Código ID -->
+            <div id="panel-id" class="search-panel" style="display:none;">
+                <label class="search-label">ID DEL PEDIDO <span style="color:#555; font-weight:400;">(lo encuentras en tu factura)</span></label>
+                <div class="search-input-wrap">
+                    <input
+                        class="email-input"
+                        type="text"
+                        id="id-input"
+                        placeholder="Ej: 48BF96A6"
+                        autocomplete="off"
+                        style="font-family:'Space Mono',monospace; text-transform:uppercase; letter-spacing:2px;"
+                        onkeydown="if(event.key==='Enter') buscarPorId()">
+                    <button class="buscar-btn buscar-btn-dark" id="btn-id" onclick="buscarPorId()">
+                        <i class="fa-solid fa-hashtag"></i> Buscar
+                    </button>
+                </div>
+            </div>
+
+            <div class="search-error" id="search-error">No encontramos pedidos con ese dato.</div>
+        </div>
+
+        <div class="ayuda-footer">
+            <p>¿Tienes alguna duda con tu pedido?</p>
+            <a href="https://wa.me/573XXXXXXXXX?text=Hola,%20tengo%20una%20pregunta%20sobre%20mi%20pedido." target="_blank" rel="noopener">
+                <i class="fa-brands fa-whatsapp"></i> Contáctanos por WhatsApp
+            </a>
+        </div>
+    </div>
+
+    <!-- PANTALLA RESULTADOS -->
+    <div id="resultados-screen">
+        <div class="resultados-header">
+            <div>
+                <div class="resultados-title">Tus pedidos</div>
+                <div class="resultados-email" id="email-shown"></div>
+            </div>
+            <div class="resultados-actions">
+                <button class="volver-btn" onclick="volverBuscar()">
+                    <i class="fa-solid fa-arrow-left"></i> Nueva búsqueda
+                </button>
+            </div>
+        </div>
+        <div id="pedidos-list"></div>
+
+        <div class="ayuda-footer" style="margin-top:28px;">
+            <p>¿Tienes algún problema con tu pedido?</p>
+            <a id="wa-link-resultado" href="https://wa.me/573XXXXXXXXX" target="_blank" rel="noopener">
+                <i class="fa-brands fa-whatsapp"></i> Hablar con soporte
+            </a>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
+
+// ⚠️ Reemplaza con tu número real: 57 + número sin 0
+const WA_NUMBER = '573XXXXXXXXX';
+
+function fmt(n) {
+    return Math.round(Number(n)).toLocaleString('es-CO');
+}
+
+function switchSearchTab(tab) {
+    document.getElementById('panel-email').style.display = tab === 'email' ? 'block' : 'none';
+    document.getElementById('panel-id').style.display   = tab === 'id'    ? 'block' : 'none';
+    document.getElementById('tab-email').classList.toggle('active', tab === 'email');
+    document.getElementById('tab-id').classList.toggle('active', tab === 'id');
+    // Clear errors when switching
+    const err = document.getElementById('search-error');
+    if (err) err.style.display = 'none';
+}
+
+function setLoading(btnId, loading) {
+    const btn = document.getElementById(btnId);
+    if (!btn) return;
+    btn.disabled = loading;
+    if (loading) btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+    else {
+        if (btnId === 'btn-email') btn.innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Buscar';
+        if (btnId === 'btn-id') btn.innerHTML = '<i class="fa-solid fa-hashtag"></i> Buscar';
+    }
+}
+
+// Prellenar email si viene como parámetro en la URL
+window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+    const email  = params.get('email');
+    if (email) {
+        document.getElementById('email-input').value = email;
+        buscarPedidos();
+    }
+});
+
+async function buscarPedidos() {
+    const email = document.getElementById('email-input').value.trim().toLowerCase();
+    const errEl = document.getElementById('search-error');
+    errEl.style.display = 'none';
+
+    if (!email) {
+        errEl.textContent = 'Por favor ingresa tu correo.';
+        errEl.style.display = 'block';
+        return;
+    }
+
+    setLoading('btn-email', true);
+    document.getElementById('pedidos-list').innerHTML =
+        '<div class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i>&nbsp; Buscando tus pedidos...</div>';
+    document.getElementById('buscar-screen').style.display    = 'none';
+    document.getElementById('resultados-screen').style.display = 'block';
+    document.getElementById('email-shown').textContent = email;
+
+    // WhatsApp link con el email en el mensaje
+    document.getElementById('wa-link-resultado').href =
+        `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Hola, tengo una pregunta sobre mi pedido. Mi correo es: ${email}`)}`;
+
+    try {
+        const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/pedidos?email=eq.${encodeURIComponent(email)}&order=created_at.desc&select=*`,
+            { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
+        );
+        const pedidos = await res.json();
+
+        if (!Array.isArray(pedidos) || pedidos.length === 0) {
+            document.getElementById('pedidos-list').innerHTML = `
+                <div class="empty-msg">
+                    <i class="fa-solid fa-box-open"></i>
+                    <p>No encontramos pedidos con ese correo.<br>
+                    <span style="font-size:12px;">Verifica que sea el mismo correo que usaste al comprar.</span></p>
+                </div>`;
+            return;
+        }
+
+        pedidosCache = pedidos;
+        document.getElementById('pedidos-list').innerHTML =
+            pedidos.map((p, i) => renderPedido(p, i === 0)).join('');
+
+    } catch (e) {
+        document.getElementById('pedidos-list').innerHTML =
+            '<div class="loading-msg" style="color:#ef4444;">&#9888; Error al buscar. Intenta de nuevo.</div>';
+    } finally {
+        setLoading('btn-email', false);
+    }
+}
+
+function volverBuscar() {
+    document.getElementById('buscar-screen').style.display     = 'block';
+    document.getElementById('resultados-screen').style.display = 'none';
+    document.getElementById('search-error').style.display      = 'none';
+}
+
+function toggleCard(id) {
+    document.getElementById('card-' + id).classList.toggle('open');
+}
+
+function getPagoBanner(estadoPago, pedido) {
+    const ep = estadoPago || 'pendiente';
+
+    if (ep === 'pagado') {
+        return `<div class="pago-banner pago-banner-pagado">
+            <span class="pago-banner-icon">💳</span>
+            <div class="pago-banner-text">
+                <div>Pago confirmado</div>
+                <div class="pago-banner-sub">Tu pago fue recibido exitosamente a través de Wompi.</div>
+            </div>
+        </div>`;
+    }
+
+    if (ep === 'error') {
+        const waMsg = encodeURIComponent(`Hola, tuve un problema con el pago de mi pedido #${pedido.id.substring(0,8).toUpperCase()}. ¿Me pueden ayudar?`);
+        return `<div class="pago-banner pago-banner-error">
+            <span class="pago-banner-icon">❌</span>
+            <div class="pago-banner-text">
+                <div>Pago rechazado</div>
+                <div class="pago-banner-sub">El pago no fue completado. Escríbenos para ayudarte.</div>
+            </div>
+        </div>
+        <div class="pago-cta">
+            <div class="pago-cta-icon">🚨</div>
+            <div class="pago-cta-text">
+                <div class="pago-cta-title">¿Necesitas ayuda con el pago?</div>
+                <div class="pago-cta-sub">Te ayudamos a completar tu compra rápidamente.</div>
+            </div>
+            <a class="pago-cta-btn" href="https://wa.me/${WA_NUMBER}?text=${waMsg}" target="_blank" rel="noopener">
+                <i class="fa-brands fa-whatsapp"></i> Ayuda
+            </a>
+        </div>`;
+    }
+
+    // Pendiente
+    return `<div class="pago-banner pago-banner-pendiente">
+        <span class="pago-banner-icon">⏳</span>
+        <div class="pago-banner-text">
+            <div>Pago pendiente</div>
+            <div class="pago-banner-sub">Aún no hemos recibido confirmación de tu pago.</div>
+        </div>
+    </div>`;
+}
+
+function getTimeline(estado) {
+    const pasos = [
+        { key: 'pendiente', icon: '🕐', label: 'RECIBIDO' },
+        { key: 'enviado',   icon: '🚚', label: 'EN CAMINO' },
+        { key: 'entregado', icon: '✅', label: 'ENTREGADO' },
+    ];
+
+    const orden = { pendiente: 0, enviado: 1, entregado: 2, cancelado: -1 };
+    const actual = orden[estado] ?? 0;
+
+    if (estado === 'cancelado') {
+        return `<div style="text-align:center; padding:14px; color:var(--cancelado); font-weight:700; font-size:12px; letter-spacing:2px; background:rgba(239,68,68,0.06); border-radius:10px; margin-bottom:20px;">
+            ✕ PEDIDO CANCELADO
+        </div>`;
+    }
+
+    return `<div class="estado-timeline">
+        ${pasos.map((paso, i) => {
+            const done    = i < actual;
+            const current = i === actual;
+            return `<div class="timeline-step ${done ? 'done' : ''} ${current ? 'current' : ''}">
+                <div class="timeline-dot">${paso.icon}</div>
+                <div class="timeline-label">${paso.label}</div>
+            </div>`;
+        }).join('')}
+    </div>`;
+}
+
+function renderPedido(p, abierto) {
+    const fecha = new Date(p.created_at).toLocaleDateString('es-CO', {
+        day: '2-digit', month: 'long', year: 'numeric'
+    });
+    const productos = Array.isArray(p.productos) ? p.productos : [];
+    const idCorto   = p.id.substring(0, 8).toUpperCase();
+
+    const productosHTML = productos.map(prod => `
+        <div class="producto-row">
+            <div>
+                <div class="producto-name">${prod.name}${prod.isGift ? ' 🎁' : ''}</div>
+                <div class="producto-qty">Cantidad: ${prod.quantity}</div>
+            </div>
+            <div class="producto-price">
+                ${prod.isGift ? '<span style="color:#22c55e;">GRATIS</span>' : '$' + fmt(prod.price * prod.quantity) + ' COP'}
+            </div>
+        </div>`).join('');
+
+    const waMsg = encodeURIComponent(`Hola, quiero consultar sobre mi pedido #${idCorto}. Mi correo es: ${p.email}`);
+
+    return `
+    <div class="pedido-card ${abierto ? 'open' : ''}" id="card-${p.id}">
+        <div class="pedido-card-header" onclick="toggleCard('${p.id}')">
+            <div class="pedido-card-left">
+                <div class="pedido-num">Pedido #${idCorto}</div>
+                <div class="pedido-fecha">${fecha}</div>
+            </div>
+            <div class="pedido-total">$${fmt(p.total)} COP</div>
+            <span class="badge badge-${p.estado}">${p.estado.toUpperCase()}</span>
+            <i class="fa-solid fa-chevron-down pedido-chevron"></i>
+        </div>
+        <div class="pedido-card-body">
+            ${getPagoBanner(p.estado_pago, p)}
+            ${getTimeline(p.estado)}
+
+            <div class="productos-title">PRODUCTOS</div>
+            ${productosHTML}
+
+            <div class="pedido-totales">
+                <div class="total-row"><span>Subtotal</span><span>$${fmt(p.subtotal)} COP</span></div>
+                ${p.descuento > 0 ? `<div class="total-row" style="color:var(--entregado);"><span>Descuento aplicado</span><span>-$${fmt(p.descuento)} COP</span></div>` : ''}
+                <div class="total-row"><span>Envío</span><span>${p.envio > 0 ? '$' + fmt(p.envio) + ' COP' : '¡Gratis!'}</span></div>
+                <div class="total-row final"><span>TOTAL PAGADO</span><span>$${fmt(p.total)} COP</span></div>
+            </div>
+
+            <div class="pedido-acciones">
+                <button class="accion-btn accion-factura" data-pedido-id="${p.id}" onclick="descargarFactura(this)">
+                    <i class="fa-solid fa-file-invoice"></i> Descargar Factura
+                </button>
+                <a class="accion-btn accion-whatsapp" href="https://wa.me/${WA_NUMBER}?text=${waMsg}" target="_blank" rel="noopener">
+                    <i class="fa-brands fa-whatsapp"></i> Consultar pedido
+                </a>
+            </div>
+        </div>
+    </div>`;
+}
+
+let pedidosCache = [];
+
+function descargarFactura(btn) {
+    const id = btn.getAttribute('data-pedido-id');
+    const pedido = pedidosCache.find(p => p.id === id);
+    if (pedido) {
+        generarFacturaPDF(pedido);
+    } else {
+        alert('No se pudo encontrar el pedido. Intenta de nuevo.');
+    }
+}
+
+async function buscarPorId() {
+    const rawId = document.getElementById('id-input').value.trim().toUpperCase().replace(/[^A-Z0-9]/g,'');
+    const errEl = document.getElementById('search-error');
+    errEl.style.display = 'none';
+
+    if (!rawId || rawId.length < 6) {
+        errEl.textContent = 'Por favor ingresa el ID del pedido (mínimo 6 caracteres).';
+        errEl.style.display = 'block';
+        return;
+    }
+
+    setLoading('btn-id', true);
+    document.getElementById('pedidos-list').innerHTML =
+        '<div class="loading-msg"><i class="fa-solid fa-spinner fa-spin"></i>&nbsp; Buscando tu pedido...</div>';
+    document.getElementById('buscar-screen').style.display    = 'none';
+    document.getElementById('resultados-screen').style.display = 'block';
+    document.getElementById('email-shown').textContent = 'ID: ' + rawId;
+
+    document.getElementById('wa-link-resultado').href =
+        `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Hola, tengo una duda sobre mi pedido #${rawId}.`)}`;
+
+    try {
+        const res = await fetch(
+            `${SUPABASE_URL}/rest/v1/pedidos?order=created_at.desc&select=*`,
+            { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` } }
+        );
+        const todos = await res.json();
+        const pedidos = todos.filter(p => p.id.substring(0,8).toUpperCase() === rawId);
+
+        if (!pedidos || pedidos.length === 0) {
+            document.getElementById('pedidos-list').innerHTML = `
+                <div class="empty-msg">
+                    <i class="fa-solid fa-box-open"></i>
+                    <p>No encontramos un pedido con ese ID.<br>
+                    <span style="font-size:12px;">Verifica el ID en tu factura descargada.</span></p>
+                </div>`;
+            return;
+        }
+        pedidosCache = pedidos;
+        document.getElementById('pedidos-list').innerHTML =
+            pedidos.map((p, i) => renderPedido(p, i === 0)).join('');
+
+    } catch (e) {
+        document.getElementById('pedidos-list').innerHTML =
+            '<div class="loading-msg" style="color:#ef4444;">&#9888; Error al buscar. Intenta de nuevo.</div>';
+    } finally {
+        setLoading('btn-id', false);
+    }
+}
+</script>
+<script src="factura.js"></script>
+</body>
+</html>
