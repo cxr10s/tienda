@@ -923,19 +923,6 @@ function compartirWeb() {
         } catch(e) {}
         // Redirigir a la página de checkout externa
         window.location.href = 'https://cxr10s.github.io/tienda/checkout.html';
-        if (false) { // bloque muerto — mantiene compatibilidad con código antiguo
-            const emailInput = document.getElementById('reservation-email');
-            const nameInput  = document.getElementById('reservation-name');
-            if (emailInput && window._currentUser.email && !emailInput.value) {
-                emailInput.value = window._currentUser.email;
-                emailInput.setAttribute('readonly', true);
-                emailInput.style.opacity = '0.6';
-                emailInput.title = 'Correo de tu cuenta Google';
-            }
-            if (nameInput && window._currentUser.displayName && !nameInput.value) {
-                nameInput.value = window._currentUser.displayName;
-            }
-        }, 100);
     }
 
     // ── Update cart auth banner visibility ─────────────────────────
