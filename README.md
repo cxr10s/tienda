@@ -4,7 +4,7 @@
 
 ### Tienda Deportiva — Colombia
 
-![Estado](https://img.shields.io/badge/Estado_De_La_Web●_Activa-adff2f?style=flat-square&labelColor=0a0a0a)
+![Estado](https://img.shields.io/badge/Estado_De_La_Web●_-Activa-adff2f?style=flat-square&labelColor=0a0a0a)
 
 *Comercio deportivo moderno con autenticacion Google, pagos reales con Wompi y carrito sincronizado en la nube.*
 
