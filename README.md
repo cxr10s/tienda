@@ -67,22 +67,22 @@ tienda/
 
 ---
 
-## 🚀 Demo
+## 🚀 Despliegue
+
+El proyecto se sirve directamente desde **GitHub Pages** sin necesidad de build ni servidor.
 
 ```
 https://cxr10s.github.io/tienda/
 ```
 
-> Para correrlo localmente abre `el link` en un navegador o usa Live Server en VS Code. No requiere build ni servidor.
+Para correrlo localmente, simplemente abre el link en un navegador o usa Live Server en VS Code.
+
 
 ---
 
-<div align="center">
+## 👤 Autor
 
-**Jhon Carlos Meneses Peinado**
+**Jhon Carlos Meneses Peinado**  
+**Perfil** [@cxr10s](https://github.com/cxr10s) — Colombia
 
-[@cxr10s](https://github.com/cxr10s) · Colombia 🇨🇴
-
-*"Primero haz que funcione. Luego haz que sea bueno."*
-
-</div>
+---
