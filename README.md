@@ -1,7 +1,7 @@
 <div align="center">
 
 # `STORE `
-![Estado de la web](https://img.shields.io/badge/●_Estado-Activo-adff2f?style=flat-square&labelColor=0a0a0a)
+![Estado](https://img.shields.io/badge/Estado_De_La_Web●_Estado-Activa-adff2f?style=flat-square&labelColor=0a0a0a)
 
 ### Tienda Deportiva — Colombia
 *Comercio deportivo moderno con autenticacion Google, pagos reales con Wompi y carrito sincronizado en la nube.*
