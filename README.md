@@ -32,8 +32,6 @@
 | 🧾 | **Facturas PDF** | Generacion automatica con PDF antes de redirigir al pago. |
 | 📦 | **Consulta de pedidos** | Búsqueda por correo o ID de factura con historial completo del estado. |
 | 🎁 | **Descuentos y regalos** | Descuentos progresivos por cantidad y regalo gratis desde $150.000 COP. |
-| 📱 | **Responsive** | Barra de Navegacion en laptop, carrito flotante en telefono. |
-| 🟢 | **Navegacion** | El item resaltado cambia automaticamente según la seccion visible. |
 
 ---
 
