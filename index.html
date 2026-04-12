@@ -92,8 +92,19 @@
 
         onAuthStateChanged(auth, user => {
             window._currentUser = user;
+
+            // Siempre resetear el estado "Conectando..." sin importar qué pasó
+            _setAuthLoading(false);
+
+            // Actualizar navbar y modal inmediatamente
             _updateNavUser(user);
             _updateModalState(user);
+
+            // Limpiar mensaje de error si el usuario ya inició sesión
+            if (user) {
+                const err = document.getElementById('auth-error-msg');
+                if (err) err.style.display = 'none';
+            }
         });
 
         function _updateModalState(user) {
@@ -142,6 +153,8 @@
                 <li role="menuitem"><a href="#tenis" data-section="tenis">Tenis</a></li>
                 <li role="menuitem"><a href="#jeans" data-section="jeans">Jeans</a></li>
                 <li role="menuitem"><a href="#cascos" data-section="cascos">Cascos</a></li>
+                <li role="menuitem"><a href="#deportes" data-section="deportes">Deportes</a></li>
+                <li role="menuitem"><a href="#regalos" data-section="regalos">Regalos</a></li>
                 <li role="menuitem"><a href="https://cxr10s.github.io/tienda/mis-pedidos.html" class="nav-pedidos-btn" title="Mis Pedidos">📦 Mis Pedidos</a></li>
             </ul>
             <!-- Nav actions: Registro + Carrito -->
@@ -695,7 +708,7 @@
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2z"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg>
                 Mis pedidos
             </a>
-            <button class="auth-signout-btn" onclick="window._firebaseSignOut && window._firebaseSignOut(); closeAuthModal();">
+            <button class="auth-signout-btn" onclick="window._firebaseSignOut && window._firebaseSignOut();">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                 Cerrar sesión
             </button>
@@ -807,7 +820,7 @@ function compartirWeb() {
 
     // ── Active nav link tracking ────────────────────────────────────
     (function() {
-        const sections = ['inicio','camisetas','tenis','jeans','cascos'];
+        const sections = ['inicio','camisetas','tenis','jeans','cascos','deportes','regalos'];
         const links = {};
         sections.forEach(id => {
             const el = document.querySelector(`a[data-section="${id}"]`);
