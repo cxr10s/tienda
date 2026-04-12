@@ -1,67 +1,98 @@
-<div align="center">
-  <img height="150" src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif"  />
-</div>
+# STORE. — Tienda Deportiva 🏪
 
-###
+> E-commerce deportivo moderno con autenticación Google, pagos reales con Wompi y carrito sincronizado en la nube.
 
-<div align="center">
-  <img src="https://img.shields.io/static/v1?message=LinkedIn&logo=linkedin&label=&color=0077B5&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="linkedin logo"  />
-  <img src="https://img.shields.io/static/v1?message=Youtube&logo=youtube&label=&color=FF0000&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="youtube logo"  />
-  <img src="https://img.shields.io/static/v1?message=Twitter&logo=twitter&label=&color=1DA1F2&logoColor=white&labelColor=&style=for-the-badge" height="25" alt="twitter logo"  />
-</div>
+![Estado](https://img.shields.io/badge/estado-activo-brightgreen) ![Stack](https://img.shields.io/badge/stack-HTML%20%7C%20CSS%20%7C%20JS-yellow) ![Firebase](https://img.shields.io/badge/auth-Firebase-orange) ![Supabase](https://img.shields.io/badge/db-Supabase-3ecf8e) ![Wompi](https://img.shields.io/badge/pagos-Wompi-blueviolet)
 
-###
+---
 
-<div align="center">
-  <img src="https://visitor-badge.laobi.icu/badge?page_id=maurodesouza.maurodesouza&"  />
-</div>
+## ✨ Características
 
-###
+- 🛒 **Carrito persistente en la nube** — sincronizado con la cuenta de Google del usuario vía Firestore. El carrito se restaura en cualquier dispositivo.
+- 🔐 **Autenticación Google** — inicio de sesión con Firebase Auth. El modal se actualiza en tiempo real sin recargar la página.
+- 💳 **Pagos con Wompi** — integración completa con firma de integridad SHA-256 y redirección de resultado.
+- 🧾 **Generación de facturas PDF** — descarga automática con jsPDF antes de redirigir al pago.
+- 📦 **Consulta de pedidos** — búsqueda por correo o por ID de factura, con historial completo del estado.
+- 🎁 **Sistema de regalos y descuentos progresivos** — descuentos automáticos por volumen de compra y regalo gratis desde $150.000 COP.
+- 📱 **Diseño responsive** — navbar en desktop, navegación móvil optimizada con carrito flotante.
+- 🟢 **Navbar activo dinámico** — el ítem resaltado cambia automáticamente según la sección visible.
 
-<h1 align="center">hey there 👋</h1>
+---
 
-###
+## 🗂️ Estructura del proyecto
 
-<h3 align="left">👩‍💻  About Me</h3>
+```
+tienda/
+├── index.html          # Página principal — productos, navbar, carrito
+├── mis-pedidos.html    # Consulta de pedidos por correo o ID
+├── pago-resultado.html # Resultado del pago Wompi
+├── admin.html          # Panel de administración de pedidos
+├── script.js           # Lógica del carrito, UI, sincronización Firestore
+├── order-system.js     # Submit del pedido → Supabase → Wompi
+├── factura.js          # Generador de PDF con jsPDF
+└── styles.css          # Estilos globales
+```
 
-###
+---
 
-<p align="left">I'm ... from ....<br><br>- 🔭 I’m working as ...<br>- 📚 I'm currently learning ...<br>- ⚡ In my free time I ...</p>
+## ⚙️ Stack técnico
 
-###
+| Capa | Tecnología |
+|---|---|
+| Frontend | HTML5, CSS3, JavaScript vanilla |
+| Autenticación | Firebase Auth (Google Sign-In) |
+| Base de datos pedidos | Supabase (PostgreSQL) |
+| Carrito en la nube | Firestore (Firebase) |
+| Pagos | Wompi (Colombia) |
+| Facturas PDF | jsPDF |
+| Hosting | GitHub Pages |
 
-<h3 align="left">🛠 Language and tools</h3>
+---
 
-###
+## 🚀 Despliegue
 
-<div align="left">
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/go/go-original-wordmark.svg" height="40" alt="go logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/rust/rust-original.svg" height="40" alt="rust logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/ruby/ruby-plain-wordmark.svg" height="40" alt="ruby logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dot-net/dot-net-plain-wordmark.svg" height="40" alt="dot-net logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/firebase/firebase-plain-wordmark.svg" height="40" alt="firebase logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/amazonwebservices/amazonwebservices-line-wordmark.svg" height="40" alt="amazonwebservices logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/circleci/circleci-plain.svg" height="40" alt="circleci logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" height="40" alt="kubernetes logo"  />
-  <img width="12" />
-  <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-plain-wordmark.svg" height="40" alt="docker logo"  />
-</div>
+El proyecto se sirve directamente desde **GitHub Pages** sin necesidad de build ni servidor.
 
-###
+```
+https://cxr10s.github.io/tienda/
+```
 
-<h3 align="left">🔥   My Stats :</h3>
+Para correrlo localmente, simplemente abre `index.html` en un navegador o usa Live Server en VS Code.
 
-###
+---
 
-<div align="center">
-  <img src="https://streak-stats.demolab.com?user=maurodesouza&locale=en&mode=daily&theme=dark&hide_border=false&border_radius=5&order=3" height="220" alt="streak graph"  />
-</div>
+## 🔧 Variables de configuración
 
-###
+Las credenciales están en `order-system.js` (Wompi + Supabase) y en el bloque `<script type="module">` de `index.html` (Firebase):
+
+```js
+// order-system.js
+const SUPABASE_URL        = 'https://...supabase.co';
+const SUPABASE_ANON_KEY   = '...';
+const WOMPI_PUBLIC_KEY    = 'pub_test_...';
+const WOMPI_INTEGRITY_SECRET = 'test_integrity_...';
+```
+
+> ⚠️ Para producción, reemplaza las llaves `test_` por las llaves reales de Wompi.
+
+---
+
+## 📋 Reglas de Firestore (carrito)
+
+```
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /carts/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+---
+
+## 👤 Autor
+
+**Jhon Carlos Meneses Peinado**  
+[@cxr10s](https://github.com/cxr10s) — Colombia
