@@ -51,7 +51,7 @@ tienda/
 
 ---
 
-## ⚙️ Stack técnico
+## ⚙️ Herramientas
 
 | Capa | Tecnología |
 |---|---|
@@ -65,7 +65,7 @@ tienda/
 
 ---
 
-## 🚀 Despliegue
+## 🚀 Ejecucion
 
 El proyecto se sirve directamente desde **GitHub Pages** sin necesidad de build ni servidor.
 
