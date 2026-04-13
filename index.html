@@ -24,6 +24,242 @@
     <meta name="twitter:image" content="https://cxr10s.github.io/tienda/og-image.png">
     <link rel="canonical" href="https://cxr10s.github.io/tienda/">
     <link rel="stylesheet" href="styles.css">
+    <style>
+    /* ── NAVBAR REDISEÑADO ── */
+    .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 20px;
+        height: 56px;
+        background: #ffffff;
+        border-bottom: 1px solid #e8e8e8;
+        position: sticky;
+        top: 0;
+        z-index: 900;
+        gap: 12px;
+    }
+    .navbar.scrolled {
+        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+
+    /* Logo */
+    .nav-logo-link {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        text-decoration: none;
+        color: #1a1a1a;
+        flex-shrink: 0;
+    }
+    .nav-logo-icon { color: #1a1a1a; }
+    .nav-logo-text {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1a1a1a;
+        letter-spacing: -0.3px;
+    }
+
+    /* Nav menu desktop */
+    .nav-menu {
+        display: flex;
+        list-style: none;
+        gap: 4px;
+        margin: 0;
+        padding: 0;
+    }
+    .nav-menu a {
+        padding: 6px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        color: #444;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: background 0.15s, color 0.15s;
+        white-space: nowrap;
+    }
+    .nav-menu a:hover { background: #f0f0f0; color: #1a1a1a; }
+    .nav-menu a[aria-current="page"] { color: #1a1a1a; font-weight: 700; }
+    .nav-pedidos-btn { background: #f5f5f5; }
+
+    /* Iconos de acción */
+    .nav-actions {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        flex-shrink: 0;
+    }
+    .nav-icon-btn {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 8px;
+        border-radius: 10px;
+        color: #1a1a1a;
+        transition: background 0.15s;
+        font-family: inherit;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+    }
+    .nav-icon-btn:hover { background: #f0f0f0; }
+
+    /* Label del usuario (solo desktop) */
+    .nav-icon-label {
+        font-size: 13px;
+        font-weight: 500;
+        color: #1a1a1a;
+        white-space: nowrap;
+        max-width: 90px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    /* Badge carrito */
+    .nav-cart-count {
+        position: absolute;
+        top: 2px;
+        right: 2px;
+        background: #1a1a1a;
+        color: #fff;
+        font-size: 9px;
+        font-weight: 700;
+        min-width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1;
+        pointer-events: none;
+        transition: transform 0.15s;
+    }
+    .nav-cart-count[data-count="0"] { display: none; }
+    .nav-cart-count.bump { transform: scale(1.3); }
+
+    /* Hamburger: solo en móvil */
+    .nav-hamburger { display: none; }
+
+    @media (max-width: 768px) {
+        .nav-menu    { display: none; }
+        .nav-icon-label { display: none; }
+        .nav-hamburger  { display: flex; }
+        .navbar { padding: 0 16px; height: 52px; }
+    }
+
+    /* ── PANEL LATERAL MÓVIL ── */
+    .mobile-menu-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,0.45);
+        backdrop-filter: blur(3px);
+        z-index: 1100;
+    }
+    .mobile-menu-overlay.open { display: block; }
+
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        right: 0;
+        width: 280px;
+        max-width: 85vw;
+        height: 100dvh;
+        background: #fff;
+        z-index: 1101;
+        transform: translateX(100%);
+        transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+        display: flex;
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    .mobile-menu.open { transform: translateX(0); }
+
+    .mobile-menu-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .mobile-menu-logo {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 16px;
+        font-weight: 700;
+        color: #1a1a1a;
+    }
+    .mobile-menu-close {
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        border-radius: 8px;
+        color: #555;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+    }
+    .mobile-menu-close:hover { background: #f0f0f0; }
+
+    .mobile-menu-label {
+        padding: 16px 20px 8px;
+        font-size: 10px;
+        letter-spacing: 2px;
+        font-weight: 700;
+        color: #aaa;
+        margin: 0;
+    }
+
+    .mobile-menu-nav {
+        display: flex;
+        flex-direction: column;
+        padding: 0 12px;
+        gap: 2px;
+    }
+    .mobile-menu-item {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 13px 10px;
+        border-radius: 12px;
+        text-decoration: none;
+        color: #1a1a1a;
+        font-size: 15px;
+        font-weight: 500;
+        transition: background 0.15s;
+        cursor: pointer;
+    }
+    .mobile-menu-item:hover { background: #f5f5f5; }
+    .mmi-icon { font-size: 18px; width: 26px; text-align: center; }
+    .mmi-arrow { margin-left: auto; color: #ccc; flex-shrink: 0; }
+
+    .mobile-menu-divider {
+        margin: 12px 20px;
+        height: 1px;
+        background: #f0f0f0;
+    }
+    .mobile-menu-pedidos {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 13px 22px;
+        font-size: 14px;
+        font-weight: 600;
+        color: #1a1a1a;
+        text-decoration: none;
+        transition: background 0.15s;
+        border-radius: 0;
+    }
+    .mobile-menu-pedidos:hover { background: #f5f5f5; }
+    </style>
     <meta name="theme-color" content="#917771">
     <link rel="icon" as="image" sizes="any">
     <link rel="icon" as="image" sizes="16x16" href="Img.png">
@@ -128,16 +364,20 @@
 
         function _updateNavUser(user) {
             const label = document.getElementById('nav-registro-label');
-            const icon  = document.querySelector('.nav-reg-icon');
+            const icon  = document.getElementById('nav-user-icon');
             if (!label) return;
             if (user) {
                 label.textContent = user.displayName?.split(' ')[0] || 'Mi cuenta';
-                if (icon && user.photoURL) {
-                    icon.innerHTML = `<img src="${user.photoURL}" style="width:18px;height:18px;border-radius:50%;object-fit:cover;vertical-align:middle;" alt="">`;
+                if (icon) {
+                    if (user.photoURL) {
+                        icon.innerHTML = `<img src="${user.photoURL}" style="width:26px;height:26px;border-radius:50%;object-fit:cover;border:2px solid #e0e0e0;" alt="${user.displayName || 'Usuario'}">`;
+                    } else {
+                        icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
+                    }
                 }
             } else {
                 label.textContent = 'Registro';
-                if (icon) icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>`;
+                if (icon) icon.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`;
             }
         }
     </script>
@@ -146,7 +386,24 @@
     <!-- Header -->
     <header class="header">
         <nav class="navbar">
-            <div class="logo">STORE<span class="logo-dot"></span></div>
+
+            <!-- Logo (izquierda) -->
+            <a href="#inicio" class="nav-logo-link" onclick="document.getElementById('inicio').scrollIntoView({behavior:'smooth'}); return false;">
+                <svg class="nav-logo-icon" viewBox="0 0 16 16" width="22" height="22" fill="currentColor" aria-hidden="true">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+                             0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+                             -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+                             .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+                             -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27
+                             .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+                             .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+                             0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8
+                             c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span class="nav-logo-text">Shop</span>
+            </a>
+
+            <!-- Nav links (solo desktop) -->
             <ul class="nav-menu" role="menubar">
                 <li role="menuitem"><a href="#inicio" data-section="inicio">Inicio</a></li>
                 <li role="menuitem"><a href="#camisetas" data-section="camisetas">Camisetas</a></li>
@@ -157,19 +414,59 @@
                 <li role="menuitem"><a href="#regalos" data-section="regalos">Regalos</a></li>
                 <li role="menuitem"><a href="https://cxr10s.github.io/tienda/mis-pedidos.html" class="nav-pedidos-btn" title="Mis Pedidos">📦 Mis Pedidos</a></li>
             </ul>
-            <!-- Nav actions: Registro + Carrito -->
+
+            <!-- Acciones (derecha) -->
             <div class="nav-actions">
-                <a href="#" class="nav-registro-btn" id="nav-registro-btn" title="Registro" onclick="openAuthModal(); return false;">
-                    <span class="nav-reg-icon"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></span>
-                    <span id="nav-registro-label">Registro</span>
-                </a>
-                <button class="nav-cart-btn" onclick="toggleCart()" title="Carrito" aria-label="Abrir carrito">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
-                    <span class="nav-cart-count" id="nav-cart-count">0</span>
+                <!-- Usuario -->
+                <button class="nav-icon-btn" id="nav-registro-btn" title="Mi cuenta" aria-label="Mi cuenta" onclick="openAuthModal()">
+                    <span class="nav-reg-icon" id="nav-user-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                    </span>
+                    <span id="nav-registro-label" class="nav-icon-label">Registro</span>
+                </button>
+
+                <!-- Carrito -->
+                <button class="nav-icon-btn nav-cart-btn" onclick="toggleCart()" title="Carrito" aria-label="Abrir carrito">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>
+                    <span class="nav-cart-count" id="nav-cart-count" data-count="0">0</span>
+                </button>
+
+                <!-- Hamburger (solo móvil) -->
+                <button class="nav-icon-btn nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()" title="Menú" aria-label="Abrir menú">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                 </button>
             </div>
         </nav>
     </header>
+
+    <!-- Panel lateral móvil (secciones) -->
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay" onclick="closeMobileMenu()"></div>
+    <div id="mobile-menu" class="mobile-menu" role="dialog" aria-label="Menú de navegación">
+        <div class="mobile-menu-header">
+            <div class="mobile-menu-logo">
+                <svg viewBox="0 0 16 16" width="20" height="20" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+                <span>Shop</span>
+            </div>
+            <button class="mobile-menu-close" onclick="closeMobileMenu()" aria-label="Cerrar menú">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+        <p class="mobile-menu-label">SECCIONES</p>
+        <nav class="mobile-menu-nav">
+            <a href="#inicio"    class="mobile-menu-item" onclick="scrollToSection('inicio')"><span class="mmi-icon">🏠</span><span>Inicio</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#camisetas" class="mobile-menu-item" onclick="scrollToSection('camisetas')"><span class="mmi-icon">👕</span><span>Camisetas</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#tenis"     class="mobile-menu-item" onclick="scrollToSection('tenis')"><span class="mmi-icon">👟</span><span>Tenis</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#jeans"     class="mobile-menu-item" onclick="scrollToSection('jeans')"><span class="mmi-icon">👖</span><span>Jeans</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#cascos"    class="mobile-menu-item" onclick="scrollToSection('cascos')"><span class="mmi-icon">🪖</span><span>Cascos</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#deportes"  class="mobile-menu-item" onclick="scrollToSection('deportes')"><span class="mmi-icon">⚽</span><span>Deportes</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#regalos"   class="mobile-menu-item" onclick="scrollToSection('regalos')"><span class="mmi-icon">🎁</span><span>Regalos</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+        </nav>
+        <div class="mobile-menu-divider"></div>
+        <a href="https://cxr10s.github.io/tienda/mis-pedidos.html" class="mobile-menu-pedidos">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-4 0v2"/><path d="M8 7V5a2 2 0 0 0-4 0v2"/><line x1="12" y1="12" x2="12" y2="16"/><line x1="10" y1="14" x2="14" y2="14"/></svg>
+            Mis Pedidos
+        </a>
+    </div>
 
     <!-- Hero Section -->
     <section id="inicio" class="hero">
@@ -470,26 +767,6 @@
             }, timeoutDuration);
         }
 </script>
-
-    <!-- Botón flotante Mis Pedidos (solo móvil) -->
-    <a href="https://cxr10s.github.io/tienda/mis-pedidos.html" id="mis-pedidos-float" title="Mis Pedidos" style="
-        display:none;
-        position:fixed;
-        top:20px;
-        left:20px;
-        background:#1a1a1a;
-        color:white;
-        width:60px;
-        height:60px;
-        border-radius:15px;
-        align-items:center;
-        justify-content:center;
-        z-index:1000;
-        box-shadow:0 5px 15px rgba(255,107,107,0.3);
-        border:2px solid rgba(255,255,255,0.2);
-        font-size:22px;
-        text-decoration:none;
-    ">📦</a>
 
     <!-- Backdrop para carrito -->
     <div id="cart-backdrop" class="cart-backdrop" onclick="toggleCart()"></div>
@@ -955,6 +1232,36 @@ function compartirWeb() {
                 card.appendChild(body);
             }
         });
+    });
+    </script>
+    <script>
+    // ── Menú hamburger móvil ──
+    function toggleMobileMenu() {
+        const menu    = document.getElementById('mobile-menu');
+        const overlay = document.getElementById('mobile-menu-overlay');
+        const isOpen  = menu.classList.contains('open');
+        if (isOpen) { closeMobileMenu(); } else {
+            menu.classList.add('open');
+            overlay.classList.add('open');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    function closeMobileMenu() {
+        document.getElementById('mobile-menu').classList.remove('open');
+        document.getElementById('mobile-menu-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+    function scrollToSection(id) {
+        closeMobileMenu();
+        setTimeout(function() {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 200);
+        return false;
+    }
+    // Cerrar con ESC
+    document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape') closeMobileMenu();
     });
     </script>
 </body>
