@@ -3010,3 +3010,229 @@ body.modal-open {
 .nav-pedidos-btn:hover {
     background: rgba(255,255,255,0.13);
 }
+
+
+/* =============================================
+   SECCIÓN CONTACTOS — REDISEÑO
+   ============================================= */
+.Contactos {
+    background: #0a0a0a;
+    padding: 80px 24px 60px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Fondo decorativo sutil */
+.Contactos::before {
+    content: '';
+    position: absolute;
+    top: -120px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(173,255,47,0.04) 0%, transparent 65%);
+    pointer-events: none;
+}
+
+.contactos-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 40px;
+}
+
+/* — Encabezado — */
+.contactos-header {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.contactos-logo-row {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 100px;
+    padding: 6px 16px 6px 10px;
+}
+
+.contactos-gh-icon {
+    width: 20px;
+    height: 20px;
+    color: #f0f0f0;
+    flex-shrink: 0;
+}
+
+.contactos-brand {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #f0f0f0;
+    letter-spacing: -0.2px;
+}
+
+.contactos-title {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(2rem, 6vw, 3rem);
+    font-weight: 800;
+    color: #f0f0f0;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin: 0;
+}
+
+.contactos-title-accent {
+    color: #adff2f;
+    display: inline;
+}
+
+.contactos-subtitle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.95rem;
+    color: #555;
+    line-height: 1.6;
+    max-width: 360px;
+    margin: 0;
+}
+
+/* — Grid de tarjetas — */
+.contactos-grid {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.contactos-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    background: #111;
+    border: 1px solid #1e1e1e;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    position: relative;
+    overflow: hidden;
+}
+
+.contactos-card:hover {
+    border-color: #333;
+    background: #161616;
+    transform: translateY(-2px);
+}
+
+.contactos-card-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+/* Colores por red */
+.contactos-ig { background: rgba(225,48,108,0.12); color: #e1306c; }
+.contactos-wa { background: rgba(37,211,102,0.12); color: #25d366; }
+.contactos-x  { background: rgba(255,255,255,0.08); color: #f0f0f0; }
+.contactos-gh { background: rgba(255,255,255,0.07); color: #f0f0f0; }
+
+.contactos-card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+    min-width: 0;
+}
+
+.contactos-card-name {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #e0e0e0;
+    line-height: 1;
+}
+
+.contactos-card-handle {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.75rem;
+    color: #555;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.contactos-card-arrow {
+    color: #333;
+    flex-shrink: 0;
+    transition: color 0.2s, transform 0.2s;
+}
+.contactos-card:hover .contactos-card-arrow {
+    color: #adff2f;
+    transform: translate(2px, -2px);
+}
+
+/* — Botón compartir — */
+.contactos-share-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 24px;
+    background: transparent;
+    border: 1px solid #2a2a2a;
+    border-radius: 100px;
+    color: #888;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+.contactos-share-btn:hover {
+    border-color: rgba(173,255,47,0.4);
+    color: #adff2f;
+    background: rgba(173,255,47,0.04);
+}
+
+/* — Footer note — */
+.contactos-footer-note {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.78rem;
+    color: #2e2e2e;
+    text-align: center;
+}
+
+
+/* =============================================
+   CONTACTOS — RESPONSIVE MÓVIL
+   ============================================= */
+@media (max-width: 768px) {
+    .Contactos {
+        padding: 60px 16px 48px;
+    }
+    .contactos-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .contactos-card {
+        padding: 14px;
+    }
+    .contactos-title {
+        font-size: 1.9rem;
+    }
+}
+
+@media (max-width: 400px) {
+    .contactos-title { font-size: 1.6rem; }
+    .contactos-card-icon { width: 38px; height: 38px; font-size: 17px; }
+}
