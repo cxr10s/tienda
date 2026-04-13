@@ -488,14 +488,87 @@
 
     <!-- Footer / Contactos -->
 <section class="Contactos" id="contactos">
-    <div class="wrapper">
-        <a href="instagram://user?username=tienda_deportiva912" class="fa-brands fa-instagram" title="Síguenos en Instagram" onclick="openSocialMedia('https://www.instagram.com/tienda_deportiva912/', 'instagram://user?username=tienda_deportiva912'); return false;"></a>
-        <a href="whatsapp://send?phone=573116039256" class="fa-brands fa-whatsapp" title="Contáctanos por WhatsApp" onclick="openSocialMedia('https://wa.me/573116039256', 'whatsapp://send?phone=573116039256'); return false;"></a>
-        <a href="twitter://x.com/CarlosMe_01" class="fa-brands fa-x-twitter" title="Síguenos en X" onclick="openSocialMedia('https://x.com/CarlosMe_01', 'https://x.com/CarlosMe_01'); return false;"></a>
-        <a href="github://github.com/cxr10s" class="fa-brands fa-github" title="Github" onclick="openSocialMedia('https://github.com/cxr10s', 'https://github.com/cxr10s'); return false;"></a>
-        <a href="https://cxr10s.github.io/tienda/" class="fa-solid fa-share-nodes" title="Compartir" onclick="compartirWeb(); return false;">  </a>
-    </div>
+    <div class="contactos-inner">
 
+        <!-- Encabezado -->
+        <div class="contactos-header">
+            <div class="contactos-logo-row">
+                <svg class="contactos-gh-icon" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38
+                             0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13
+                             -.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66
+                             .07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15
+                             -.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27
+                             .68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12
+                             .51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48
+                             0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8
+                             c0-4.42-3.58-8-8-8z"/>
+                </svg>
+                <span class="contactos-brand">Shop</span>
+            </div>
+            <h2 class="contactos-title">Encuéntranos<br><span class="contactos-title-accent">en todas partes</span></h2>
+            <p class="contactos-subtitle">Síguenos, escríbenos o comparte — estamos en todos lados para ti.</p>
+        </div>
+
+        <!-- Tarjetas de redes -->
+        <div class="contactos-grid">
+
+            <a class="contactos-card" href="#" onclick="openSocialMedia('https://www.instagram.com/tienda_deportiva912/', 'instagram://user?username=tienda_deportiva912'); return false;" title="Instagram">
+                <div class="contactos-card-icon contactos-ig">
+                    <i class="fa-brands fa-instagram"></i>
+                </div>
+                <div class="contactos-card-info">
+                    <span class="contactos-card-name">Instagram</span>
+                    <span class="contactos-card-handle">@tienda_deportiva912</span>
+                </div>
+                <svg class="contactos-card-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+
+            <a class="contactos-card" href="#" onclick="openSocialMedia('https://wa.me/573116039256', 'whatsapp://send?phone=573116039256'); return false;" title="WhatsApp">
+                <div class="contactos-card-icon contactos-wa">
+                    <i class="fa-brands fa-whatsapp"></i>
+                </div>
+                <div class="contactos-card-info">
+                    <span class="contactos-card-name">WhatsApp</span>
+                    <span class="contactos-card-handle">+57 311 603 9256</span>
+                </div>
+                <svg class="contactos-card-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+
+            <a class="contactos-card" href="#" onclick="openSocialMedia('https://x.com/CarlosMe_01', 'https://x.com/CarlosMe_01'); return false;" title="X / Twitter">
+                <div class="contactos-card-icon contactos-x">
+                    <i class="fa-brands fa-x-twitter"></i>
+                </div>
+                <div class="contactos-card-info">
+                    <span class="contactos-card-name">X · Twitter</span>
+                    <span class="contactos-card-handle">@CarlosMe_01</span>
+                </div>
+                <svg class="contactos-card-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+
+            <a class="contactos-card" href="#" onclick="openSocialMedia('https://github.com/cxr10s', 'https://github.com/cxr10s'); return false;" title="GitHub">
+                <div class="contactos-card-icon contactos-gh">
+                    <svg viewBox="0 0 16 16" width="22" height="22" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>
+                </div>
+                <div class="contactos-card-info">
+                    <span class="contactos-card-name">GitHub</span>
+                    <span class="contactos-card-handle">github.com/cxr10s</span>
+                </div>
+                <svg class="contactos-card-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+            </a>
+
+        </div>
+
+        <!-- Share -->
+        <button class="contactos-share-btn" onclick="compartirWeb()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            Compartir tienda
+        </button>
+
+        <!-- Footer mínimo -->
+        <p class="contactos-footer-note">© 2026 Shop · Hecho con ❤️ en Colombia</p>
+
+    </div>
 </section>
 <script>
         function openSocialMedia(webUrl, appUrl) {
