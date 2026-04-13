@@ -448,62 +448,23 @@ function addScrollIndicator() {
 }
 
 function updateCartIcon() {
-    let cartIcon = document.querySelector('.cart-icon');
-    if (!cartIcon) {
-        cartIcon = document.createElement('div');
-        cartIcon.className = 'cart-icon';
-        cartIcon.style.cssText = `
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            background: #1a1a1a;
-            color: white;
-            width: 60px;
-            height: 60px;
-            border-radius: 15px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 1000;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
-            transition: all 0.3s ease;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        `;
-        cartIcon.onclick = toggleCart;
-        // Solo visible en móvil (≤768px)
-        cartIcon.style.display = window.innerWidth <= 768 ? 'flex' : 'none';
-        document.body.appendChild(cartIcon);
-    }
-    
+    // Botón flotante eliminado — el carrito vive en la navbar
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
-    // Actualizar contador en la barra de navegación
+    // Actualizar badge en la navbar
     const navCount = document.getElementById('nav-cart-count');
-    if (navCount) navCount.textContent = totalItems;
+    if (navCount) {
+        navCount.textContent = totalItems;
+        navCount.setAttribute('data-count', totalItems);
+        if (totalItems > 0) {
+            navCount.classList.add('bump');
+            setTimeout(() => navCount.classList.remove('bump'), 200);
+        }
+    }
 
     // Actualizar el pill dentro del sidebar
     const pill = document.getElementById('cart-count-pill');
     if (pill) pill.textContent = totalItems;
-    
-    // Crear el ícono del carrito
-    cartIcon.innerHTML = `
-        <div style="font-size: 20px; margin-bottom: 2px;">🛒</div>
-        <div style="font-size: 12px; font-weight: bold; background: transparent; border-radius: 10px; padding: 2px 6px; min-width: 18px; text-align: center;">${totalItems}</div>
-    `;
-    
-    if (totalItems > 0) {
-        cartIcon.style.transform = 'scale(1.1)';
-        cartIcon.style.boxShadow = '0 8px 25px rgba(255, 107, 107, 0.4)';
-        setTimeout(() => {
-            cartIcon.style.transform = 'scale(1)';
-            cartIcon.style.boxShadow = '0 5px 15px rgba(255, 107, 107, 0.3)';
-        }, 200);
-    } else {
-        cartIcon.style.transform = 'scale(1)';
-        cartIcon.style.boxShadow = '0 5px 15px rgba(255, 107, 107, 0.3)';
-    }
 }
 
 function toggleCart() {
