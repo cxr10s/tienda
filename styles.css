@@ -834,20 +834,101 @@ img {
    ============================================= */
 @media (max-width: 768px) {
 
-    /* — Navbar oculta en móvil — */
+    /* — Navbar móvil: barra blanca fija arriba — */
     .navbar {
-        display: none;
+        display: flex !important;
+        position: fixed !important;
+        top: 0 !important;
+        left: 0 !important;
+        right: 0 !important;
+        width: 100% !important;
+        transform: none !important;
+        border-radius: 0 !important;
+        background: #ffffff !important;
+        background-color: #ffffff !important;
+        backdrop-filter: none !important;
+        -webkit-backdrop-filter: none !important;
+        border: none !important;
+        border-bottom: 1px solid #e8e8e8 !important;
+        box-shadow: none !important;
+        padding: 0 16px !important;
+        height: 52px !important;
+        gap: 8px !important;
+        opacity: 1 !important;
+        animation: none !important;
+        z-index: 1000 !important;
+        justify-content: space-between !important;
+        align-items: center !important;
     }
 
-    /* Hero sin espacio reservado para navbar */
-    .hero {
-        margin-top: 0;
+    .navbar.scrolled {
+        background: #ffffff !important;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.08) !important;
     }
+
+    /* — Ocultar nav-menu (se usa el panel hamburger) — */
+    .nav-menu { display: none !important; }
+
+    /* — Logo visible — */
+    .nav-logo-link {
+        display: flex !important;
+        align-items: center !important;
+        gap: 8px !important;
+        color: #1a1a1a !important;
+        text-decoration: none !important;
+        opacity: 1 !important;
+        visibility: visible !important;
+        flex-shrink: 0 !important;
+    }
+    .nav-logo-icon { color: #1a1a1a !important; display: block !important; }
+    .nav-logo-text {
+        font-size: 17px !important;
+        font-weight: 700 !important;
+        color: #1a1a1a !important;
+        display: inline !important;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif !important;
+        letter-spacing: -0.3px !important;
+    }
+
+    /* — Iconos de acción — */
+    .nav-actions {
+        display: flex !important;
+        align-items: center !important;
+        gap: 0 !important;
+        flex-shrink: 0 !important;
+    }
+    .nav-icon-btn {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 40px !important;
+        height: 40px !important;
+        background: none !important;
+        border: none !important;
+        color: #1a1a1a !important;
+        border-radius: 10px !important;
+        cursor: pointer !important;
+        position: relative !important;
+    }
+    .nav-icon-label { display: none !important; }
+    .nav-hamburger  { display: flex !important; }
+
+    /* Badge carrito */
+    .nav-cart-count {
+        background: #1a1a1a !important;
+        color: #fff !important;
+        box-shadow: none !important;
+        opacity: 1 !important;
+        transform: scale(1) !important;
+        top: 4px !important;
+        right: 4px !important;
+    }
+    .nav-cart-count[data-count="0"] { display: none !important; }
 
     /* — Hero — */
     .hero {
         padding: 1.5rem 1rem 2.5rem;
-        margin-top: 75px;
+        margin-top: 52px;
         min-height: auto;
     }
 
@@ -2702,4 +2783,230 @@ body.modal-open {
     .cart-icon {
         display: none !important;
     }
+}
+
+
+/* =============================================
+   NAVBAR NUEVO — DESKTOP (logo + iconos)
+   ============================================= */
+
+/* Logo */
+.nav-logo-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: #f0f0f0;
+    flex-shrink: 0;
+}
+.nav-logo-icon { color: #f0f0f0; }
+.nav-logo-text {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: #f0f0f0;
+    letter-spacing: -0.3px;
+}
+
+/* Botones de icono (usuario, carrito, hamburger) */
+.nav-icon-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.1);
+    cursor: pointer;
+    padding: 0;
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    color: rgba(200,200,200,0.85);
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+.nav-icon-btn:hover {
+    background: rgba(255,255,255,0.09);
+    border-color: rgba(255,255,255,0.22);
+    color: #fff;
+}
+
+/* Label usuario (desktop) */
+.nav-icon-label {
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(200,200,200,0.85);
+    white-space: nowrap;
+    max-width: 90px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+/* Cuando el botón usuario tiene label, ampliar un poco */
+#nav-registro-btn {
+    width: auto;
+    padding: 0 12px;
+    gap: 7px;
+}
+
+/* Badge carrito (desktop — dark) */
+.nav-cart-count {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    min-width: 17px;
+    height: 17px;
+    padding: 0 4px;
+    border-radius: 9px;
+    background: #adff2f;
+    color: #0a0a0a;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.65rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    box-shadow: 0 0 6px rgba(173,255,47,0.6);
+    transition: transform 0.15s cubic-bezier(0.34,1.56,0.64,1);
+}
+.nav-cart-count.bump { transform: scale(1.35); }
+.nav-cart-count[data-count="0"] { opacity: 0; transform: scale(0.6); }
+
+/* Hamburger: solo móvil */
+.nav-hamburger { display: none; }
+
+/* Shake */
+.nav-icon-btn.shake { animation: shake 0.5s ease; }
+
+
+/* =============================================
+   PANEL LATERAL MÓVIL (hamburger menu)
+   ============================================= */
+.mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 1100;
+}
+.mobile-menu-overlay.open { display: block; }
+
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 280px;
+    max-width: 85vw;
+    height: 100dvh;
+    background: #fff;
+    z-index: 1101;
+    transform: translateX(100%);
+    transition: transform 0.28s cubic-bezier(0.4,0,0.2,1);
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+}
+.mobile-menu.open { transform: translateX(0); }
+
+.mobile-menu-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid #f0f0f0;
+}
+.mobile-menu-logo {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    color: #1a1a1a;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+.mobile-menu-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 8px;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+}
+.mobile-menu-close:hover { background: #f0f0f0; }
+
+.mobile-menu-label {
+    padding: 16px 20px 8px;
+    font-size: 10px;
+    letter-spacing: 2px;
+    font-weight: 700;
+    color: #aaa;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.mobile-menu-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 0 12px;
+    gap: 2px;
+}
+.mobile-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 10px;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #1a1a1a;
+    font-size: 15px;
+    font-weight: 500;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    transition: background 0.15s;
+    cursor: pointer;
+}
+.mobile-menu-item:hover { background: #f5f5f5; }
+.mmi-icon { font-size: 18px; width: 26px; text-align: center; flex-shrink: 0; }
+.mmi-arrow { margin-left: auto; color: #ccc; flex-shrink: 0; }
+
+.mobile-menu-divider {
+    margin: 12px 20px;
+    height: 1px;
+    background: #f0f0f0;
+}
+.mobile-menu-pedidos {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 22px;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    color: #1a1a1a;
+    text-decoration: none;
+    transition: background 0.15s;
+}
+.mobile-menu-pedidos:hover { background: #f5f5f5; }
+
+/* Botón Mis Pedidos en nav-menu desktop */
+.nav-pedidos-btn {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.13);
+    border-radius: 20px;
+    padding: 5px 13px;
+    font-size: 0.82rem;
+    transition: background 0.2s;
+}
+.nav-pedidos-btn:hover {
+    background: rgba(255,255,255,0.13);
 }
