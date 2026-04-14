@@ -1,6 +1,6 @@
 <div align="center">
 
-# `STORE `
+# `SHOP `
 
 ### Tienda Deportiva — Colombia
 
