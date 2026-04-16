@@ -3,387 +3,1070 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Confirmación — Shop</title>
+    <title>Datos de Entrega — STORE.</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #f6f6f4;
+            --bg: #f7f7f5;
             --surface: #ffffff;
-            --border: #e4e4e0;
+            --border: #e5e5e0;
+            --border-focus: #0a0a0a;
             --text: #0a0a0a;
             --muted: #888880;
-            --green: #16a34a;
-            --green-bg: #f0fdf4;
-            --yellow: #d97706;
-            --yellow-bg: #fffbeb;
-            --red: #dc2626;
-            --red-bg: #fef2f2;
+            --accent: #adff2f;
+            --accent-dark: #0a0a0a;
+            --error: #dc2626;
+            --error-bg: #fef2f2;
+            --success: #16a34a;
+            --success-bg: #f0fdf4;
+            --radius: 14px;
+            --radius-sm: 10px;
         }
-        * { margin:0; padding:0; box-sizing:border-box; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
             background: var(--bg);
             color: var(--text);
             font-family: 'Syne', sans-serif;
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
         }
 
+        /* ── HEADER ── */
         .header {
-            background: #fff;
-            border-bottom: 1px solid var(--border);
-            padding: 0 24px;
-            height: 56px;
-            display: flex; align-items: center;
-            position: sticky; top: 0; z-index: 100;
+            background: #0a0a0a;
+            padding: 0 2rem;
+            height: 58px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
-        .header-logo {
-            display: flex; align-items: center; gap: 8px;
-            text-decoration: none; color: #0a0a0a;
-        }
-        .header-logo svg { width: 20px; height: 20px; }
-        .header-logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
 
-        .content {
-            flex: 1;
+        .header-logo {
+            font-family: 'DM Mono', monospace;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--accent);
+            letter-spacing: 4px;
+            text-decoration: none;
+        }
+
+        .header-back {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #666;
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .header-back:hover { color: #fff; }
+        .header-back svg { width: 14px; height: 14px; }
+
+        /* ── PROGRESS BAR ── */
+        .progress-bar {
+            height: 3px;
+            background: #1a1a1a;
+        }
+        .progress-fill {
+            height: 100%;
+            width: 50%;
+            background: var(--accent);
+            transition: width 0.5s ease;
+        }
+
+        /* ── LAYOUT ── */
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 0;
+            max-width: 1100px;
+            margin: 0 auto;
+            min-height: calc(100vh - 61px);
+        }
+
+        /* ── FORM SIDE ── */
+        .form-side {
+            padding: 3rem 3rem 3rem 2rem;
+            border-right: 1px solid var(--border);
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            letter-spacing: -0.5px;
+        }
+
+        .form-subtitle {
+            color: var(--muted);
+            font-size: 14px;
+            margin-bottom: 2.5rem;
+        }
+
+        /* Steps */
+        .steps {
+            display: flex;
+            gap: 0;
+            margin-bottom: 2.5rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        .step {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--muted);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .step.active { color: var(--text); }
+
+        .step-num {
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--border);
+            color: var(--muted);
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
-        }
-
-        .card {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 20px;
-            padding: 40px 36px;
-            max-width: 440px;
-            width: 100%;
-            text-align: center;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.06);
-        }
-
-        .status-icon {
-            width: 64px; height: 64px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 28px;
-            margin: 0 auto 20px;
-        }
-        .status-icon.success { background: var(--green-bg); }
-        .status-icon.pending { background: var(--yellow-bg); }
-        .status-icon.error   { background: var(--red-bg); }
-        .status-icon.loading { background: #f5f5f3; animation: pulse 1.5s ease infinite; }
-
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-
-        .badge {
-            display: inline-block;
-            padding: 4px 14px;
-            border-radius: 100px;
             font-size: 11px;
             font-weight: 700;
-            letter-spacing: 1.5px;
-            margin-bottom: 16px;
+            flex-shrink: 0;
         }
-        .badge.success { background: var(--green-bg); color: var(--green); border: 1px solid #bbf7d0; }
-        .badge.pending { background: var(--yellow-bg); color: var(--yellow); border: 1px solid #fde68a; }
-        .badge.error   { background: var(--red-bg);   color: var(--red);   border: 1px solid #fecaca; }
 
-        h2 { font-size: 22px; font-weight: 800; margin-bottom: 8px; letter-spacing: -0.3px; }
-        .subtitle { color: var(--muted); font-size: 13px; line-height: 1.7; margin-bottom: 24px; }
+        .step.active .step-num {
+            background: #0a0a0a;
+            color: #fff;
+        }
 
-        .id-box {
-            display: inline-block;
-            background: #f5f5f3;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 8px 20px;
-            font-family: 'DM Mono', monospace;
+        .step.done .step-num {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .step-sep {
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+            margin: 0 12px;
+        }
+
+        /* Form sections */
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-label {
+            font-size: 10px;
+            letter-spacing: 2.5px;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+        }
+
+        .field-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+        }
+
+        .field-grid.single { grid-template-columns: 1fr; }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field.full { grid-column: 1 / -1; }
+
+        label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #444;
+            letter-spacing: 0.3px;
+        }
+
+        .input-wrap {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #bbb;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon svg { width: 15px; height: 15px; }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 13px 14px 13px 40px;
+            background: var(--surface);
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
             font-size: 14px;
-            font-weight: 500;
-            letter-spacing: 1px;
-            margin-bottom: 28px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            appearance: none;
+        }
+
+        input.no-icon, select.no-icon, textarea.no-icon {
+            padding-left: 14px;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+        }
+
+        input.error, select.error, textarea.error {
+            border-color: var(--error);
+            box-shadow: 0 0 0 3px rgba(220,38,38,0.08);
+        }
+
+        input.valid, select.valid, textarea.valid {
+            border-color: var(--success);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+            padding-top: 12px;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            padding-right: 36px;
+        }
+
+        .field-error {
+            font-size: 11px;
+            color: var(--error);
+            display: none;
+            margin-top: 2px;
+        }
+
+        .field-error.show { display: block; }
+
+        .field-hint {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 2px;
+        }
+
+        /* Phone prefix */
+        .phone-wrap {
+            display: flex;
+            gap: 8px;
+        }
+
+        .phone-prefix {
+            width: 80px;
+            flex-shrink: 0;
+            padding-left: 10px;
+            padding-right: 10px;
+            text-align: center;
+            background: #f0f0ee;
+            color: var(--muted);
+            font-size: 13px;
+            cursor: default;
+        }
+
+        .phone-input { flex: 1; }
+
+        /* Doc type selector */
+        .doc-wrap {
+            display: flex;
+            gap: 8px;
+        }
+
+        .doc-type {
+            width: 90px;
+            flex-shrink: 0;
+            padding-left: 10px;
+            padding-right: 28px;
+            font-size: 13px;
+        }
+
+        /* Submit */
+        .submit-section {
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #0a0a0a;
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .submit-btn:hover { background: #1a1a1a; transform: translateY(-1px); }
+        .submit-btn:active { transform: translateY(0); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+        .submit-btn.loading .btn-text { display: none; }
+        .submit-btn:not(.loading) .btn-spinner { display: none; }
+
+        .btn-spinner {
+            width: 18px;
+            height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .secure-note {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 12px;
+        }
+
+        .secure-note svg { width: 13px; height: 13px; }
+
+        /* ── ORDER SIDE ── */
+        .order-side {
+            padding: 3rem 2rem;
+            background: #f0f0ee;
+            position: sticky;
+            top: 61px;
+            height: calc(100vh - 61px);
+            overflow-y: auto;
+        }
+
+        .order-title {
+            font-size: 11px;
+            letter-spacing: 2.5px;
+            color: var(--muted);
+            font-weight: 600;
+            margin-bottom: 1.2rem;
+            text-transform: uppercase;
+        }
+
+        .order-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-item {
+            background: var(--surface);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .order-item-qty {
+            width: 24px;
+            height: 24px;
+            background: #0a0a0a;
+            color: #fff;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 700;
+            flex-shrink: 0;
+            font-family: 'DM Mono', monospace;
+        }
+
+        .order-item-qty.gift {
+            background: var(--accent);
+            color: #000;
+        }
+
+        .order-item-name {
+            flex: 1;
+            font-size: 13px;
+            font-weight: 600;
             color: var(--text);
         }
 
-        .metodo-info {
-            display: flex; align-items: center; gap: 8px;
-            padding: 10px 14px;
-            background: #f5f5f3;
-            border-radius: 10px;
+        .order-item-price {
             font-size: 13px;
+            font-family: 'DM Mono', monospace;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .order-item-price.free {
+            color: var(--success);
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .order-divider {
+            height: 1px;
+            background: var(--border);
+            margin: 1rem 0;
+        }
+
+        .order-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+
+        .order-row span:first-child { color: var(--muted); }
+        .order-row span:last-child { font-family: 'DM Mono', monospace; font-weight: 500; }
+
+        .order-row.discount span:last-child { color: var(--success); }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #0a0a0a;
+            color: #fff;
+            border-radius: var(--radius-sm);
+            padding: 14px 16px;
+            margin-top: 1rem;
+        }
+
+        .order-total-label {
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .order-total-value {
+            font-family: 'DM Mono', monospace;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--accent);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 3rem 1rem;
             color: var(--muted);
-            margin-bottom: 20px;
-            text-align: left;
         }
 
-        .btn {
-            display: block; width: 100%;
-            padding: 14px 20px;
-            border-radius: 12px;
-            font-family: 'Syne', sans-serif;
-            font-size: 14px; font-weight: 700;
-            cursor: pointer; text-decoration: none;
-            margin-bottom: 10px; border: none;
-            transition: all 0.2s;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
+        .empty-cart-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+        .empty-cart p { font-size: 14px; margin-bottom: 1rem; }
+        .empty-cart a {
+            color: var(--text);
+            font-weight: 700;
+            font-size: 13px;
+            text-decoration: none;
+            border-bottom: 2px solid var(--accent);
         }
-        .btn-primary { background: #0a0a0a; color: #fff; }
-        .btn-primary:hover { background: #1a1a1a; }
-        .btn-secondary { background: transparent; border: 1px solid var(--border); color: var(--muted); }
-        .btn-secondary:hover { border-color: #aaa; color: var(--text); }
-        .btn-tique { background: #f0fdf4; color: #16a34a; border: 1px solid #bbf7d0; }
-        .btn-tique:hover { background: #dcfce7; }
 
-        @media (max-width: 480px) {
-            .card { padding: 28px 20px; }
+        /* ── TOAST ── */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #0a0a0a;
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 100px;
+            font-size: 13px;
+            font-weight: 600;
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 9999;
+            white-space: nowrap;
+            pointer-events: none;
         }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── NO CART OVERLAY ── */
+        .no-cart-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: var(--bg);
+            z-index: 200;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .no-cart-overlay.show { display: flex; }
+        .no-cart-overlay h2 { font-size: 22px; font-weight: 800; }
+        .no-cart-overlay p { color: var(--muted); font-size: 14px; max-width: 300px; line-height: 1.6; }
+        .no-cart-overlay a {
+            display: inline-block;
+            margin-top: 0.5rem;
+            background: #0a0a0a;
+            color: #fff;
+            padding: 12px 24px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+
+            .order-side {
+                position: static;
+                height: auto;
+                order: -1;
+                padding: 1.5rem 1.2rem;
+                border-bottom: 1px solid var(--border);
+            }
+
+            .form-side {
+                padding: 1.5rem 1.2rem;
+                border-right: none;
+            }
+
+            .field-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ── ANIMATIONS ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-section {
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .form-section:nth-child(1) { animation-delay: 0.05s; }
+        .form-section:nth-child(2) { animation-delay: 0.12s; }
+        .form-section:nth-child(3) { animation-delay: 0.19s; }
+        .form-section:nth-child(4) { animation-delay: 0.26s; }
     </style>
 </head>
 <body>
 
+<!-- Header -->
 <header class="header">
-    <a href="https://cxr10s.github.io/tienda/" class="header-logo">
-        <svg viewBox="0 0 16 16" fill="currentColor">
-            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
-        </svg>
-        <span class="header-logo-text">Shop</span>
+    <a href="https://cxr10s.github.io/tienda/" class="header-logo">STORE.</a>
+    <a href="https://cxr10s.github.io/tienda/" class="header-back">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        Volver a la tienda
     </a>
 </header>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 
-<div class="content">
-    <div class="card" id="card">
-
-        <!-- Cargando -->
-        <div id="estado-cargando">
-            <div class="status-icon loading">⏳</div>
-            <h2>Procesando...</h2>
-            <p class="subtitle">Estamos registrando tu pedido.<br>Esto toma solo un momento.</p>
-        </div>
-
-        <!-- Confirmado (pago manual enviado) -->
-        <div id="estado-pendiente-manual" style="display:none;">
-            <div class="status-icon pending">🕐</div>
-            <div class="badge pending">EN VERIFICACIÓN</div>
-            <h2>¡Pedido registrado!</h2>
-            <p class="subtitle">Tu pedido fue guardado correctamente.<br>Estamos verificando tu pago. Te notificaremos cuando se confirme.</p>
-            <div class="id-box" id="id-manual">ID: —</div>
-            <div class="metodo-info" id="metodo-info-manual">
-                <span>💳</span><span id="metodo-txt-manual">Pago pendiente de verificación</span>
-            </div>
-            <button class="btn btn-tique" id="btn-tique-manual">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Descargar tique de pago
-            </button>
-            <a href="https://cxr10s.github.io/tienda/mis-pedidos.html" class="btn btn-primary">📦 Ver mis pedidos</a>
-            <a href="https://cxr10s.github.io/tienda/" class="btn btn-secondary">← Volver a la tienda</a>
-        </div>
-
-        <!-- Pagado (pasarela exitosa) -->
-        <div id="estado-pagado" style="display:none;">
-            <div class="status-icon success">✅</div>
-            <div class="badge success">PAGO CONFIRMADO</div>
-            <h2>¡Pago exitoso!</h2>
-            <p class="subtitle">Tu pago fue procesado correctamente.<br>Prepararemos tu pedido a la brevedad.</p>
-            <div class="id-box" id="id-pagado">ID: —</div>
-            <button class="btn btn-tique" id="btn-tique-pagado">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                Descargar tique de pago
-            </button>
-            <a href="https://cxr10s.github.io/tienda/mis-pedidos.html" class="btn btn-primary">📦 Ver mis pedidos</a>
-            <a href="https://cxr10s.github.io/tienda/" class="btn btn-secondary">← Volver a la tienda</a>
-        </div>
-
-        <!-- Error pasarela -->
-        <div id="estado-error" style="display:none;">
-            <div class="status-icon error">❌</div>
-            <div class="badge error">PAGO NO COMPLETADO</div>
-            <h2>Pago no completado</h2>
-            <p class="subtitle">Tu pago fue rechazado o cancelado.<br>Tu pedido quedó guardado. Puedes intentarlo de nuevo con otro método.</p>
-            <div class="id-box" id="id-error">ID: —</div>
-            <a href="https://cxr10s.github.io/tienda/pago.html" class="btn btn-primary">↩ Intentar de nuevo</a>
-            <a href="https://cxr10s.github.io/tienda/" class="btn btn-secondary">← Volver a la tienda</a>
-        </div>
-
-    </div>
+<!-- No cart overlay -->
+<div class="no-cart-overlay" id="no-cart-overlay">
+    <div style="font-size:3rem;">🛒</div>
+    <h2>Tu carrito está vacío</h2>
+    <p>Agrega productos a tu carrito antes de continuar con el pedido.</p>
+    <a href="https://cxr10s.github.io/tienda/">Ir a la tienda</a>
 </div>
 
+<!-- Main layout -->
+<div class="layout">
+
+    <!-- FORM -->
+    <div class="form-side">
+        <h1 class="form-title">Datos de entrega</h1>
+        <p class="form-subtitle">Completa tu información para procesar el pedido</p>
+
+        <!-- Steps -->
+        <div class="steps">
+            <div class="step active">
+                <div class="step-num">1</div>
+                <span>TUS DATOS</span>
+            </div>
+            <div class="step-sep"></div>
+            <div class="step">
+                <div class="step-num">2</div>
+                <span>PAGO</span>
+            </div>
+            <div class="step-sep"></div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <span>CONFIRMACIÓN</span>
+            </div>
+        </div>
+
+        <form id="checkout-form" novalidate>
+
+            <!-- Sección 1: Identificación -->
+            <div class="form-section">
+                <div class="section-label">Identificación personal</div>
+                <div class="field-grid">
+                    <div class="field full">
+                        <label for="nombre">Nombre completo *</label>
+                        <div class="input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
+                            <input type="text" id="nombre" name="nombre" placeholder="Jhon Carlos Meneses" autocomplete="name" inputmode="text">
+                        </div>
+                        <span class="field-error" id="err-nombre">Solo letras y espacios, mínimo 3 caracteres</span>
+                    </div>
+
+                    <div class="field">
+                        <label for="doc-tipo">Tipo de documento *</label>
+                        <div class="input-wrap">
+                            <select id="doc-tipo" name="doc-tipo" class="no-icon" style="padding-left:14px;">
+                                <option value="CC">Cédula de ciudadanía</option>
+                                <option value="CE">Cédula de extranjería</option>
+                                <option value="PA">Pasaporte</option>
+                                <option value="TI">Tarjeta de identidad</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="field">
+                        <label for="documento">Número de documento *</label>
+                        <div class="input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg></span>
+                            <input type="text" id="documento" name="documento" placeholder="1234567890" inputmode="numeric" maxlength="12">
+                        </div>
+                        <span class="field-error" id="err-documento">Ingresa un número de documento válido</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 2: Contacto -->
+            <div class="form-section">
+                <div class="section-label">Información de contacto</div>
+                <div class="field-grid">
+                    <div class="field full">
+                        <label for="email">Correo electrónico *</label>
+                        <div class="input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></span>
+                            <input type="email" id="email" name="email" placeholder="tucorreo@gmail.com" autocomplete="email" inputmode="email">
+                        </div>
+                        <span class="field-error" id="err-email">Usa un correo @gmail.com, @hotmail.com o @outlook.com</span>
+                    </div>
+
+                    <div class="field full">
+                        <label for="telefono">Teléfono celular *</label>
+                        <div class="phone-wrap">
+                            <input type="text" class="phone-prefix no-icon" value="+57" readonly tabindex="-1">
+                            <div class="input-wrap" style="flex:1;">
+                                <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.4 2 2 0 0 1 3.6 1.21h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.79a16 16 0 0 0 6.29 6.29l.95-.95a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></span>
+                                <input type="tel" id="telefono" name="telefono" placeholder="3001234567" inputmode="numeric" maxlength="10" class="phone-input">
+                            </div>
+                        </div>
+                        <span class="field-error" id="err-telefono">El teléfono debe tener exactamente 10 dígitos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 3: Dirección -->
+            <div class="form-section">
+                <div class="section-label">Dirección de entrega</div>
+                <div class="field-grid">
+
+                    <div class="field">
+                        <label for="departamento">Departamento *</label>
+                        <div class="input-wrap">
+                            <select id="departamento" name="departamento" class="no-icon" style="padding-left:14px;">
+                                <option value="">Selecciona...</option>
+                                <option>Amazonas</option><option>Antioquia</option><option>Arauca</option>
+                                <option>Atlántico</option><option>Bolívar</option><option>Boyacá</option>
+                                <option>Caldas</option><option>Caquetá</option><option>Casanare</option>
+                                <option>Cauca</option><option>Cesar</option><option>Chocó</option>
+                                <option>Córdoba</option><option>Cundinamarca</option><option>Guainía</option>
+                                <option>Guaviare</option><option>Huila</option><option>La Guajira</option>
+                                <option>Magdalena</option><option>Meta</option><option>Nariño</option>
+                                <option>Norte de Santander</option><option>Putumayo</option><option>Quindío</option>
+                                <option>Risaralda</option><option>San Andrés y Providencia</option>
+                                <option>Santander</option><option>Sucre</option><option>Tolima</option>
+                                <option>Valle del Cauca</option><option>Vaupés</option><option>Vichada</option>
+                                <option>Bogotá D.C.</option>
+                            </select>
+                        </div>
+                        <span class="field-error" id="err-departamento">Selecciona un departamento</span>
+                    </div>
+
+                    <div class="field">
+                        <label for="ciudad">Ciudad / Municipio *</label>
+                        <div class="input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></span>
+                            <input type="text" id="ciudad" name="ciudad" placeholder="Bogotá" autocomplete="address-level2">
+                        </div>
+                        <span class="field-error" id="err-ciudad">Ingresa tu ciudad</span>
+                    </div>
+
+                    <div class="field full">
+                        <label for="direccion">Dirección completa *</label>
+                        <div class="input-wrap">
+                            <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+                            <input type="text" id="direccion" name="direccion" placeholder="Calle 123 # 45-67, Barrio Centro" autocomplete="street-address">
+                        </div>
+                        <span class="field-hint">Incluye barrio, apto o interior si aplica</span>
+                        <span class="field-error" id="err-direccion">Ingresa una dirección válida</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sección 4: Notas -->
+            <div class="form-section">
+                <div class="section-label">Información adicional</div>
+                <div class="field-grid single">
+                    <div class="field">
+                        <label for="notas">Notas para el pedido <span style="color:var(--muted); font-weight:400;">(opcional)</span></label>
+                        <div class="input-wrap">
+                            <textarea id="notas" name="notas" class="no-icon" placeholder="Ej: Entregar en portería, llamar antes de llegar, color preferido..." style="padding-top:13px; min-height:90px;"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="submit-section">
+                <button type="submit" class="submit-btn" id="submit-btn">
+                    <span class="btn-text">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                        Continuar al pago
+                    </span>
+                    <div class="btn-spinner"></div>
+                </button>
+                <div class="secure-note">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Tus datos están protegidos
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="order-side">
+        <div class="order-title">Tu pedido</div>
+        <div class="order-items" id="order-items">
+            <div class="empty-cart">
+                <div class="empty-cart-icon">🛒</div>
+                <p>No hay productos en el carrito</p>
+                <a href="https://cxr10s.github.io/tienda/">Ir a la tienda</a>
+            </div>
+        </div>
+        <div id="order-totals" style="display:none;">
+            <div class="order-divider"></div>
+            <div class="order-row"><span>Subtotal</span><span id="sum-subtotal">$0</span></div>
+            <div class="order-row discount" id="sum-discount-row" style="display:none;">
+                <span>Descuento</span><span id="sum-discount">-$0</span>
+            </div>
+            <div class="order-row" id="sum-shipping-row">
+                <span>Envío</span><span id="sum-shipping">$25.000</span>
+            </div>
+            <div class="order-total">
+                <span class="order-total-label">Total a pagar</span>
+                <span class="order-total-value" id="sum-total">$0</span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
 <script>
+// =============================================
+// CONFIGURACIÓN
+// =============================================
 const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
 
-const metodosLabel = {
-    'nequi-qr':      '📱 Nequi QR',
-    'nequi-num':     '💚 Nequi número',
-    'transferencia': '🏦 Transferencia bancaria',
-    'pse':           '🔒 PSE',
-    'debito':        '💳 Tarjeta débito',
-    'efectivo':      '💵 Efectivo',
-    'datafono':      '🖥️ Datáfono'
-};
+const WOMPI_PUBLIC_KEY       = 'pub_test_9kFqdnduO7A4r7WelX97pzJgjA7aBpGV';
+const WOMPI_INTEGRITY_SECRET = 'test_integrity_itRExQlNZCY87qnVRdvNrXqXX7TEmPEr';
+const WOMPI_CHECKOUT_URL     = 'https://checkout.wompi.co/p/';
 
-async function actualizarSupabase(pedidoId, estadoPago, estado) {
-    await fetch(`${SUPABASE_URL}/rest/v1/pedidos?id=eq.${pedidoId}`, {
-        method: 'PATCH',
-        headers: {
-            'Content-Type': 'application/json',
-            'apikey': SUPABASE_ANON,
-            'Authorization': `Bearer ${SUPABASE_ANON}`,
-            'Prefer': 'return=representation'
-        },
-        body: JSON.stringify({ estado_pago: estadoPago, estado })
-    });
+const TIENDA_URL = 'https://cxr10s.github.io/tienda/';
+
+// =============================================
+// CARRITO — leer desde localStorage
+// =============================================
+let cart = [];
+
+function loadCart() {
+    try {
+        const raw = localStorage.getItem('tienda_cart');
+        if (raw) cart = JSON.parse(raw);
+    } catch(e) { cart = []; }
 }
 
-window.addEventListener('DOMContentLoaded', async () => {
-    const params  = new URLSearchParams(window.location.search);
-    const pedidoId = params.get('pedido');
-    const metodo   = params.get('metodo');
-    const estadoParam = params.get('estado'); // 'pagado','pendiente','error' si viene de pasarela
+function fmt(n) {
+    return '$' + Math.round(Number(n)).toLocaleString('es-CO');
+}
 
-    document.getElementById('estado-cargando').style.display = 'block';
+function calcDiscount(subtotal) {
+    if (subtotal >= 900000) return { pct: 20, amount: Math.round(subtotal * 0.20) };
+    if (subtotal >= 600000) return { pct: 15, amount: Math.round(subtotal * 0.15) };
+    if (subtotal >= 400000) return { pct: 12, amount: Math.round(subtotal * 0.12) };
+    if (subtotal >= 250000) return { pct: 8,  amount: Math.round(subtotal * 0.08) };
+    if (subtotal >= 150000) return { pct: 5,  amount: Math.round(subtotal * 0.05) };
+    return { pct: 0, amount: 0 };
+}
 
-    // Cargar pedido guardado
-    let pedido = null;
-    try { pedido = JSON.parse(sessionStorage.getItem('ultimo_pedido') || 'null'); } catch(e) {}
+function renderOrder() {
+    const container = document.getElementById('order-items');
+    const totalsEl  = document.getElementById('order-totals');
 
-    if (!pedidoId && !pedido) {
-        window.location.href = 'https://cxr10s.github.io/tienda/';
+    if (!cart.length) {
+        container.innerHTML = `
+            <div class="empty-cart">
+                <div class="empty-cart-icon">🛒</div>
+                <p>No hay productos en el carrito</p>
+                <a href="${TIENDA_URL}">Ir a la tienda</a>
+            </div>`;
+        totalsEl.style.display = 'none';
+        document.getElementById('no-cart-overlay').classList.add('show');
         return;
     }
 
-    const id = pedidoId || pedido?.id;
-    const idCorto = id ? id.substring(0,8).toUpperCase() : '—';
+    container.innerHTML = cart.map(item => `
+        <div class="order-item">
+            <div class="order-item-qty ${item.isGift ? 'gift' : ''}">${item.quantity}</div>
+            <div class="order-item-name">${item.name}${item.isGift ? ' 🎁' : ''}</div>
+            <div class="order-item-price ${item.isGift ? 'free' : ''}">
+                ${item.isGift ? 'GRATIS' : fmt(item.price * item.quantity)}
+            </div>
+        </div>
+    `).join('');
 
-    document.getElementById('estado-cargando').style.display = 'none';
+    const subtotal = cart.reduce((s, i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
+    const { amount: descuento } = calcDiscount(subtotal);
+    const envio = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
+    const total = subtotal - descuento + envio;
 
-    // Si viene de pasarela online con estado
-    if (estadoParam === 'pagado') {
-        await actualizarSupabase(id, 'pagado', 'pagado').catch(()=>{});
-        document.getElementById('id-pagado').textContent = 'ID: ' + idCorto;
-        document.getElementById('estado-pagado').style.display = 'block';
-        if (pedido) document.getElementById('btn-tique-pagado').addEventListener('click', () => generarTique({...pedido, estado_pago:'pagado'}));
+    document.getElementById('sum-subtotal').textContent = fmt(subtotal);
+    document.getElementById('sum-shipping').textContent = envio > 0 ? fmt(envio) : '¡Gratis!';
+
+    const discRow = document.getElementById('sum-discount-row');
+    if (descuento > 0) {
+        discRow.style.display = 'flex';
+        document.getElementById('sum-discount').textContent = '-' + fmt(descuento);
+    } else {
+        discRow.style.display = 'none';
+    }
+
+    document.getElementById('sum-total').textContent = fmt(total);
+    totalsEl.style.display = 'block';
+}
+
+// =============================================
+// VALIDACIONES
+// =============================================
+function validateNombre(v) { return /^[A-Za-zÁáÉéÍíÓóÚúÑñ\s]{3,}$/.test(v.trim()) && v.trim().split(/\s+/).length >= 2; }
+function validateDoc(v)    { return /^[0-9A-Za-z]{5,12}$/.test(v.trim()); }
+function validateEmail(v)  { return /^[a-z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com)$/i.test(v.trim()); }
+function validatePhone(v)  { return /^[0-9]{10}$/.test(v.trim()); }
+function validateCiudad(v) { return v.trim().length >= 2; }
+function validateDir(v)    { return v.trim().length >= 8; }
+function validateDepto(v)  { return v !== ''; }
+
+const validations = [
+    { id: 'nombre',       fn: validateNombre, err: 'err-nombre'      },
+    { id: 'documento',    fn: validateDoc,    err: 'err-documento'   },
+    { id: 'email',        fn: validateEmail,  err: 'err-email'       },
+    { id: 'telefono',     fn: validatePhone,  err: 'err-telefono'    },
+    { id: 'departamento', fn: validateDepto,  err: 'err-departamento'},
+    { id: 'ciudad',       fn: validateCiudad, err: 'err-ciudad'      },
+    { id: 'direccion',    fn: validateDir,    err: 'err-direccion'   },
+];
+
+function validateField(item) {
+    const el  = document.getElementById(item.id);
+    const err = document.getElementById(item.err);
+    const ok  = item.fn(el.value);
+    el.classList.toggle('error', !ok);
+    el.classList.toggle('valid',  ok);
+    if (err) err.classList.toggle('show', !ok);
+    return ok;
+}
+
+function validateAll() {
+    return validations.map(validateField).every(Boolean);
+}
+
+// Live validation on blur
+validations.forEach(item => {
+    const el = document.getElementById(item.id);
+    if (!el) return;
+    el.addEventListener('blur',  () => { if (el.value) validateField(item); });
+    el.addEventListener('input', () => { if (el.classList.contains('error')) validateField(item); });
+});
+
+// Only digits for phone and document
+document.getElementById('telefono').addEventListener('input', function() {
+    this.value = this.value.replace(/\D/g, '');
+});
+document.getElementById('documento').addEventListener('input', function() {
+    this.value = this.value.replace(/[^0-9A-Za-z]/g, '');
+});
+
+// Capitalize nombre
+document.getElementById('nombre').addEventListener('blur', function() {
+    this.value = this.value.trim().split(' ').filter(Boolean)
+        .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(' ');
+});
+
+// =============================================
+// PROGRESS BAR on scroll
+// =============================================
+window.addEventListener('scroll', () => {
+    const el   = document.documentElement;
+    const pct  = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 50 + 50;
+    document.getElementById('progress-fill').style.width = Math.min(pct, 95) + '%';
+}, { passive: true });
+
+// =============================================
+// TOAST
+// =============================================
+function showToast(msg, duration = 3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// =============================================
+// PREFILL desde sessionStorage (si viene de Firebase)
+// =============================================
+function prefillFromSession() {
+    try {
+        const user = JSON.parse(sessionStorage.getItem('store_user') || 'null');
+        if (!user) return;
+        if (user.email) {
+            const el = document.getElementById('email');
+            el.value = user.email;
+            el.setAttribute('readonly', true);
+            el.style.background = '#f5f5f3';
+            el.title = 'Correo de tu cuenta Google';
+        }
+        if (user.displayName) {
+            document.getElementById('nombre').value = user.displayName;
+        }
+    } catch(e) {}
+}
+
+// =============================================
+// SUBMIT
+// =============================================
+document.getElementById('checkout-form').addEventListener('submit', async function(e) {
+    e.preventDefault();
+
+    if (!validateAll()) {
+        showToast('⚠️ Revisa los campos marcados en rojo');
+        const firstErr = document.querySelector('input.error, select.error, textarea.error');
+        if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
     }
 
-    if (estadoParam === 'error') {
-        await actualizarSupabase(id, 'error', 'cancelado').catch(()=>{});
-        document.getElementById('id-error').textContent = 'ID: ' + idCorto;
-        document.getElementById('estado-error').style.display = 'block';
+    if (!cart.length) {
+        showToast('Tu carrito está vacío');
         return;
     }
 
-    // Métodos manuales / presenciales → pendiente de verificación
-    document.getElementById('id-manual').textContent = 'ID: ' + idCorto;
-    document.getElementById('metodo-txt-manual').textContent = metodosLabel[metodo] || 'Pago pendiente';
-    document.getElementById('estado-pendiente-manual').style.display = 'block';
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.classList.add('loading');
 
-    if (pedido) {
-        document.getElementById('btn-tique-manual').addEventListener('click', () => generarTique(pedido));
+    const nombre    = document.getElementById('nombre').value.trim();
+    const docTipo   = document.getElementById('doc-tipo').value;
+    const documento = document.getElementById('documento').value.trim();
+    const email     = document.getElementById('email').value.trim().toLowerCase();
+    const telefono  = document.getElementById('telefono').value.trim();
+    const depto     = document.getElementById('departamento').value;
+    const ciudad    = document.getElementById('ciudad').value.trim();
+    const direccion = document.getElementById('direccion').value.trim();
+    const notas     = document.getElementById('notas').value.trim();
+
+    const subtotal = cart.reduce((s, i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
+    const { amount: descuento } = calcDiscount(subtotal);
+    const envio = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
+    const total = subtotal - descuento + envio;
+
+    const pedido = {
+        nombre,
+        email,
+        telefono,
+        direccion: `${direccion}, ${ciudad}, ${depto}`,
+        notas: notas || null,
+        documento: `${docTipo} ${documento}`,
+        productos: cart.map(i => ({
+            id: i.id, name: i.name, price: i.price,
+            quantity: i.quantity, isGift: i.isGift || false
+        })),
+        subtotal, descuento, envio, total,
+        estado: 'pendiente', estado_pago: 'pendiente'
+    };
+
+    try {
+        // Guardar datos del pedido en sessionStorage para pago.html
+        sessionStorage.setItem('pago_pedido', JSON.stringify(pedido));
+
+        // Progreso
+        document.getElementById('progress-fill').style.width = '80%';
+
+        // Redirigir a la página de pago
+        window.location.href = 'https://cxr10s.github.io/tienda/pago.html';
+
+    } catch(err) {
+        console.error(err);
+        showToast('❌ Error al procesar. Intenta de nuevo.');
+        btn.disabled = false;
+        btn.classList.remove('loading');
     }
 });
 
-// ── GENERAR TIQUE ──
-async function generarTique(pedido) {
-    if (!window.jspdf) {
-        await new Promise((res,rej) => {
-            const s = document.createElement('script');
-            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-            s.onload = res; s.onerror = rej;
-            document.head.appendChild(s);
-        });
-    }
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit:'mm', format:'a4' });
-    const W=210, M=20;
-    let y=20;
-    const fmtN = n => '$' + Math.round(Number(n)).toLocaleString('es-CO');
-    const idCorto = pedido.id.substring(0,8).toUpperCase();
-
-    doc.setFillColor(10,10,10); doc.rect(0,0,W,42,'F');
-    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(20);
-    doc.text('SHOP', M, y+8);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,180,180);
-    doc.text('cxr10s.github.io/tienda', M, y+16);
-    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(200,255,0);
-    doc.text('TIQUE DE PAGO', W-M, y+8, {align:'right'});
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,180,180);
-    doc.text('#'+idCorto, W-M, y+15, {align:'right'});
-    doc.text(new Date(pedido.created_at||Date.now()).toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'}), W-M, y+21, {align:'right'});
-
-    y=52;
-    const ep = pedido.estado_pago||'pendiente';
-    const pagoLabel = ep==='pagado'?'PAGO CONFIRMADO':ep==='error'?'PAGO RECHAZADO':'PAGO PENDIENTE — EN VERIFICACIÓN';
-    const pc = ep==='pagado'?[34,197,94]:ep==='error'?[239,68,68]:[245,158,11];
-    doc.setFillColor(...pc); doc.roundedRect(M,y-6,W-M*2,12,3,3,'F');
-    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
-    doc.text(pagoLabel, W/2, y+1.5, {align:'center'}); y+=16;
-
-    doc.setFillColor(245,245,245); doc.roundedRect(M,y,W-M*2,44,3,3,'F');
-    doc.setTextColor(100,100,100); doc.setFont('helvetica','bold'); doc.setFontSize(7);
-    doc.text('INFORMACIÓN DEL PEDIDO', M+6, y+7);
-    doc.setTextColor(10,10,10); doc.setFont('helvetica','bold'); doc.setFontSize(10);
-    doc.text(pedido.nombre||'', M+6, y+15);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(100,100,100);
-    doc.text(`Tel: ${pedido.telefono||''}`, M+6, y+23);
-    doc.text(`Email: ${pedido.email||''}`, M+6, y+30);
-    doc.text(`Entrega: ${pedido.tipo_entrega==='domicilio'?'Domicilio':'Recoger en tienda'}`, M+6, y+37);
-    doc.text(`Método: ${(pedido.metodo_pago||'').replace('-',' ').toUpperCase()}`, W-M-2, y+23, {align:'right'});
-    y+=52;
-
-    doc.setTextColor(100,100,100); doc.setFont('helvetica','bold'); doc.setFontSize(7);
-    doc.text('PRODUCTOS', M, y); y+=5;
-    doc.setFillColor(10,10,10); doc.rect(M,y,W-M*2,8,'F');
-    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(8);
-    doc.text('PRODUCTO',M+4,y+5.5); doc.text('CANT.',W-65,y+5.5,{align:'right'}); doc.text('TOTAL',W-M-2,y+5.5,{align:'right'}); y+=8;
-
-    (pedido.productos||[]).forEach((p,i) => {
-        const bg=i%2===0?[255,255,255]:[248,248,248];
-        doc.setFillColor(...bg); doc.rect(M,y,W-M*2,9,'F');
-        doc.setTextColor(10,10,10); doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
-        doc.text(p.name+(p.isGift?' (REGALO)':''),M+4,y+6);
-        doc.text(String(p.quantity),W-65,y+6,{align:'right'});
-        if(p.isGift){doc.setTextColor(34,197,94);doc.text('GRATIS',W-M-2,y+6,{align:'right'});}
-        else{doc.setTextColor(10,10,10);doc.text(fmtN(p.price*p.quantity)+' COP',W-M-2,y+6,{align:'right'});}
-        y+=9;
-    });
-
-    y+=4; doc.setDrawColor(220,220,220); doc.line(M,y,W-M,y); y+=6;
-    [{l:'Subtotal',v:fmtN(pedido.subtotal)+' COP'},
-     ...(pedido.descuento>0?[{l:'Descuento',v:'-'+fmtN(pedido.descuento)+' COP',c:[34,197,94]}]:[]),
-     {l:'Envío',v:pedido.envio>0?fmtN(pedido.envio)+' COP':'¡Gratis!'}
-    ].forEach(r=>{
-        doc.setFont('helvetica','normal'); doc.setFontSize(9);
-        doc.setTextColor(...(r.c||[100,100,100]));
-        doc.text(r.l,W-80,y); doc.text(r.v,W-M-2,y,{align:'right'}); y+=7;
-    });
-    y+=2;
-    doc.setFillColor(10,10,10); doc.roundedRect(W-90,y-6,70,12,2,2,'F');
-    doc.setTextColor(255,255,255); doc.setFont('helvetica','normal'); doc.setFontSize(9);
-    doc.text('TOTAL',W-86,y+2);
-    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(200,255,0);
-    doc.text(fmtN(pedido.total)+' COP',W-M-2,y+2.5,{align:'right'}); y+=22;
-
-    doc.setFillColor(245,245,245); doc.roundedRect(M,y,W-M*2,16,3,3,'F');
-    doc.setTextColor(100,100,100); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-    doc.text('ID del pedido:', M+6, y+6);
-    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(10,10,10);
-    doc.text(idCorto, M+6, y+13);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(100,100,100);
-    doc.text('cxr10s.github.io/tienda/mis-pedidos.html', W-M-2, y+13, {align:'right'}); y+=24;
-
-    doc.setTextColor(180,180,180); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
-    doc.text('Gracias por tu compra — Shop · Tienda Deportiva', W/2, y, {align:'center'});
-    doc.text('Conserva este tique como comprobante de tu pedido.', W/2, y+5, {align:'center'});
-    doc.save(`Tique-${idCorto}.pdf`);
-
-    try {
-        const tiques = JSON.parse(localStorage.getItem('tiques_pedidos')||'{}');
-        tiques[pedido.id] = true;
-        localStorage.setItem('tiques_pedidos', JSON.stringify(tiques));
-    } catch(e) {}
-}
+loadCart();
+renderOrder();
+prefillFromSession();
 </script>
+
 </body>
 </html>
