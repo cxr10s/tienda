@@ -344,20 +344,6 @@
             gap: 20px;
             flex-wrap: wrap;
         }
-        .qr-placeholder {
-            width: 110px; height: 110px;
-            border: 2px dashed var(--border2);
-            border-radius: 12px;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            gap: 6px;
-            color: var(--muted);
-            font-size: 11px;
-            text-align: center;
-            flex-shrink: 0;
-            background: var(--surface2);
-        }
-        .qr-placeholder svg { width: 28px; height: 28px; opacity: 0.4; }
         .qr-real {
             width: 110px; height: 110px;
             border-radius: 12px;
@@ -750,7 +736,7 @@
                     <div class="metodo-icon">🏦</div>
                     <div class="metodo-info">
                         <div class="metodo-name">Transferencia bancaria</div>
-                        <div class="metodo-desc">Nu Bank · Cuenta de ahorros</div>
+                        <div class="metodo-desc">Nu Banco · Cuenta de ahorros</div>
                     </div>
                 </div>
 
@@ -799,10 +785,6 @@
                     <div class="nequi-qr-box">
                         <div>
                             <!-- QR placeholder — reemplazar con imagen real -->
-                            <div class="qr-placeholder" id="qr-placeholder">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2zM18 14h3v2h-3zM14 18h2v3h-2zM18 18h3v3h-3z"/></svg>
-                                <span>QR </span>
-                            </div>
                             <!-- Cuando tengas la imagen del QR: descomenta esto y comenta el placeholder -->
                             <img src="QR.jpeg" class="qr-real" id="qr-real" alt="QR Nequi"> 
                         </div>
@@ -842,7 +824,7 @@
                     <div class="banco-grid">
                         <div class="banco-item">
                             <div class="banco-item-label">BANCO</div>
-                            <div class="banco-item-value">Nu Bank (Nubank)</div>
+                            <div class="banco-item-value">Nu Banco (Nubank)</div>
                         </div>
                         <div class="banco-item">
                             <div class="banco-item-label">TIPO DE CUENTA</div>
