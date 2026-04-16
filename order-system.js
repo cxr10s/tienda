@@ -4,24 +4,83 @@
 const SUPABASE_URL = 'https://qvaaistunotxgpyqebya.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
 
+// =============================================
+// CONFIGURACIÓN WOMPI
+//
+// SANDBOX (activo ahora — solo para pruebas):
+//   Checkout: https://checkout.wompi.co/p/
+//   Llave pública: pub_test_...
+//   Llave integridad: test_integrity_...
+//
+// PRODUCCIÓN (cuando Wompi te habilite):
+//   1. Comenta las líneas de SANDBOX
+//   2. Descomenta las líneas de PRODUCCIÓN
+//   3. Haz lo mismo en pago-resultado.html (wompiIntegritySecret)
+// =============================================
+
+// — SANDBOX —
+const WOMPI_PUBLIC_KEY       = 'pub_test_9kFqdnduO7A4r7WelX97pzJgjA7aBpGV';
+const WOMPI_INTEGRITY_SECRET = 'test_integrity_itRExQlNZCY87qnVRdvNrXqXX7TEmPEr';
+const WOMPI_CHECKOUT_URL     = 'https://checkout.wompi.co/p/';
+
+// — PRODUCCIÓN (descomenta cuando llegue el momento) —
+// const WOMPI_PUBLIC_KEY       = 'pub_prod_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+// const WOMPI_INTEGRITY_SECRET = 'prod_integrity_XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX';
+// const WOMPI_CHECKOUT_URL     = 'https://checkout.wompi.co/p/';  // La URL es la misma en producción
+
 
 // =============================================
-// INTEGRACIÓN MERCADO PAGO (PRODUCCIÓN)
+// GUARDAR PEDIDO EN SUPABASE
 // =============================================
-// Llama a la Edge Function que guarda el pedido y devuelve la URL de pago
-async function crearPreferenciaMercadoPago(pedido) {
-    // URL de tu proyecto Supabase
-    const EDGE_URL = 'https://tienda-deportiva.functions.supabase.co/create-preference';
-    const response = await fetch(EDGE_URL, {
+async function guardarPedidoEnSupabase(pedido) {
+    const response = await fetch(`${SUPABASE_URL}/rest/v1/pedidos`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ pedido })
+        headers: {
+            'Content-Type': 'application/json',
+            'apikey': SUPABASE_ANON_KEY,
+            'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+            'Prefer': 'return=representation'
+        },
+        body: JSON.stringify(pedido)
     });
+
     if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || 'Error creando preferencia de pago');
+        throw new Error(error.message || 'Error al guardar el pedido');
     }
-    return await response.json(); // { init_point, pedidoId }
+
+    return await response.json();
+}
+
+// =============================================
+// REDIRIGIR A WOMPI
+// =============================================
+async function redirigirAWompi(pedido) {
+    const totalCentavos = Math.round(pedido.total * 100);
+    const referencia    = pedido.id;
+    const urlRetorno    = 'https://cxr10s.github.io/pago-resultado.html';
+
+    // Generar firma de integridad SHA-256
+    // Cadena: referencia + monto + moneda + secret
+    const cadena = `${referencia}${totalCentavos}COP${WOMPI_INTEGRITY_SECRET}`;
+    const encoder = new TextEncoder();
+    const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(cadena));
+    const signature = Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2, '0')).join('');
+
+    const params = new URLSearchParams({
+        'public-key':                 WOMPI_PUBLIC_KEY,
+        'currency':                   'COP',
+        'amount-in-cents':            totalCentavos,
+        'reference':                  referencia,
+        'redirect-url':               urlRetorno,
+        'signature:integrity':        signature,
+        'customer-data:email':        pedido.email,
+        'customer-data:full-name':    pedido.nombre,
+        'customer-data:phone-number': pedido.telefono,
+    });
+
+    window.location.href = `${WOMPI_CHECKOUT_URL}?${params.toString()}`;
 }
 
 // =============================================
@@ -99,10 +158,20 @@ async function submitReservation(event) {
     }
 
     try {
-        // Llama a la Edge Function que guarda el pedido y crea la preferencia de Mercado Pago
-        const { init_point, pedidoId } = await crearPreferenciaMercadoPago(pedido);
+        const result = await guardarPedidoEnSupabase(pedido);
 
-        // Limpiar carrito y datos locales
+        // Obtener el ID real que asignó Supabase
+        const pedidoGuardado = {
+            ...pedido,
+            id: Array.isArray(result) && result[0]
+                ? result[0].id
+                : ('local-' + Date.now()),
+            created_at: Array.isArray(result) && result[0]
+                ? result[0].created_at
+                : new Date().toISOString()
+        };
+
+        // Limpiar carrito ANTES de redirigir
         cart = [];
         window._lastRemovedGiftId = null;
         try {
@@ -112,15 +181,15 @@ async function submitReservation(event) {
         updateCartDisplay();
         updateCartIcon();
 
-        // Cerrar modal
+        // Cerrar modal del formulario
         closeReservationModal();
 
-        // Redirigir a Mercado Pago
-        window.location.href = init_point;
+        // Redirigir a Wompi con el ID real del pedido
+        await mostrarAlertaFactura(pedidoGuardado);
 
     } catch (error) {
-        console.error('Error en el pago:', error);
-        showNotification('❌ Error al procesar el pago. Intenta de nuevo.');
+        console.error('Error al guardar pedido:', error);
+        showNotification('❌ Error al guardar el pedido. Intenta de nuevo.');
         if (btn) {
             btn.disabled = false;
             btn.querySelector('.submit-btn-text').textContent = 'Realizar Pedido';
@@ -158,16 +227,16 @@ function mostrarAlertaFactura(pedido) {
 
         overlay.innerHTML = `
             <style>
-            @keyframes facturaFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
-            #factura-alert-box { background:#111; border:1px solid rgba(255,255,255,0.1); border-radius:18px; max-width:420px; width:100%; padding:2rem 1.8rem; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.7); }
-            #factura-alert-box .fa-icon { font-size:3rem; margin-bottom:1rem; }
-            #factura-alert-box h2 { color:#fff; font-size:1.3rem; margin:0 0 0.5rem; }
-            #factura-alert-box p { color:#aaa; font-size:0.92rem; margin:0 0 1.4rem; line-height:1.6; }
-            #factura-alert-box .order-id { display:inline-block; background:#1e1e1e; border:1px solid #333; border-radius:8px; padding:0.35rem 1rem; font-family:monospace; font-size:1rem; color:#adff2f; margin-bottom:1.4rem; letter-spacing:1px; }
-            #factura-alert-box .btn-download { display:block; width:100%; padding:0.85rem; background:#adff2f; color:#000; font-weight:700; font-size:1rem; border:none; border-radius:10px; cursor:pointer; margin-bottom:0.75rem; transition:opacity 0.2s; }
-            #factura-alert-box .btn-download:hover { opacity:0.85; }
-            #factura-alert-box .btn-skip { display:block; width:100%; padding:0.7rem; background:transparent; color:#666; font-size:0.88rem; border:none; cursor:pointer; }
-            #factura-alert-box .btn-skip:hover { color:#999; }
+                @keyframes facturaFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+                #factura-alert-box { background:#111; border:1px solid rgba(255,255,255,0.1); border-radius:18px; max-width:420px; width:100%; padding:2rem 1.8rem; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.7); }
+                #factura-alert-box .fa-icon { font-size:3rem; margin-bottom:1rem; }
+                #factura-alert-box h2 { color:#fff; font-size:1.3rem; margin:0 0 0.5rem; }
+                #factura-alert-box p { color:#aaa; font-size:0.92rem; margin:0 0 1.4rem; line-height:1.6; }
+                #factura-alert-box .order-id { display:inline-block; background:#1e1e1e; border:1px solid #333; border-radius:8px; padding:0.35rem 1rem; font-family:monospace; font-size:1rem; color:#adff2f; margin-bottom:1.4rem; letter-spacing:1px; }
+                #factura-alert-box .btn-download { display:block; width:100%; padding:0.85rem; background:#adff2f; color:#000; font-weight:700; font-size:1rem; border:none; border-radius:10px; cursor:pointer; margin-bottom:0.75rem; transition:opacity 0.2s; }
+                #factura-alert-box .btn-download:hover { opacity:0.85; }
+                #factura-alert-box .btn-skip { display:block; width:100%; padding:0.7rem; background:transparent; color:#666; font-size:0.88rem; border:none; cursor:pointer; }
+                #factura-alert-box .btn-skip:hover { color:#999; }
             </style>
             <div id="factura-alert-box">
                 <div class="fa-icon">🧾</div>
