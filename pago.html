@@ -1,653 +1,1270 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pago </title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
-<style>
-:root {
-    --bg:        #f5f5f3;
-    --surface:   #ffffff;
-    --surface2:  #f0f0ee;
-    --border:    #e8e8e4;
-    --border2:   #d4d4ce;
-    --text:      #111110;
-    --muted:     #888880;
-    --muted2:    #b8b8b0;
-    --accent:    #111110;
-    --green:     #16a34a;
-    --green-bg:  #f0fdf4;
-    --green-bdr: #bbf7d0;
-    --blue:      #1d4ed8;
-    --blue-bg:   #eff6ff;
-    --yellow:    #d97706;
-    --yellow-bg: #fffbeb;
-    --red:       #dc2626;
-    --radius:    16px;
-    --radius-sm: 10px;
-    --radius-xs: 7px;
-    --shadow:    0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-    --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
-}
-*{margin:0;padding:0;box-sizing:border-box;}
-body{background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;min-height:100vh;font-size:15px;}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pago — Shop</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg:          #f6f6f4;
+            --surface:     #ffffff;
+            --surface2:    #f0f0ee;
+            --border:      #e4e4e0;
+            --border2:     #d0d0cc;
+            --text:        #0a0a0a;
+            --muted:       #888880;
+            --muted2:      #b0b0aa;
+            --accent:      #0a0a0a;
+            --accent-bg:   #0a0a0a;
+            --green:       #16a34a;
+            --green-bg:    #f0fdf4;
+            --green-border:#bbf7d0;
+            --red:         #dc2626;
+            --radius:      16px;
+            --radius-sm:   10px;
+            --shadow:      0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.04);
+            --shadow-md:   0 4px 24px rgba(0,0,0,0.10);
+        }
 
-/* ── HEADER ── */
-.hdr{background:var(--surface);border-bottom:1px solid var(--border);height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 1.5rem;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
-.hdr-logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--text);}
-.hdr-logo svg{width:22px;height:22px;flex-shrink:0;}
-.hdr-logo-text{font-size:16px;font-weight:800;letter-spacing:0.5px;}
-.hdr-back{display:flex;align-items:center;gap:5px;color:var(--muted);font-size:13px;text-decoration:none;transition:color .18s;}
-.hdr-back:hover{color:var(--text);}
-.hdr-back svg{width:14px;height:14px;}
+        * { margin:0; padding:0; box-sizing:border-box; }
 
-/* ── STEPS ── */
-.steps-bar{background:var(--surface);border-bottom:1px solid var(--border);padding:0 1.5rem;}
-.steps{display:flex;align-items:center;max-width:860px;margin:0 auto;padding:14px 0;}
-.step{display:flex;align-items:center;gap:7px;font-size:11px;font-weight:700;letter-spacing:.8px;color:var(--muted2);}
-.step.done{color:var(--green);}
-.step.active{color:var(--text);}
-.step-n{width:20px;height:20px;border-radius:50%;border:1.5px solid currentColor;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;}
-.step.done .step-n{background:var(--green);border-color:var(--green);color:#fff;}
-.step.active .step-n{background:var(--text);border-color:var(--text);color:#fff;}
-.step-line{flex:1;height:1px;background:var(--border2);margin:0 10px;}
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Syne', sans-serif;
+            min-height: 100vh;
+            font-size: 15px;
+        }
 
-/* ── LAYOUT ── */
-.wrap{max-width:860px;margin:0 auto;padding:2rem 1.5rem 4rem;display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start;}
+        /* ── HEADER ── */
+        .header {
+            background: #fff;
+            border-bottom: 1px solid var(--border);
+            padding: 0 24px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-/* ── CARD ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;box-shadow:var(--shadow);}
-.card+.card{margin-top:1rem;}
-.card-title{font-size:11px;font-weight:700;letter-spacing:2px;color:var(--muted);margin-bottom:1.2rem;text-transform:uppercase;}
+        .header-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: #0a0a0a;
+        }
+        .header-logo svg { width: 20px; height: 20px; color: #0a0a0a; }
+        .header-logo-text { font-size: 17px; font-weight: 700; letter-spacing: -0.3px; }
 
-/* ── ENTREGA OPTIONS ── */
-.entrega-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
-.entrega-opt{border:2px solid var(--border);border-radius:var(--radius-sm);padding:1.1rem 1rem;cursor:pointer;transition:all .18s;background:var(--surface);position:relative;}
-.entrega-opt:hover{border-color:var(--border2);background:var(--surface2);}
-.entrega-opt.selected{border-color:var(--text);background:var(--surface);}
-.entrega-opt input[type=radio]{position:absolute;opacity:0;pointer-events:none;}
-.entrega-icon{font-size:1.6rem;margin-bottom:8px;}
-.entrega-title{font-size:14px;font-weight:700;margin-bottom:3px;}
-.entrega-desc{font-size:12px;color:var(--muted);line-height:1.5;}
-.entrega-check{position:absolute;top:10px;right:10px;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;transition:all .18s;}
-.entrega-opt.selected .entrega-check{background:var(--text);border-color:var(--text);}
-.entrega-opt.selected .entrega-check::after{content:'';width:6px;height:6px;background:#fff;border-radius:50%;}
+        .header-back {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: var(--muted);
+            font-size: 13px;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .header-back:hover { color: var(--text); }
 
-/* ── DOMICILIO FIELDS ── */
-.domicilio-fields{display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);}
-.domicilio-fields.show{display:block;}
-.field{margin-bottom:1rem;}
-.field:last-child{margin-bottom:0;}
-label{display:block;font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px;letter-spacing:.3px;}
-input,textarea,select{width:100%;padding:11px 13px;border:1.5px solid var(--border);border-radius:var(--radius-xs);background:var(--surface);color:var(--text);font-family:'Syne',sans-serif;font-size:14px;outline:none;transition:border .18s;}
-input:focus,textarea:focus,select:focus{border-color:var(--text);}
-input.err,textarea.err,select.err{border-color:var(--red);}
-.err-msg{font-size:11px;color:var(--red);margin-top:4px;display:none;}
-.err-msg.show{display:block;}
-textarea{resize:vertical;min-height:72px;}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+        /* ── PROGRESS ── */
+        .progress-bar { height: 2px; background: var(--border); }
+        .progress-fill {
+            height: 100%;
+            background: #0a0a0a;
+            transition: width 0.5s ease;
+            width: 66%;
+        }
 
-/* ── ENVÍO BADGE ── */
-.envio-badge{display:flex;align-items:center;gap:8px;background:var(--yellow-bg);border:1px solid #fde68a;border-radius:var(--radius-xs);padding:10px 12px;margin-top:1rem;font-size:13px;color:var(--yellow);}
-.envio-badge.free{background:var(--green-bg);border-color:var(--green-bdr);color:var(--green);}
+        /* ── STEPS ── */
+        .steps-nav {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0;
+            padding: 20px 24px 0;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 1px;
+            color: var(--muted2);
+        }
+        .step-item.done { color: var(--muted); }
+        .step-item.active { color: var(--text); }
+        .step-dot {
+            width: 20px; height: 20px;
+            border-radius: 50%;
+            border: 1.5px solid var(--border2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 10px; font-weight: 700;
+            background: #fff;
+            color: var(--muted2);
+        }
+        .step-item.done .step-dot { background: #0a0a0a; border-color: #0a0a0a; color: #fff; }
+        .step-item.active .step-dot { background: #0a0a0a; border-color: #0a0a0a; color: #fff; }
+        .step-line { flex: 1; height: 1.5px; background: var(--border); margin: 0 8px; min-width: 30px; }
+        .step-line.done { background: #0a0a0a; }
 
-/* ── PAGO METHODS ── */
-.metodos-list{display:flex;flex-direction:column;gap:8px;}
-.metodo{border:2px solid var(--border);border-radius:var(--radius-sm);padding:1rem 1.1rem;cursor:pointer;transition:all .18s;display:flex;align-items:center;gap:12px;position:relative;}
-.metodo:hover{border-color:var(--border2);background:var(--surface2);}
-.metodo.selected{border-color:var(--text);background:var(--surface);}
-.metodo.disabled{opacity:.4;cursor:not-allowed;pointer-events:none;}
-.metodo-icon{width:38px;height:38px;border-radius:var(--radius-xs);display:flex;align-items:center;justify-content:center;font-size:1.2rem;flex-shrink:0;background:var(--surface2);}
-.metodo-info{flex:1;}
-.metodo-title{font-size:14px;font-weight:700;margin-bottom:2px;}
-.metodo-sub{font-size:12px;color:var(--muted);line-height:1.4;}
-.metodo-badge{font-size:10px;font-weight:700;letter-spacing:.5px;padding:2px 7px;border-radius:100px;}
-.badge-soon{background:#f1f5f9;color:#94a3b8;}
-.badge-new{background:#dcfce7;color:#16a34a;}
-.metodo-radio{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--border2);flex-shrink:0;transition:all .18s;display:flex;align-items:center;justify-content:center;}
-.metodo.selected .metodo-radio{background:var(--text);border-color:var(--text);}
-.metodo.selected .metodo-radio::after{content:'';width:5px;height:5px;background:#fff;border-radius:50%;}
+        /* ── LAYOUT ── */
+        .layout {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 0;
+            max-width: 1000px;
+            margin: 0 auto;
+            min-height: calc(100vh - 58px);
+        }
 
-/* ── INSTRUCCIONES PAGO ── */
-.instrucciones{display:none;margin-top:1rem;padding:1.1rem;background:var(--surface2);border-radius:var(--radius-xs);border:1px solid var(--border);animation:fadeUp .2s ease;}
-.instrucciones.show{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-.inst-title{font-size:12px;font-weight:700;letter-spacing:.5px;color:var(--muted);margin-bottom:10px;text-transform:uppercase;}
-.inst-item{display:flex;align-items:flex-start;gap:8px;margin-bottom:8px;font-size:13px;line-height:1.5;}
-.inst-item:last-child{margin-bottom:0;}
-.inst-num{width:20px;height:20px;background:var(--text);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;margin-top:1px;}
-.dato-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xs);padding:10px 12px;margin-top:8px;}
-.dato-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:4px 0;}
-.dato-row+.dato-row{border-top:1px solid var(--border);}
-.dato-label{color:var(--muted);font-size:12px;}
-.dato-val{font-family:'DM Mono',monospace;font-weight:500;font-size:13px;}
-.copy-btn{background:none;border:1px solid var(--border);border-radius:5px;padding:2px 8px;font-size:11px;cursor:pointer;color:var(--muted);transition:all .18s;font-family:'Syne',sans-serif;}
-.copy-btn:hover{border-color:var(--text);color:var(--text);}
+        /* ── MAIN ── */
+        .main-side {
+            padding: 32px 32px 32px 24px;
+            border-right: 1px solid var(--border);
+        }
 
-/* ── COMPROBANTE ── */
-.comprobante-wrap{margin-top:1rem;}
-.upload-area{border:2px dashed var(--border2);border-radius:var(--radius-xs);padding:1.5rem;text-align:center;cursor:pointer;transition:all .18s;background:var(--surface2);}
-.upload-area:hover{border-color:var(--text);background:var(--surface);}
-.upload-area svg{width:28px;height:28px;color:var(--muted);margin-bottom:8px;}
-.upload-label{font-size:13px;color:var(--muted);line-height:1.5;}
-.upload-label strong{color:var(--text);}
-#file-input{display:none;}
-.file-preview{display:none;margin-top:10px;align-items:center;gap:8px;background:var(--green-bg);border:1px solid var(--green-bdr);border-radius:var(--radius-xs);padding:8px 12px;font-size:12px;color:var(--green);}
-.file-preview.show{display:flex;}
-.file-preview svg{width:14px;height:14px;flex-shrink:0;}
+        .section-title {
+            font-size: 20px;
+            font-weight: 800;
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
+        }
+        .section-sub {
+            color: var(--muted);
+            font-size: 13px;
+            margin-bottom: 28px;
+        }
 
-/* ── CONFIRM BTN ── */
-.confirm-btn{width:100%;padding:14px;background:var(--text);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Syne',sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:1.2rem;}
-.confirm-btn:hover{background:#2a2a28;transform:translateY(-1px);}
-.confirm-btn:active{transform:translateY(0);}
-.confirm-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;}
-.confirm-btn .spinner{width:17px;height:17px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:none;}
-.confirm-btn.loading .spinner{display:block;}
-.confirm-btn.loading .btn-txt{display:none;}
-@keyframes spin{to{transform:rotate(360deg)}}
-.secure-note{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:10px;color:var(--muted);font-size:12px;}
-.secure-note svg{width:12px;height:12px;}
+        /* ── ENTREGA OPTIONS ── */
+        .entrega-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 28px;
+        }
 
-/* ── RESUMEN ── */
-.resumen-items{margin-bottom:1rem;}
-.res-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
-.res-item:last-child{border-bottom:none;}
-.res-qty{width:22px;height:22px;background:var(--text);color:#fff;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;flex-shrink:0;font-family:'DM Mono',monospace;}
-.res-qty.gift{background:#16a34a;}
-.res-name{flex:1;font-weight:600;line-height:1.3;}
-.res-price{font-family:'DM Mono',monospace;font-size:12px;font-weight:500;white-space:nowrap;}
-.res-price.free{color:var(--green);font-size:11px;font-weight:700;}
-.res-totales{border-top:1px solid var(--border);padding-top:10px;}
-.res-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:6px;}
-.res-row span:first-child{color:var(--muted);}
-.res-row span:last-child{font-family:'DM Mono',monospace;font-weight:500;}
-.res-row.discount span:last-child{color:var(--green);}
-.res-total-box{background:var(--text);color:#fff;border-radius:var(--radius-xs);padding:12px 14px;display:flex;justify-content:space-between;align-items:center;margin-top:10px;}
-.res-total-label{font-size:13px;font-weight:600;}
-.res-total-val{font-family:'DM Mono',monospace;font-size:17px;font-weight:500;}
+        .entrega-card {
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--surface);
+            position: relative;
+            text-align: left;
+        }
+        .entrega-card:hover { border-color: var(--border2); }
+        .entrega-card.selected {
+            border-color: #0a0a0a;
+            background: #fafafa;
+        }
+        .entrega-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 12px; right: 14px;
+            width: 20px; height: 20px;
+            background: #0a0a0a;
+            color: #fff;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            line-height: 20px;
+            text-align: center;
+        }
+        .entrega-icon {
+            font-size: 26px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .entrega-name {
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .entrega-desc {
+            font-size: 12px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
 
-/* ── TOAST ── */
-.toast{position:fixed;bottom:1.5rem;left:50%;transform:translateX(-50%) translateY(12px);background:var(--text);color:#fff;padding:10px 18px;border-radius:100px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:999;pointer-events:none;white-space:nowrap;}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+        /* ── DOMICILIO FIELDS ── */
+        .domicilio-fields {
+            display: none;
+            flex-direction: column;
+            gap: 14px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+        }
+        .domicilio-fields.show { display: flex; }
 
-/* ── SUCCESS SCREEN ── */
-.success-screen{display:none;position:fixed;inset:0;background:var(--surface);z-index:200;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:2rem;animation:fadeUp .4s ease;}
-.success-screen.show{display:flex;}
-.success-icon{width:72px;height:72px;background:var(--green-bg);border-radius:50%;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;border:2px solid var(--green-bdr);}
-.success-icon svg{width:36px;height:36px;color:var(--green);}
-.success-title{font-size:24px;font-weight:800;margin-bottom:8px;}
-.success-msg{color:var(--muted);font-size:14px;line-height:1.6;max-width:380px;margin-bottom:2rem;}
-.success-id{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-xs);padding:8px 16px;font-family:'DM Mono',monospace;font-size:14px;margin-bottom:2rem;letter-spacing:1px;}
-.success-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;}
-.btn-outline{padding:11px 20px;border:1.5px solid var(--border2);border-radius:var(--radius-xs);background:none;color:var(--text);font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .18s;}
-.btn-outline:hover{border-color:var(--text);}
-.btn-solid{padding:11px 20px;background:var(--text);border:none;border-radius:var(--radius-xs);color:#fff;font-family:'Syne',sans-serif;font-size:13px;font-weight:700;cursor:pointer;text-decoration:none;transition:all .18s;}
-.btn-solid:hover{background:#2a2a28;}
+        .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .field { display: flex; flex-direction: column; gap: 5px; }
+        .field.full { grid-column: 1/-1; }
+        .field label { font-size: 12px; font-weight: 600; color: #555; }
+        .field input, .field select, .field textarea {
+            padding: 11px 13px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: 'Syne', sans-serif;
+            font-size: 14px;
+            color: var(--text);
+            background: var(--bg);
+            outline: none;
+            transition: border-color 0.2s;
+            width: 100%;
+        }
+        .field input:focus, .field select:focus, .field textarea:focus {
+            border-color: #0a0a0a;
+        }
+        .envio-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: var(--surface2);
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            color: var(--muted);
+            border: 1px solid var(--border);
+        }
+        .envio-badge strong { color: var(--text); }
 
-/* ── RESPONSIVE ── */
-@media(max-width:700px){
-    .wrap{grid-template-columns:1fr;}
-    .entrega-grid{grid-template-columns:1fr;}
-    .field-row{grid-template-columns:1fr;}
-}
-</style>
+        /* ── MÉTODOS DE PAGO ── */
+        .metodos-label {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .metodos-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            margin-bottom: 24px;
+        }
+
+        .metodo-card {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            background: var(--surface);
+            transition: all 0.18s;
+            position: relative;
+        }
+        .metodo-card:hover { border-color: var(--border2); }
+        .metodo-card.selected { border-color: #0a0a0a; background: #fafafa; }
+        .metodo-radio {
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            border: 2px solid var(--border2);
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+            transition: all 0.15s;
+        }
+        .metodo-card.selected .metodo-radio {
+            border-color: #0a0a0a;
+            background: #0a0a0a;
+        }
+        .metodo-card.selected .metodo-radio::after {
+            content: '';
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: #fff;
+            display: block;
+        }
+        .metodo-icon {
+            width: 36px; height: 36px;
+            border-radius: 8px;
+            background: var(--surface2);
+            display: flex; align-items: center; justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+        .metodo-info { flex: 1; }
+        .metodo-name { font-size: 14px; font-weight: 700; }
+        .metodo-desc { font-size: 12px; color: var(--muted); margin-top: 1px; }
+        .metodo-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 100px;
+            background: #f0fdf4;
+            color: #16a34a;
+            border: 1px solid #bbf7d0;
+        }
+
+        /* ── INSTRUCCIONES DE PAGO ── */
+        .instrucciones {
+            display: none;
+            margin-bottom: 24px;
+        }
+        .instrucciones.show { display: block; }
+
+        .inst-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 20px;
+        }
+        .inst-title {
+            font-size: 13px;
+            font-weight: 700;
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .inst-title span { font-size: 18px; }
+
+        /* Nequi QR */
+        .nequi-qr-box {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .qr-placeholder {
+            width: 110px; height: 110px;
+            border: 2px dashed var(--border2);
+            border-radius: 12px;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 6px;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+            flex-shrink: 0;
+            background: var(--surface2);
+        }
+        .qr-placeholder svg { width: 28px; height: 28px; opacity: 0.4; }
+        .qr-real {
+            width: 110px; height: 110px;
+            border-radius: 12px;
+            object-fit: cover;
+            display: none;
+            border: 1px solid var(--border);
+        }
+        .nequi-data { flex: 1; min-width: 180px; }
+        .data-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 12px;
+            background: var(--surface2);
+            border-radius: 8px;
+            margin-bottom: 6px;
+        }
+        .data-label { font-size: 11px; color: var(--muted); font-weight: 600; }
+        .data-value {
+            font-family: 'DM Mono', monospace;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text);
+            display: flex; align-items: center; gap: 6px;
+        }
+        .copy-btn {
+            background: none; border: none; cursor: pointer;
+            color: var(--muted); padding: 2px; border-radius: 4px;
+            transition: color 0.15s;
+            display: flex; align-items: center;
+        }
+        .copy-btn:hover { color: var(--text); }
+        .copy-btn svg { width: 13px; height: 13px; }
+
+        /* Banco */
+        .banco-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .banco-item {
+            padding: 10px 12px;
+            background: var(--surface2);
+            border-radius: 8px;
+        }
+        .banco-item-label { font-size: 10px; color: var(--muted); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 3px; }
+        .banco-item-value { font-size: 13px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 6px; }
+
+        /* PSE */
+        .pse-list { display: flex; flex-direction: column; gap: 8px; }
+        .pse-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+        .pse-list li::before { content: '→'; color: var(--text); font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+
+        /* Contra entrega */
+        .info-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 14px;
+            background: var(--surface2);
+            border-radius: 100px;
+            font-size: 13px;
+            color: var(--muted);
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+        }
+
+        /* Tarjeta débito */
+        .tarjeta-redes {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .red-card {
+            padding: 6px 14px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text);
+            background: var(--surface2);
+        }
+
+        /* ── COMPROBANTE ── */
+        .comprobante-section {
+            display: none;
+            margin-bottom: 24px;
+        }
+        .comprobante-section.show { display: block; }
+        .comprobante-label {
+            font-size: 12px; font-weight: 600; color: #555; margin-bottom: 6px;
+        }
+        .comprobante-box {
+            border: 2px dashed var(--border2);
+            border-radius: var(--radius-sm);
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: border-color 0.2s;
+            background: var(--surface);
+        }
+        .comprobante-box:hover { border-color: var(--border2); background: var(--surface2); }
+        .comprobante-box input { display: none; }
+        .comprobante-icon { font-size: 24px; margin-bottom: 6px; }
+        .comprobante-text { font-size: 13px; color: var(--muted); }
+        .comprobante-preview {
+            display: none;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: var(--surface2);
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+        }
+        .comprobante-preview.show { display: flex; }
+        .comprobante-preview img { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; }
+        .comprobante-preview-info { flex: 1; }
+        .comprobante-preview-name { font-size: 13px; font-weight: 600; }
+        .comprobante-preview-size { font-size: 11px; color: var(--muted); }
+        .comprobante-remove {
+            background: none; border: none; cursor: pointer;
+            color: var(--muted); padding: 4px; border-radius: 6px;
+            transition: color 0.15s;
+        }
+        .comprobante-remove:hover { color: var(--red); }
+
+        /* ── SUBMIT BTN ── */
+        .submit-section { padding-top: 8px; }
+        .submit-btn {
+            width: 100%;
+            padding: 15px 20px;
+            background: #0a0a0a;
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-family: 'Syne', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            letter-spacing: 0.2px;
+        }
+        .submit-btn:hover { background: #1a1a1a; transform: translateY(-1px); }
+        .submit-btn:active { transform: translateY(0); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+        .submit-btn.loading .btn-text { display: none; }
+        .submit-btn:not(.loading) .btn-spinner { display: none; }
+        .btn-spinner {
+            width: 18px; height: 18px;
+            border: 2px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin 0.7s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .secure-note {
+            display: flex; align-items: center; justify-content: center;
+            gap: 5px; margin-top: 10px;
+            color: var(--muted); font-size: 12px;
+        }
+
+        /* ── ORDER SIDE ── */
+        .order-side {
+            padding: 32px 24px 32px 28px;
+            background: var(--surface2);
+            position: sticky;
+            top: 58px;
+            height: calc(100vh - 58px);
+            overflow-y: auto;
+        }
+
+        .order-title {
+            font-size: 10px; font-weight: 700;
+            letter-spacing: 2px; color: var(--muted);
+            text-transform: uppercase; margin-bottom: 16px;
+        }
+
+        .order-items { display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px; }
+        .order-item {
+            display: flex; align-items: center; gap: 10px;
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--radius-sm); padding: 10px 12px;
+        }
+        .order-qty {
+            width: 22px; height: 22px;
+            background: #0a0a0a; color: #fff;
+            border-radius: 5px; font-size: 10px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Mono', monospace; flex-shrink: 0;
+        }
+        .order-name { flex: 1; font-size: 13px; font-weight: 600; }
+        .order-price { font-family: 'DM Mono', monospace; font-size: 13px; font-weight: 500; }
+
+        .order-divider { height: 1px; background: var(--border); margin: 12px 0; }
+        .order-row {
+            display: flex; justify-content: space-between;
+            font-size: 13px; margin-bottom: 6px;
+        }
+        .order-row span:first-child { color: var(--muted); }
+        .order-row span:last-child { font-family: 'DM Mono', monospace; font-weight: 500; }
+        .order-row.discount span:last-child { color: var(--green); }
+
+        .order-total {
+            display: flex; justify-content: space-between; align-items: center;
+            background: #0a0a0a; color: #fff;
+            border-radius: var(--radius-sm); padding: 14px 16px; margin-top: 10px;
+        }
+        .order-total-label { font-size: 13px; font-weight: 600; }
+        .order-total-value { font-family: 'DM Mono', monospace; font-size: 16px; }
+
+        /* ── TOAST ── */
+        .toast {
+            position: fixed; bottom: 2rem; left: 50%;
+            transform: translateX(-50%) translateY(20px);
+            background: #0a0a0a; color: #fff;
+            padding: 12px 20px; border-radius: 100px;
+            font-size: 13px; font-weight: 600;
+            opacity: 0; transition: all 0.3s ease;
+            z-index: 9999; white-space: nowrap; pointer-events: none;
+        }
+        .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        /* ── COPY TOAST ── */
+        .copy-toast {
+            position: fixed; bottom: 5rem; left: 50%;
+            transform: translateX(-50%);
+            background: #16a34a; color: #fff;
+            padding: 8px 16px; border-radius: 100px;
+            font-size: 12px; font-weight: 600;
+            opacity: 0; pointer-events: none;
+            transition: opacity 0.2s; z-index: 9999;
+        }
+        .copy-toast.show { opacity: 1; }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 768px) {
+            .layout { grid-template-columns: 1fr; }
+            .order-side { position: static; height: auto; order: -1; padding: 20px 16px; border-bottom: 1px solid var(--border); }
+            .main-side { padding: 20px 16px; border-right: none; }
+            .entrega-options { grid-template-columns: 1fr; }
+            .banco-grid { grid-template-columns: 1fr; }
+            .field-row { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 420px) {
+            .steps-nav { gap: 0; }
+            .step-line { min-width: 16px; }
+        }
+    </style>
 </head>
 <body>
 
-<!-- Header -->
-<header class="hdr">
-    <a href="https://cxr10s.github.io/tienda/" class="hdr-logo">
-        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        <span class="hdr-logo-text">STORE</span>
+<!-- HEADER -->
+<header class="header">
+    <a href="https://cxr10s.github.io/tienda/" class="header-logo">
+        <svg viewBox="0 0 16 16" fill="currentColor">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+        </svg>
+        <span class="header-logo-text">Shop</span>
     </a>
-    <a href="https://cxr10s.github.io/tienda/checkout.html" class="hdr-back">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    <a href="https://cxr10s.github.io/tienda/checkout.html" class="header-back">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
         Volver
     </a>
 </header>
+<div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
 
-<!-- Steps -->
-<div class="steps-bar">
-    <div class="steps">
-        <div class="step done">
-            <div class="step-n">✓</div>
-            <span>DATOS</span>
-        </div>
-        <div class="step-line"></div>
-        <div class="step active">
-            <div class="step-n">2</div>
-            <span>PAGO</span>
-        </div>
-        <div class="step-line"></div>
-        <div class="step">
-            <div class="step-n">3</div>
-            <span>CONFIRMACIÓN</span>
-        </div>
+<!-- STEPS -->
+<div class="steps-nav">
+    <div class="step-item done">
+        <div class="step-dot">✓</div>
+        <span>DATOS</span>
+    </div>
+    <div class="step-line done"></div>
+    <div class="step-item active">
+        <div class="step-dot">2</div>
+        <span>PAGO</span>
+    </div>
+    <div class="step-line"></div>
+    <div class="step-item">
+        <div class="step-dot">3</div>
+        <span>CONFIRMACIÓN</span>
     </div>
 </div>
 
-<!-- Layout -->
-<div class="wrap">
-<div>
+<!-- LAYOUT -->
+<div class="layout">
 
-    <!-- 1. Tipo de entrega -->
-    <div class="card">
-        <div class="card-title">¿Cómo quieres recibir tu pedido?</div>
-        <div class="entrega-grid">
-            <div class="entrega-opt" id="opt-recoger" onclick="selEntrega('recoger')">
-                <input type="radio" name="entrega" value="recoger">
-                <div class="entrega-check"></div>
-                <div class="entrega-icon">🏪</div>
-                <div class="entrega-title">Recoger en tienda</div>
-                <div class="entrega-desc">Recoge tu pedido en nuestra ubicación. Sin costo adicional.</div>
+    <!-- MAIN -->
+    <div class="main-side">
+
+        <!-- Tipo de entrega -->
+        <h1 class="section-title">¿Cómo recibes tu pedido?</h1>
+        <p class="section-sub">Elige cómo quieres recibir tus productos</p>
+
+        <div class="entrega-options">
+            <div class="entrega-card" id="card-recoger" onclick="seleccionarEntrega('recoger')">
+                <span class="entrega-icon">🏪</span>
+                <div class="entrega-name">Recoger en tienda</div>
+                <div class="entrega-desc">Recógelo personalmente en nuestra ubicación. Sin costo adicional.</div>
             </div>
-            <div class="entrega-opt" id="opt-domicilio" onclick="selEntrega('domicilio')">
-                <input type="radio" name="entrega" value="domicilio">
-                <div class="entrega-check"></div>
-                <div class="entrega-icon">🚚</div>
-                <div class="entrega-title">Envío a domicilio</div>
-                <div class="entrega-desc">Te lo llevamos a donde estés. Aplica costo de envío.</div>
+            <div class="entrega-card" id="card-domicilio" onclick="seleccionarEntrega('domicilio')">
+                <span class="entrega-icon">🚚</span>
+                <div class="entrega-name">Envío a domicilio</div>
+                <div class="entrega-desc">Lo enviamos a tu dirección. Gratis en compras mayores a $150.000.</div>
             </div>
         </div>
 
         <!-- Campos domicilio -->
         <div class="domicilio-fields" id="domicilio-fields">
+            <div style="font-size:12px; font-weight:700; color:#555; letter-spacing:1px; text-transform:uppercase;">Dirección de envío</div>
             <div class="field-row">
                 <div class="field">
-                    <label>Ciudad *</label>
-                    <input type="text" id="env-ciudad" placeholder="Bogotá">
-                    <div class="err-msg" id="err-ciudad">Ingresa tu ciudad</div>
+                    <label>Departamento *</label>
+                    <select id="dep-envio">
+                        <option value="">Selecciona...</option>
+                        <option>Amazonas</option><option>Antioquia</option><option>Arauca</option>
+                        <option>Atlántico</option><option>Bolívar</option><option>Boyacá</option>
+                        <option>Caldas</option><option>Caquetá</option><option>Casanare</option>
+                        <option>Cauca</option><option>Cesar</option><option>Chocó</option>
+                        <option>Córdoba</option><option>Cundinamarca</option><option>Guainía</option>
+                        <option>Guaviare</option><option>Huila</option><option>La Guajira</option>
+                        <option>Magdalena</option><option>Meta</option><option>Nariño</option>
+                        <option>Norte de Santander</option><option>Putumayo</option><option>Quindío</option>
+                        <option>Risaralda</option><option>San Andrés y Providencia</option>
+                        <option>Santander</option><option>Sucre</option><option>Tolima</option>
+                        <option>Valle del Cauca</option><option>Vaupés</option><option>Vichada</option>
+                        <option>Bogotá D.C.</option>
+                    </select>
                 </div>
                 <div class="field">
-                    <label>Dirección *</label>
-                    <input type="text" id="env-dir" placeholder="Calle 123 # 45-67">
-                    <div class="err-msg" id="err-dir">Ingresa tu dirección</div>
+                    <label>Ciudad *</label>
+                    <input type="text" id="ciudad-envio" placeholder="Bogotá">
                 </div>
             </div>
             <div class="field">
-                <label>Referencias <span style="color:var(--muted);font-weight:400;">(opcional)</span></label>
-                <textarea id="env-ref" placeholder="Barrio, apartamento, punto de referencia..."></textarea>
+                <label>Dirección completa *</label>
+                <input type="text" id="dir-envio" placeholder="Calle 123 # 45-67, Barrio Centro">
+            </div>
+            <div class="field">
+                <label>Referencias (opcional)</label>
+                <input type="text" id="ref-envio" placeholder="Apto 201, conjunto cerrado, timbre no funciona...">
             </div>
             <div class="envio-badge" id="envio-badge">
-                <span>📦</span>
-                <span id="envio-badge-txt">Calculando costo de envío...</span>
+                <span>🚚</span>
+                <span id="envio-txt">Cargando costo de envío...</span>
             </div>
         </div>
+
+        <!-- Métodos de pago -->
+        <div id="metodos-section" style="display:none;">
+            <div class="metodos-label">Selecciona tu método de pago</div>
+
+            <div class="metodos-grid">
+
+                <div class="metodo-card" id="m-nequi-qr" onclick="seleccionarMetodo('nequi-qr')">
+                    <div class="metodo-radio"></div>
+                    <div class="metodo-icon">📱</div>
+                    <div class="metodo-info">
+                        <div class="metodo-name">Nequi — QR</div>
+                        <div class="metodo-desc">Escanea el código QR desde tu app Nequi</div>
+                    </div>
+                    <span class="metodo-badge">Recomendado</span>
+                </div>
+
+                <div class="metodo-card" id="m-nequi-num" onclick="seleccionarMetodo('nequi-num')">
+                    <div class="metodo-radio"></div>
+                    <div class="metodo-icon">💚</div>
+                    <div class="metodo-info">
+                        <div class="metodo-name">Nequi — Número</div>
+                        <div class="metodo-desc">Envía al número o llave Nequi</div>
+                    </div>
+                </div>
+
+                <div class="metodo-card" id="m-transferencia" onclick="seleccionarMetodo('transferencia')">
+                    <div class="metodo-radio"></div>
+                    <div class="metodo-icon">🏦</div>
+                    <div class="metodo-info">
+                        <div class="metodo-name">Transferencia bancaria</div>
+                        <div class="metodo-desc">Nu Bank · Cuenta de ahorros</div>
+                    </div>
+                </div>
+
+                <div class="metodo-card" id="m-pse" onclick="seleccionarMetodo('pse')">
+                    <div class="metodo-radio"></div>
+                    <div class="metodo-icon">🔒</div>
+                    <div class="metodo-info">
+                        <div class="metodo-name">PSE — Pago en línea</div>
+                        <div class="metodo-desc">Débito directo desde tu banco</div>
+                    </div>
+                </div>
+
+                <div class="metodo-card" id="m-debito" onclick="seleccionarMetodo('debito')">
+                    <div class="metodo-radio"></div>
+                    <div class="metodo-icon">💳</div>
+                    <div class="metodo-info">
+                        <div class="metodo-name">Tarjeta débito</div>
+                        <div class="metodo-desc">Visa, Mastercard, American Express</div>
+                    </div>
+                </div>
+
+                <div class="metodo-card" id="m-efectivo" onclick="seleccionarMetodo('efectivo')">
+                    <div class="metodo-radio"></div>
+                    <div class="metodo-icon">💵</div>
+                    <div class="metodo-info">
+                        <div class="metodo-name" id="efectivo-label">Pago en efectivo</div>
+                        <div class="metodo-desc" id="efectivo-desc">Al recoger en tienda</div>
+                    </div>
+                </div>
+
+                <div class="metodo-card" id="m-datafono" onclick="seleccionarMetodo('datafono')">
+                    <div class="metodo-radio"></div>
+                    <div class="metodo-icon">🖥️</div>
+                    <div class="metodo-info">
+                        <div class="metodo-name" id="datafono-label">Datáfono</div>
+                        <div class="metodo-desc" id="datafono-desc">Pago con tarjeta en el local</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Instrucciones dinámicas -->
+            <div class="instrucciones" id="inst-nequi-qr">
+                <div class="inst-box">
+                    <div class="inst-title"><span>📱</span> Pago con Nequi QR</div>
+                    <div class="nequi-qr-box">
+                        <div>
+                            <!-- QR placeholder — reemplazar con imagen real -->
+                            <!--<div class="qr-placeholder" id="qr-placeholder">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h2v2h-2zM18 14h3v2h-3zM14 18h2v3h-2zM18 18h3v3h-3z"/></svg>
+                                <span>QR próximamente</span>
+                            </div>
+                            -->
+                            <!-- Cuando tengas la imagen del QR: descomenta esto y comenta el placeholder -->
+                            <img src="QR.jpeg" class="qr-real" id="qr-real" alt="QR Nequi"> 
+                        </div>
+                        <div class="nequi-data">
+                            <div style="font-size:12px; color:var(--muted); margin-bottom:10px; line-height:1.5;">Abre Nequi, toca <strong>Cobrar / Pagar</strong> y escanea este código. El pago llega de inmediato.</div>
+                            <div class="data-row">
+                                <span class="data-label">NÚMERO</span>
+                                <span class="data-value">3116039256 <button class="copy-btn" onclick="copiar('3116039256')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">LLAVE</span>
+                                <span class="data-value">3116039256 <button class="copy-btn" onclick="copiar('3116039256')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span>
+                            </div>
+                            <div class="data-row">
+                                <span class="data-label">TOTAL A PAGAR</span>
+                                <span class="data-value" id="nequi-qr-total" style="color:#0a0a0a; font-weight:700;">—</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="instrucciones" id="inst-nequi-num">
+                <div class="inst-box">
+                    <div class="inst-title"><span>💚</span> Envío por número Nequi</div>
+                    <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.6;">Abre tu app Nequi → <strong>Enviar dinero</strong> → ingresa el número o la llave</p>
+                    <div class="data-row"><span class="data-label">NÚMERO NEQUI</span><span class="data-value">3116039256 <button class="copy-btn" onclick="copiar('3116039256')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span></div>
+                    <div class="data-row"><span class="data-label">LLAVE</span><span class="data-value">3116039256 <button class="copy-btn" onclick="copiar('3116039256')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></span></div>
+                    <div class="data-row"><span class="data-label">TOTAL</span><span class="data-value" id="nequi-num-total" style="font-weight:700;">—</span></div>
+                </div>
+            </div>
+
+            <div class="instrucciones" id="inst-transferencia">
+                <div class="inst-box">
+                    <div class="inst-title"><span>🏦</span> Datos para transferencia bancaria</div>
+                    <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.6;">Desde cualquier banco usa la llave o los datos de cuenta. El dinero llega a Nu Bank.</p>
+                    <div class="banco-grid">
+                        <div class="banco-item">
+                            <div class="banco-item-label">BANCO</div>
+                            <div class="banco-item-value">Nu Bank (Nubank)</div>
+                        </div>
+                        <div class="banco-item">
+                            <div class="banco-item-label">TIPO DE CUENTA</div>
+                            <div class="banco-item-value">Cuenta de ahorros</div>
+                        </div>
+                        <div class="banco-item">
+                            <div class="banco-item-label">NÚMERO DE CUENTA</div>
+                            <div class="banco-item-value">55179816 <button class="copy-btn" onclick="copiar('55179816')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+                        </div>
+                        <div class="banco-item">
+                            <div class="banco-item-label">LLAVE (desde otro banco)</div>
+                            <div class="banco-item-value">@XEG614 <button class="copy-btn" onclick="copiar('@XEG614')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg></button></div>
+                        </div>
+                        <div class="banco-item" style="grid-column:1/-1;">
+                            <div class="banco-item-label">TOTAL A TRANSFERIR</div>
+                            <div class="banco-item-value" id="transf-total" style="font-size:16px; font-weight:700;">—</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="instrucciones" id="inst-pse">
+                <div class="inst-box">
+                    <div class="inst-title"><span>🔒</span> PSE — Pago en línea con tu banco</div>
+                    <p style="font-size:13px; color:var(--muted); margin-bottom:14px; line-height:1.6;">Al confirmar serás redirigido al portal de tu banco para autorizar el débito de forma segura.</p>
+                    <ul class="pse-list">
+                        <li>Selecciona tu banco en la siguiente pantalla</li>
+                        <li>Ingresa tus credenciales bancarias de forma segura</li>
+                        <li>Confirma el débito por el valor exacto del pedido</li>
+                        <li>Serás redirigido de vuelta con la confirmación</li>
+                    </ul>
+                    <div style="margin-top:14px; padding:10px 14px; background:var(--surface2); border-radius:8px; font-size:12px; color:var(--muted); border:1px solid var(--border);">
+                        💡 PSE es el sistema de pagos en línea bancarios más usado en Colombia. Tu información es procesada directamente por tu banco.
+                    </div>
+                </div>
+            </div>
+
+            <div class="instrucciones" id="inst-debito">
+                <div class="inst-box">
+                    <div class="inst-title"><span>💳</span> Pago con tarjeta débito</div>
+                    <p style="font-size:13px; color:var(--muted); margin-bottom:10px; line-height:1.6;">Aceptamos tarjetas débito de las siguientes redes. Tu pago es de un solo cobro.</p>
+                    <div class="tarjeta-redes">
+                        <div class="red-card">Visa</div>
+                        <div class="red-card">Mastercard</div>
+                        <div class="red-card">American Express</div>
+                    </div>
+                    <p style="font-size:12px; color:var(--muted); margin-top:12px; line-height:1.5;">Al confirmar serás redirigido a la pasarela de pago seguro para ingresar los datos de tu tarjeta.</p>
+                </div>
+            </div>
+
+            <div class="instrucciones" id="inst-efectivo">
+                <div class="inst-box">
+                    <div class="inst-title"><span>💵</span> <span id="efectivo-inst-title">Pago en efectivo</span></div>
+                    <p id="efectivo-inst-desc" style="font-size:13px; color:var(--muted); line-height:1.6;">Paga en efectivo al momento de recoger tu pedido en nuestra tienda. Ten listo el valor exacto para agilizar el proceso.</p>
+                    <div style="margin-top:12px; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); background:var(--surface2); padding:10px 14px; border-radius:8px; border:1px solid var(--border);">
+                        <span>💡</span> <span>Tu pedido quedará como <strong>pendiente de pago</strong> hasta que lo confirmemos en tienda.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="instrucciones" id="inst-datafono">
+                <div class="inst-box">
+                    <div class="inst-title"><span>🖥️</span> <span id="datafono-inst-title">Pago con datáfono</span></div>
+                    <p id="datafono-inst-desc" style="font-size:13px; color:var(--muted); line-height:1.6;">Paga con tu tarjeta en el datáfono al llegar a nuestra tienda. Aceptamos tarjetas débito y crédito.</p>
+                    <div style="margin-top:12px; display:flex; align-items:center; gap:8px; font-size:13px; color:var(--muted); background:var(--surface2); padding:10px 14px; border-radius:8px; border:1px solid var(--border);">
+                        <span>💡</span> <span>Tu pedido quedará como <strong>pendiente de pago</strong> hasta que lo confirmemos en tienda.</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Comprobante (para métodos manuales) -->
+            <div class="comprobante-section" id="comprobante-section">
+                <div class="comprobante-label">Comprobante de pago <span style="color:var(--muted); font-weight:400;">(opcional pero recomendado)</span></div>
+                <div class="comprobante-box" id="comprobante-box" onclick="document.getElementById('comp-input').click()">
+                    <div class="comprobante-icon">📎</div>
+                    <div class="comprobante-text">Toca para adjuntar captura o foto del comprobante</div>
+                    <input type="file" id="comp-input" accept="image/*,application/pdf" onchange="previewComprobante(event)">
+                </div>
+                <div class="comprobante-preview" id="comp-preview">
+                    <img id="comp-img" src="" alt="">
+                    <div class="comprobante-preview-info">
+                        <div class="comprobante-preview-name" id="comp-name"></div>
+                        <div class="comprobante-preview-size" id="comp-size"></div>
+                    </div>
+                    <button class="comprobante-remove" onclick="removeComprobante()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="submit-section">
+                <button class="submit-btn" id="submit-btn" onclick="confirmarPago()">
+                    <span class="btn-text">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Confirmar pedido
+                    </span>
+                    <div class="btn-spinner"></div>
+                </button>
+                <div class="secure-note">
+                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                    Tus datos están protegidos
+                </div>
+            </div>
+        </div>
+
     </div>
 
-    <!-- 2. Método de pago -->
-    <div class="card" id="card-metodos" style="display:none;">
-        <div class="card-title">Método de pago</div>
-        <div class="metodos-list" id="metodos-list">
-            <!-- Se renderizan dinámicamente según el tipo de entrega -->
-        </div>
-
-        <!-- Instrucciones dinámicas -->
-        <div class="instrucciones" id="instrucciones"></div>
-
-        <!-- Comprobante (solo para métodos no presenciales) -->
-        <div class="comprobante-wrap" id="comprobante-wrap" style="display:none;">
-            <label style="margin-bottom:8px;display:block;">Comprobante de pago <span style="color:var(--muted);font-weight:400;">(opcional pero recomendado)</span></label>
-            <div class="upload-area" onclick="document.getElementById('file-input').click()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
-                <div class="upload-label"><strong>Sube tu comprobante</strong><br>Captura de pantalla o foto — JPG, PNG, PDF (máx. 5MB)</div>
+    <!-- ORDER SIDE -->
+    <div class="order-side">
+        <div class="order-title">Resumen del pedido</div>
+        <div class="order-items" id="order-items"></div>
+        <div id="order-totals">
+            <div class="order-divider"></div>
+            <div class="order-row"><span>Subtotal</span><span id="sum-subtotal"></span></div>
+            <div class="order-row discount" id="sum-disc-row" style="display:none;"><span>Descuento</span><span id="sum-disc"></span></div>
+            <div class="order-row" id="sum-ship-row"><span>Envío</span><span id="sum-ship"></span></div>
+            <div class="order-total">
+                <span class="order-total-label">Total</span>
+                <span class="order-total-value" id="sum-total"></span>
             </div>
-            <input type="file" id="file-input" accept="image/*,.pdf" onchange="handleFile(this)">
-            <div class="file-preview" id="file-preview">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-                <span id="file-name">archivo.jpg</span>
-            </div>
-        </div>
-
-        <button class="confirm-btn" id="confirm-btn" onclick="confirmarPedido()">
-            <span class="btn-txt">Confirmar pedido</span>
-            <div class="spinner"></div>
-        </button>
-        <div class="secure-note">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Tu pedido queda registrado de forma segura
         </div>
     </div>
 
 </div>
 
-<!-- Resumen -->
-<div>
-    <div class="card">
-        <div class="card-title">Resumen del pedido</div>
-        <div class="resumen-items" id="res-items"></div>
-        <div class="res-totales" id="res-totales"></div>
-    </div>
-</div>
-</div>
-
-<!-- Toast -->
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
-
-<!-- Success screen -->
-<div class="success-screen" id="success-screen">
-    <div class="success-icon">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-    </div>
-    <h2 class="success-title">¡Pedido registrado! 🎉</h2>
-    <p class="success-msg">Tu pedido fue guardado correctamente. <strong>Estamos verificando tu pago</strong> y te contactaremos pronto para coordinar la entrega.</p>
-    <div class="success-id" id="success-id">ID: --------</div>
-    <div class="success-actions">
-        <a href="https://cxr10s.github.io/tienda/mis-pedidos.html" class="btn-solid">Ver mi pedido</a>
-        <a href="https://cxr10s.github.io/tienda/" class="btn-outline">Seguir comprando</a>
-    </div>
-</div>
+<div class="copy-toast" id="copy-toast">¡Copiado!</div>
 
 <script>
-// ── CONFIG ──────────────────────────────────────────────────────
+// ── CONFIG ──
 const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
+const TIENDA_URL    = 'https://cxr10s.github.io/tienda/';
 
-// Datos de pago del negocio
-const NEQUI_NUM    = '3116039256';
-const BANCO_NOMBRE = 'Nu Colombia';
-const BANCO_CUENTA = '55179816';
-const BANCO_TIPO   = 'Ahorros';
-const BANCO_TITULAR = 'Jhon Carlos Meneses Peinado';
+// ── STATE ──
+let cart         = [];
+let pedidoData   = null;   // datos del checkout
+let tipoEntrega  = null;
+let metodoPago   = null;
+let comprobanteB64 = null;
 
-// ── ESTADO ──────────────────────────────────────────────────────
-let cart        = [];
-let pedidoData  = null; // datos de checkout.html
-let tipoEntrega = null;
-let metodoPago  = null;
-let comprobanteBase64 = null;
-
-// ── INIT ────────────────────────────────────────────────────────
-function init() {
-    // Cargar carrito
-    try { cart = JSON.parse(localStorage.getItem('tienda_cart') || '[]'); } catch(e) {}
-    // Cargar datos del pedido guardados en sessionStorage por checkout.html
-    try { pedidoData = JSON.parse(sessionStorage.getItem('store_pedido') || 'null'); } catch(e) {}
-
-    if (!cart.length && !pedidoData) {
-        window.location.href = 'https://cxr10s.github.io/tienda/';
-        return;
-    }
-    renderResumen();
-}
-
-// ── UTILIDADES ──────────────────────────────────────────────────
+// ── UTILS ──
 function fmt(n) { return '$' + Math.round(Number(n)).toLocaleString('es-CO'); }
 
-function calcDiscount(sub) {
-    if (sub >= 900000) return { pct:20, amount: Math.round(sub*.20) };
-    if (sub >= 600000) return { pct:15, amount: Math.round(sub*.15) };
-    if (sub >= 400000) return { pct:12, amount: Math.round(sub*.12) };
-    if (sub >= 250000) return { pct:8,  amount: Math.round(sub*.08) };
-    if (sub >= 150000) return { pct:5,  amount: Math.round(sub*.05) };
+function calcDiscount(s) {
+    if (s >= 900000) return { pct:20, amount: Math.round(s*0.20) };
+    if (s >= 600000) return { pct:15, amount: Math.round(s*0.15) };
+    if (s >= 400000) return { pct:12, amount: Math.round(s*0.12) };
+    if (s >= 250000) return { pct:8,  amount: Math.round(s*0.08) };
+    if (s >= 150000) return { pct:5,  amount: Math.round(s*0.05) };
     return { pct:0, amount:0 };
 }
 
-function getTotals() {
-    const subtotal   = cart.reduce((s,i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
-    const { amount: descuento } = calcDiscount(subtotal);
-    const envioBase  = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
-    const envio      = tipoEntrega === 'recoger' ? 0 : envioBase;
-    const total      = subtotal - descuento + envio;
-    return { subtotal, descuento, envio, total };
-}
-
-function showToast(msg, dur=3200) {
+function showToast(msg, dur=3500) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), dur);
 }
 
-function copy(txt, label) {
-    navigator.clipboard.writeText(txt).then(() => showToast(`✓ ${label} copiado`));
+function copiar(texto) {
+    navigator.clipboard.writeText(texto).then(() => {
+        const ct = document.getElementById('copy-toast');
+        ct.classList.add('show');
+        setTimeout(() => ct.classList.remove('show'), 1800);
+    });
 }
 
-// ── RESUMEN ─────────────────────────────────────────────────────
-function renderResumen() {
-    const { subtotal, descuento, envio, total } = getTotals();
+// ── CARGAR DATOS ──
+function init() {
+    // Cargar carrito
+    try { cart = JSON.parse(localStorage.getItem('tienda_cart') || '[]'); } catch(e) { cart = []; }
+    // Cargar datos del pedido (guardados en checkout)
+    try { pedidoData = JSON.parse(sessionStorage.getItem('pago_pedido') || 'null'); } catch(e) {}
 
-    document.getElementById('res-items').innerHTML = cart.map(i => `
-        <div class="res-item">
-            <div class="res-qty ${i.isGift?'gift':''}">${i.quantity}</div>
-            <div class="res-name">${i.name}${i.isGift?' 🎁':''}</div>
-            <div class="res-price ${i.isGift?'free':''}">${i.isGift ? 'GRATIS' : fmt(i.price * i.quantity)}</div>
+    if (!cart.length) {
+        window.location.href = TIENDA_URL;
+        return;
+    }
+
+    renderOrder();
+}
+
+function renderOrder() {
+    const subtotal  = cart.reduce((s,i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
+    const { amount: descuento } = calcDiscount(subtotal);
+    const envioBase = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
+
+    document.getElementById('order-items').innerHTML = cart.map(i => `
+        <div class="order-item">
+            <div class="order-qty">${i.quantity}</div>
+            <div class="order-name">${i.name}${i.isGift?' 🎁':''}</div>
+            <div class="order-price">${i.isGift ? 'GRATIS' : fmt(i.price * i.quantity)}</div>
         </div>`).join('');
 
-    document.getElementById('res-totales').innerHTML = `
-        <div class="res-row"><span>Subtotal</span><span>${fmt(subtotal)}</span></div>
-        ${descuento > 0 ? `<div class="res-row discount"><span>Descuento</span><span>-${fmt(descuento)}</span></div>` : ''}
-        <div class="res-row"><span>Envío</span><span id="res-envio">${tipoEntrega === 'recoger' ? 'Gratis (recoger)' : envio > 0 ? fmt(envio) : '¡Gratis!'}</span></div>
-        <div class="res-total-box">
-            <span class="res-total-label">Total</span>
-            <span class="res-total-val" id="res-total">${fmt(total)}</span>
-        </div>`;
+    document.getElementById('sum-subtotal').textContent = fmt(subtotal);
+    document.getElementById('sum-ship').textContent = envioBase > 0 ? fmt(envioBase) : '¡Gratis!';
+
+    const discRow = document.getElementById('sum-disc-row');
+    if (descuento > 0) {
+        discRow.style.display = 'flex';
+        document.getElementById('sum-disc').textContent = '-' + fmt(descuento);
+    }
+
+    const total = subtotal - descuento + envioBase;
+    document.getElementById('sum-total').textContent = fmt(total);
+
+    // Actualizar totales en instrucciones
+    const totalStr = fmt(total);
+    ['nequi-qr-total','nequi-num-total','transf-total'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = totalStr;
+    });
 }
 
-// ── SELECCIÓN ENTREGA ────────────────────────────────────────────
-function selEntrega(tipo) {
+function getTotales() {
+    const subtotal = cart.reduce((s,i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
+    const { amount: descuento } = calcDiscount(subtotal);
+
+    let envio = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
+    // Si es domicilio, el envío es el del carrito (ya calculado)
+    // Si es recoger, sin envío
+    if (tipoEntrega === 'recoger') envio = 0;
+
+    const total = subtotal - descuento + envio;
+    return { subtotal, descuento, envio, total };
+}
+
+// ── SELECCIÓN ENTREGA ──
+function seleccionarEntrega(tipo) {
     tipoEntrega = tipo;
-    document.getElementById('opt-recoger').classList.toggle('selected', tipo === 'recoger');
-    document.getElementById('opt-domicilio').classList.toggle('selected', tipo === 'domicilio');
+    document.getElementById('card-recoger').classList.toggle('selected', tipo === 'recoger');
+    document.getElementById('card-domicilio').classList.toggle('selected', tipo === 'domicilio');
 
-    const campos = document.getElementById('domicilio-fields');
-    campos.classList.toggle('show', tipo === 'domicilio');
-
+    const camposDom = document.getElementById('domicilio-fields');
     if (tipo === 'domicilio') {
-        const { envio } = getTotals();
-        const badge = document.getElementById('envio-badge');
-        const txt   = document.getElementById('envio-badge-txt');
-        if (envio === 0) {
-            badge.className = 'envio-badge free';
-            txt.textContent = '¡Envío gratis! Tu pedido supera los $150.000';
-        } else {
-            badge.className = 'envio-badge';
-            txt.textContent = `Costo de envío: ${fmt(envio)} COP`;
-        }
+        camposDom.classList.add('show');
+        actualizarEnvioInfo();
+        // Domicilio: mostrar todos los métodos
+        document.getElementById('m-efectivo').style.display = 'flex';
+        document.getElementById('m-datafono').style.display = 'flex';
+        document.getElementById('efectivo-label').textContent = 'Pago contra entrega';
+        document.getElementById('efectivo-desc').textContent = 'Paga en efectivo al recibir el pedido';
+        document.getElementById('datafono-label').textContent = 'Tarjeta al recibir';
+        document.getElementById('datafono-desc').textContent = 'Paga con tarjeta cuando llegue el domiciliario';
+        document.getElementById('efectivo-inst-title').textContent = 'Pago contra entrega';
+        document.getElementById('efectivo-inst-desc').textContent = 'Tendrás el efectivo listo cuando llegue el domiciliario. Procura tener el valor exacto.';
+        document.getElementById('datafono-inst-title').textContent = 'Pago con tarjeta al recibir';
+        document.getElementById('datafono-inst-desc').textContent = 'El domiciliario llevará un datáfono para que pagues al recibir tu pedido.';
+    } else {
+        camposDom.classList.remove('show');
+        document.getElementById('efectivo-label').textContent = 'Pago en efectivo';
+        document.getElementById('efectivo-desc').textContent = 'Al recoger en tienda';
+        document.getElementById('datafono-label').textContent = 'Datáfono en tienda';
+        document.getElementById('datafono-desc').textContent = 'Paga con tarjeta en el local';
+        document.getElementById('efectivo-inst-title').textContent = 'Pago en efectivo';
+        document.getElementById('efectivo-inst-desc').textContent = 'Paga en efectivo al momento de recoger tu pedido en nuestra tienda.';
+        document.getElementById('datafono-inst-title').textContent = 'Datáfono en tienda';
+        document.getElementById('datafono-inst-desc').textContent = 'Paga con tu tarjeta en el datáfono cuando vengas a recoger tu pedido.';
+        // Actualizar totales (sin envío)
+        const { total } = getTotales();
+        document.getElementById('sum-ship').textContent = 'Sin costo';
+        document.getElementById('sum-total').textContent = fmt(total);
+        ['nequi-qr-total','nequi-num-total','transf-total'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.textContent = fmt(total);
+        });
     }
 
-    renderResumen();
-    renderMetodos();
-    document.getElementById('card-metodos').style.display = 'block';
-    document.getElementById('card-metodos').scrollIntoView({ behavior:'smooth', block:'start' });
+    document.getElementById('metodos-section').style.display = 'block';
+
+    // Reset método
+    if (metodoPago) {
+        document.getElementById('m-' + metodoPago)?.classList.remove('selected');
+        metodoPago = null;
+        document.querySelectorAll('.instrucciones').forEach(el => el.classList.remove('show'));
+        document.getElementById('comprobante-section').classList.remove('show');
+    }
 }
 
-// ── MÉTODOS DE PAGO ──────────────────────────────────────────────
-const METODOS_RECOGER = [
-    { id:'nequi-num',  icon:'💚', title:'Pago por Nequi',           sub:'Transfiere al número Nequi del negocio', presencial:false },
-    { id:'transferencia',icon:'🏦',title:'Transferencia bancaria',   sub:'Nu Colombia — Cuenta de ahorros',        presencial:false },
-    { id:'efectivo',   icon:'💵', title:'Efectivo al recoger',       sub:'Paga en efectivo cuando vengas',          presencial:true  },
-    { id:'datafono',   icon:'💳', title:'Datáfono en el local',      sub:'Tarjeta débito o crédito en tienda',      presencial:true  },
-];
-
-const METODOS_DOMICILIO = [
-    { id:'nequi-num',  icon:'💚', title:'Pago por Nequi',           sub:'Transfiere al número Nequi del negocio', presencial:false },
-    { id:'transferencia',icon:'🏦',title:'Transferencia bancaria',   sub:'Nu Colombia — Cuenta de ahorros',        presencial:false },
-    { id:'contra-entrega',icon:'💵',title:'Pago contra entrega',    sub:'Paga en efectivo cuando llegue tu pedido',presencial:true  },
-    { id:'tarjeta',    icon:'💳', title:'Tarjeta débito / crédito',  sub:'Integración disponible próximamente',     presencial:false, soon:true },
-    { id:'pse',        icon:'🏛️', title:'PSE',                      sub:'Pagos en línea con tu banco colombiano', presencial:false, soon:true },
-];
-
-function renderMetodos() {
-    metodoPago = null;
-    document.getElementById('instrucciones').classList.remove('show');
-    document.getElementById('comprobante-wrap').style.display = 'none';
-
-    const lista = tipoEntrega === 'recoger' ? METODOS_RECOGER : METODOS_DOMICILIO;
-    document.getElementById('metodos-list').innerHTML = lista.map(m => `
-        <div class="metodo ${m.soon ? 'disabled' : ''}" id="met-${m.id}" onclick="${m.soon ? '' : `selMetodo('${m.id}')`}">
-            <div class="metodo-icon">${m.icon}</div>
-            <div class="metodo-info">
-                <div class="metodo-title">${m.title} ${m.soon ? '<span class="metodo-badge badge-soon">PRÓXIMAMENTE</span>' : ''}</div>
-                <div class="metodo-sub">${m.sub}</div>
-            </div>
-            <div class="metodo-radio"></div>
-        </div>`).join('');
+function actualizarEnvioInfo() {
+    const subtotal = cart.reduce((s,i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
+    const envio = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
+    const badge = document.getElementById('envio-badge');
+    const txt   = document.getElementById('envio-txt');
+    if (envio === 0) {
+        txt.innerHTML = '<strong style="color:#16a34a;">¡Envío gratis!</strong> Tu pedido supera los $150.000';
+        badge.style.background = '#f0fdf4';
+        badge.style.borderColor = '#bbf7d0';
+    } else {
+        txt.innerHTML = `Costo de envío: <strong>$25.000 COP</strong>`;
+    }
+    // Actualizar totales con envío
+    const { descuento, total } = getTotales();
+    document.getElementById('sum-ship').textContent = envio > 0 ? fmt(envio) : '¡Gratis!';
+    document.getElementById('sum-total').textContent = fmt(total);
+    ['nequi-qr-total','nequi-num-total','transf-total'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = fmt(total);
+    });
 }
 
-function selMetodo(id) {
-    metodoPago = id;
-    document.querySelectorAll('.metodo').forEach(el => el.classList.remove('selected'));
-    const el = document.getElementById('met-' + id);
-    if (el) el.classList.add('selected');
+// ── SELECCIÓN MÉTODO ──
+const metodosConComprobante = ['nequi-qr','nequi-num','transferencia'];
+const metodosOnline = ['pse','debito'];
+const metodosPresencial = ['efectivo','datafono'];
 
-    mostrarInstrucciones(id);
-}
+function seleccionarMetodo(metodo) {
+    // Quitar selección anterior
+    document.querySelectorAll('.metodo-card').forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.instrucciones').forEach(i => i.classList.remove('show'));
 
-function mostrarInstrucciones(id) {
-    const box = document.getElementById('instrucciones');
-    const comp = document.getElementById('comprobante-wrap');
-    box.classList.add('show');
+    metodoPago = metodo;
+    document.getElementById('m-' + metodo).classList.add('selected');
+    document.getElementById('inst-' + metodo).classList.add('show');
 
-    let html = '';
-    let showComp = false;
-
-    if (id === 'nequi-num') {
-        showComp = true;
-        html = `
-            <div class="inst-title">Cómo pagar por Nequi</div>
-            <div class="inst-item"><div class="inst-num">1</div><span>Abre tu app de Nequi y selecciona <strong>Enviar plata</strong></span></div>
-            <div class="inst-item"><div class="inst-num">2</div><span>Ingresa el número y el monto exacto de tu pedido</span></div>
-            <div class="inst-item"><div class="inst-num">3</div><span>Confirma y toma captura del comprobante</span></div>
-            <div class="dato-box">
-                <div class="dato-row">
-                    <span class="dato-label">Número Nequi</span>
-                    <div style="display:flex;align-items:center;gap:6px;">
-                        <span class="dato-val">${NEQUI_NUM}</span>
-                        <button class="copy-btn" onclick="copy('${NEQUI_NUM}','Número')">Copiar</button>
-                    </div>
-                </div>
-                <div class="dato-row">
-                    <span class="dato-label">Titular</span>
-                    <span class="dato-val">${BANCO_TITULAR}</span>
-                </div>
-                <div class="dato-row">
-                    <span class="dato-label">Monto</span>
-                    <span class="dato-val" id="inst-monto">${fmt(getTotals().total)}</span>
-                </div>
-            </div>`;
-    } else if (id === 'transferencia') {
-        showComp = true;
-        html = `
-            <div class="inst-title">Datos para transferencia</div>
-            <div class="inst-item"><div class="inst-num">1</div><span>Ingresa a tu banco y selecciona <strong>Transferencia a otro banco</strong></span></div>
-            <div class="inst-item"><div class="inst-num">2</div><span>Usa los datos de abajo exactamente como aparecen</span></div>
-            <div class="inst-item"><div class="inst-num">3</div><span>Guarda el comprobante y súbelo aquí abajo</span></div>
-            <div class="dato-box">
-                <div class="dato-row"><span class="dato-label">Banco</span><span class="dato-val">${BANCO_NOMBRE}</span></div>
-                <div class="dato-row">
-                    <span class="dato-label">Número de cuenta</span>
-                    <div style="display:flex;align-items:center;gap:6px;">
-                        <span class="dato-val">${BANCO_CUENTA}</span>
-                        <button class="copy-btn" onclick="copy('${BANCO_CUENTA}','Cuenta')">Copiar</button>
-                    </div>
-                </div>
-                <div class="dato-row"><span class="dato-label">Tipo de cuenta</span><span class="dato-val">${BANCO_TIPO}</span></div>
-                <div class="dato-row"><span class="dato-label">Titular</span><span class="dato-val">${BANCO_TITULAR}</span></div>
-                <div class="dato-row">
-                    <span class="dato-label">Monto exacto</span>
-                    <span class="dato-val" id="inst-monto2">${fmt(getTotals().total)}</span>
-                </div>
-            </div>`;
-    } else if (id === 'efectivo' || id === 'contra-entrega') {
-        html = `
-            <div class="inst-title">${id === 'efectivo' ? 'Pago en efectivo' : 'Contra entrega'}</div>
-            <div class="inst-item"><div class="inst-num">1</div><span>${id === 'efectivo' ? 'Ven a nuestra tienda con tu pedido listo para recoger' : 'Ten el dinero listo cuando llegue el mensajero'}</span></div>
-            <div class="inst-item"><div class="inst-num">2</div><span>Presenta el ID de tu pedido para identificarlo</span></div>
-            <div class="inst-item"><div class="inst-num">3</div><span>Monto a pagar: <strong>${fmt(getTotals().total)} COP</strong></span></div>`;
-    } else if (id === 'datafono') {
-        html = `
-            <div class="inst-title">Pago con datáfono</div>
-            <div class="inst-item"><div class="inst-num">1</div><span>Ven a nuestra tienda con tu pedido confirmado</span></div>
-            <div class="inst-item"><div class="inst-num">2</div><span>Acepta tarjetas Visa, Mastercard y American Express</span></div>
-            <div class="inst-item"><div class="inst-num">3</div><span>Monto a pagar: <strong>${fmt(getTotals().total)} COP</strong></span></div>`;
+    // Comprobante: solo para métodos manuales
+    const compSection = document.getElementById('comprobante-section');
+    if (metodosConComprobante.includes(metodo)) {
+        compSection.classList.add('show');
+    } else {
+        compSection.classList.remove('show');
     }
 
-    box.innerHTML = html;
-    comp.style.display = showComp ? 'block' : 'none';
+    // Texto del botón según método
+    const btn = document.getElementById('submit-btn');
+    const btnText = btn.querySelector('.btn-text');
+    if (metodosOnline.includes(metodo)) {
+        btnText.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> Ir a pagar`;
+    } else if (metodosPresencial.includes(metodo)) {
+        btnText.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Confirmar pedido`;
+    } else {
+        btnText.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 12l2 2 4-4"/><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> Ya realicé el pago`;
+    }
 }
 
-// ── COMPROBANTE ──────────────────────────────────────────────────
-function handleFile(input) {
-    const file = input.files[0];
+// ── COMPROBANTE ──
+function previewComprobante(event) {
+    const file = event.target.files[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) { showToast('⚠️ El archivo supera 5MB'); return; }
-
-    const preview = document.getElementById('file-preview');
-    document.getElementById('file-name').textContent = file.name;
-    preview.classList.add('show');
 
     const reader = new FileReader();
-    reader.onload = e => { comprobanteBase64 = e.target.result; };
+    reader.onload = e => {
+        comprobanteB64 = e.target.result;
+        document.getElementById('comp-box').style.display = 'none';
+        const preview = document.getElementById('comp-preview');
+        preview.classList.add('show');
+        document.getElementById('comp-name').textContent = file.name;
+        document.getElementById('comp-size').textContent = (file.size / 1024).toFixed(1) + ' KB';
+        if (file.type.startsWith('image/')) {
+            document.getElementById('comp-img').src = e.target.result;
+            document.getElementById('comp-img').style.display = 'block';
+        }
+    };
     reader.readAsDataURL(file);
 }
 
-// ── VALIDACIÓN DOMICILIO ─────────────────────────────────────────
-function validarDomicilio() {
-    if (tipoEntrega !== 'domicilio') return true;
-    let ok = true;
-    const ciudad = document.getElementById('env-ciudad').value.trim();
-    const dir    = document.getElementById('env-dir').value.trim();
-    const errC   = document.getElementById('err-ciudad');
-    const errD   = document.getElementById('err-dir');
-
-    if (ciudad.length < 2) {
-        document.getElementById('env-ciudad').classList.add('err');
-        errC.classList.add('show'); ok = false;
-    } else {
-        document.getElementById('env-ciudad').classList.remove('err');
-        errC.classList.remove('show');
-    }
-    if (dir.length < 5) {
-        document.getElementById('env-dir').classList.add('err');
-        errD.classList.add('show'); ok = false;
-    } else {
-        document.getElementById('env-dir').classList.remove('err');
-        errD.classList.remove('show');
-    }
-    return ok;
+function removeComprobante() {
+    comprobanteB64 = null;
+    document.getElementById('comp-input').value = '';
+    document.getElementById('comp-preview').classList.remove('show');
+    document.getElementById('comprobante-box').style.display = 'block';
+    document.getElementById('comp-img').style.display = 'none';
 }
 
-// ── CONFIRMAR PEDIDO ─────────────────────────────────────────────
-async function confirmarPedido() {
+// ── VALIDAR DOMICILIO ──
+function validarDomicilio() {
+    if (tipoEntrega !== 'domicilio') return true;
+    const dep = document.getElementById('dep-envio').value;
+    const ciu = document.getElementById('ciudad-envio').value.trim();
+    const dir = document.getElementById('dir-envio').value.trim();
+    if (!dep) { showToast('⚠️ Selecciona el departamento de envío'); return false; }
+    if (!ciu) { showToast('⚠️ Ingresa la ciudad de envío'); return false; }
+    if (dir.length < 8) { showToast('⚠️ Ingresa una dirección completa'); return false; }
+    return true;
+}
+
+// ── CONFIRMAR PAGO ──
+async function confirmarPago() {
     if (!tipoEntrega) { showToast('⚠️ Selecciona cómo quieres recibir tu pedido'); return; }
     if (!metodoPago)  { showToast('⚠️ Selecciona un método de pago'); return; }
-    if (!validarDomicilio()) { showToast('⚠️ Completa los datos de envío'); return; }
+    if (!validarDomicilio()) return;
 
-    const btn = document.getElementById('confirm-btn');
+    const btn = document.getElementById('submit-btn');
     btn.disabled = true;
     btn.classList.add('loading');
 
-    const { subtotal, descuento, envio, total } = getTotals();
-    const ciudad = document.getElementById('env-ciudad')?.value.trim() || '';
-    const dir    = document.getElementById('env-dir')?.value.trim() || '';
-    const ref    = document.getElementById('env-ref')?.value.trim() || '';
-
-    // Armar pedido completo
-    const pedido = {
-        ...(pedidoData || {}),
-        productos:      cart.map(i => ({ id:i.id, name:i.name, price:i.price, quantity:i.quantity, isGift:i.isGift||false })),
-        subtotal,
-        descuento,
-        envio,
-        total,
-        estado:         'pendiente',
-        estado_pago:    'pendiente',
-        tipo_entrega:   tipoEntrega,
-        metodo_pago:    metodoPago,
-        direccion_envio: tipoEntrega === 'domicilio' ? `${dir}, ${ciudad}${ref ? ' — Ref: '+ref : ''}` : null,
-        comprobante:    comprobanteBase64 || null,
-    };
-
-    // Si no hay datos del formulario previo, usar los de sessionStorage o pedir mínimos
-    if (!pedido.nombre) pedido.nombre = 'Cliente';
-    if (!pedido.email)  pedido.email  = '';
-    if (!pedido.telefono) pedido.telefono = '';
-    if (!pedido.direccion && tipoEntrega === 'domicilio') pedido.direccion = pedido.direccion_envio;
-
     try {
+        const { subtotal, descuento, envio, total } = getTotales();
+
+        // Dirección de envío
+        let direccionEnvio = null;
+        if (tipoEntrega === 'domicilio') {
+            const dep = document.getElementById('dep-envio').value;
+            const ciu = document.getElementById('ciudad-envio').value.trim();
+            const dir = document.getElementById('dir-envio').value.trim();
+            const ref = document.getElementById('ref-envio').value.trim();
+            direccionEnvio = `${dir}, ${ciu}, ${dep}${ref ? ' — ' + ref : ''}`;
+        }
+
+        // Construir pedido
+        const pedido = {
+            ...(pedidoData || {}),
+            productos: cart.map(i => ({
+                id: i.id, name: i.name, price: i.price,
+                quantity: i.quantity, isGift: i.isGift || false
+            })),
+            subtotal, descuento, envio, total,
+            tipo_entrega:   tipoEntrega,
+            metodo_pago:    metodoPago,
+            direccion_envio: direccionEnvio,
+            estado:          'pendiente',
+            estado_pago:     metodosPresencial.includes(metodoPago) ? 'pendiente'
+                             : metodosOnline.includes(metodoPago)   ? 'pendiente'
+                             : 'pendiente',
+            comprobante: comprobanteB64 ? 'adjunto' : null
+        };
+
+        // Guardar en Supabase
         const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos`, {
             method: 'POST',
             headers: {
@@ -659,39 +1276,184 @@ async function confirmarPedido() {
             body: JSON.stringify(pedido)
         });
 
-        if (!res.ok) {
-            const err = await res.text();
-            throw new Error(err);
+        if (!res.ok) throw new Error(await res.text());
+        const result = await res.json();
+        const pedidoGuardado = {
+            ...pedido,
+            id: Array.isArray(result) && result[0] ? result[0].id : ('local-' + Date.now()),
+            created_at: Array.isArray(result) && result[0] ? result[0].created_at : new Date().toISOString()
+        };
+
+        // Limpiar carrito
+        try {
+            localStorage.removeItem('tienda_cart');
+            localStorage.removeItem('tienda_last_removed_gift');
+            sessionStorage.removeItem('pago_pedido');
+        } catch(e) {}
+
+        // Según método: online → pasarela, presencial/manual → confirmación
+        if (metodosOnline.includes(metodoPago)) {
+            // Guardar pedido para resultado
+            sessionStorage.setItem('ultimo_pedido', JSON.stringify(pedidoGuardado));
+            // Simular redirección a pasarela (aquí irá Stripe/MercadoPago/PayU)
+            // Por ahora redirigimos a resultado con estado pendiente
+            window.location.href = `pago-resultado.html?pedido=${pedidoGuardado.id}&metodo=${metodoPago}`;
+        } else {
+            // Métodos manuales / presenciales
+            sessionStorage.setItem('ultimo_pedido', JSON.stringify(pedidoGuardado));
+            mostrarConfirmacion(pedidoGuardado);
         }
 
-        const result  = await res.json();
-        const pedidoId = Array.isArray(result) && result[0] ? result[0].id : ('local-' + Date.now());
-        const idCorto  = pedidoId.substring(0, 8).toUpperCase();
-
-        // Limpiar carrito y sesión
-        localStorage.removeItem('tienda_cart');
-        localStorage.removeItem('tienda_last_removed_gift');
-        sessionStorage.removeItem('store_pedido');
-        sessionStorage.removeItem('store_user');
-
-        // Mostrar pantalla de éxito
-        document.getElementById('success-id').textContent = 'ID: ' + idCorto;
-
-        // Enlace a mis pedidos con email si está disponible
-        const email = pedido.email || '';
-        const misPedidosUrl = `https://cxr10s.github.io/tienda/mis-pedidos.html${email ? '?email='+encodeURIComponent(email) : ''}`;
-        document.querySelector('.success-actions .btn-solid').href = misPedidosUrl;
-
-        document.getElementById('success-screen').classList.add('show');
-
-    } catch(err) {
+    } catch (err) {
         console.error(err);
-        showToast('❌ Error al registrar el pedido. Intenta de nuevo.');
+        showToast('❌ Error al guardar el pedido. Intenta de nuevo.');
         btn.disabled = false;
         btn.classList.remove('loading');
     }
 }
 
+// ── MODAL CONFIRMACIÓN ──
+function mostrarConfirmacion(pedido) {
+    const idCorto = pedido.id.substring(0,8).toUpperCase();
+    const total   = fmt(pedido.total);
+    const esOnline = metodosOnline.includes(pedido.metodo_pago);
+
+    const overlay = document.createElement('div');
+    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99999;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);';
+    overlay.innerHTML = `
+        <div style="background:#fff;border-radius:20px;max-width:420px;width:100%;padding:2rem 1.8rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.15);font-family:'Syne',sans-serif;">
+            <div style="width:56px;height:56px;background:#f0fdf4;border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;font-size:26px;">✅</div>
+            <h2 style="font-size:20px;font-weight:800;color:#0a0a0a;margin-bottom:6px;">¡Pedido registrado!</h2>
+            <p style="color:#888;font-size:13px;margin-bottom:16px;line-height:1.6;">Tu pedido por <strong style="color:#0a0a0a;">${total}</strong> fue guardado.<br>Estamos verificando tu pago.</p>
+            <div style="display:inline-block;background:#f5f5f3;border:1px solid #e4e4e0;border-radius:8px;padding:6px 16px;font-family:'DM Mono',monospace;font-size:14px;color:#0a0a0a;margin-bottom:20px;letter-spacing:1px;font-weight:500;">ID: ${idCorto}</div>
+            <button id="btn-tique" style="display:block;width:100%;padding:13px;background:#0a0a0a;color:#fff;font-weight:700;font-size:14px;border:none;border-radius:12px;cursor:pointer;margin-bottom:10px;font-family:'Syne',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Descargar tique de pago
+            </button>
+            <a href="${TIENDA_URL}mis-pedidos.html" style="display:block;padding:11px;background:transparent;color:#888;font-size:13px;border:1px solid #e4e4e0;border-radius:12px;text-decoration:none;margin-bottom:8px;font-family:'Syne',sans-serif;">📦 Ver mis pedidos</a>
+            <a href="${TIENDA_URL}" style="display:block;padding:10px;color:#aaa;font-size:13px;text-decoration:none;font-family:'Syne',sans-serif;">← Volver a la tienda</a>
+        </div>`;
+
+    document.body.appendChild(overlay);
+    document.getElementById('btn-tique').addEventListener('click', () => generarTique(pedido));
+}
+
+// ── GENERAR TIQUE PDF ──
+async function generarTique(pedido) {
+    if (!window.jspdf) {
+        await new Promise((resolve, reject) => {
+            const s = document.createElement('script');
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+            s.onload = resolve; s.onerror = reject;
+            document.head.appendChild(s);
+        });
+    }
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const W = 210, M = 20;
+    let y = 20;
+    const fmtN = n => '$' + Math.round(Number(n)).toLocaleString('es-CO');
+    const idCorto = pedido.id.substring(0,8).toUpperCase();
+
+    // Header negro
+    doc.setFillColor(10,10,10); doc.rect(0,0,W,42,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(20);
+    doc.text('SHOP', M, y+8);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,180,180);
+    doc.text('cxr10s.github.io/tienda', M, y+16);
+    doc.setFont('helvetica','bold'); doc.setFontSize(10); doc.setTextColor(200,255,0);
+    doc.text('TIQUE DE PAGO', W-M, y+8, {align:'right'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,180,180);
+    doc.text('#' + idCorto, W-M, y+15, {align:'right'});
+    doc.text(new Date(pedido.created_at).toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'}), W-M, y+21, {align:'right'});
+
+    y = 52;
+
+    // Estado del pago
+    const estadoPago = pedido.estado_pago || 'pendiente';
+    const pagoLabel  = estadoPago === 'pagado' ? 'PAGO CONFIRMADO' : estadoPago === 'error' ? 'PAGO RECHAZADO' : 'PAGO PENDIENTE / EN VERIFICACIÓN';
+    const pagoColor  = estadoPago === 'pagado' ? [34,197,94] : estadoPago === 'error' ? [239,68,68] : [245,158,11];
+    doc.setFillColor(...pagoColor); doc.roundedRect(M, y-6, W-M*2, 12, 3, 3, 'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(9);
+    doc.text(pagoLabel, W/2, y+1.5, {align:'center'});
+    y += 16;
+
+    // Info pedido
+    doc.setFillColor(245,245,245); doc.roundedRect(M, y, W-M*2, 44, 3,3,'F');
+    doc.setTextColor(100,100,100); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+    doc.text('INFORMACIÓN DEL PEDIDO', M+6, y+7);
+    doc.setTextColor(10,10,10); doc.setFont('helvetica','bold'); doc.setFontSize(10);
+    doc.text(pedido.nombre || '', M+6, y+15);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(100,100,100);
+    doc.text(`Tel: ${pedido.telefono || ''}`, M+6, y+23);
+    doc.text(`Email: ${pedido.email || ''}`, M+6, y+30);
+    doc.text(`Tipo entrega: ${pedido.tipo_entrega === 'domicilio' ? 'Envío a domicilio' : 'Recoger en tienda'}`, M+6, y+37);
+    doc.text(`Método pago: ${(pedido.metodo_pago || '').replace('-',' ').toUpperCase()}`, W-M-2, y+23, {align:'right'});
+    if (pedido.direccion_envio) doc.text(`Dir: ${pedido.direccion_envio}`, M+6, y+44);
+    y += pedido.direccion_envio ? 56 : 52;
+
+    // Productos
+    doc.setTextColor(100,100,100); doc.setFont('helvetica','bold'); doc.setFontSize(7);
+    doc.text('PRODUCTOS', M, y); y += 5;
+    doc.setFillColor(10,10,10); doc.rect(M,y,W-M*2,8,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','bold'); doc.setFontSize(8);
+    doc.text('PRODUCTO', M+4, y+5.5);
+    doc.text('CANT.', W-65, y+5.5, {align:'right'});
+    doc.text('TOTAL', W-M-2, y+5.5, {align:'right'}); y += 8;
+
+    (pedido.productos||[]).forEach((p,i) => {
+        const bg = i%2===0 ? [255,255,255] : [248,248,248];
+        doc.setFillColor(...bg); doc.rect(M,y,W-M*2,9,'F');
+        doc.setTextColor(10,10,10); doc.setFont('helvetica','normal'); doc.setFontSize(8.5);
+        doc.text(p.name+(p.isGift?' (REGALO)':''), M+4, y+6);
+        doc.text(String(p.quantity), W-65, y+6, {align:'right'});
+        if (p.isGift) { doc.setTextColor(34,197,94); doc.text('GRATIS', W-M-2, y+6, {align:'right'}); }
+        else { doc.setTextColor(10,10,10); doc.text(fmtN(p.price*p.quantity)+' COP', W-M-2, y+6, {align:'right'}); }
+        y += 9;
+    });
+
+    y += 4; doc.setDrawColor(220,220,220); doc.line(M,y,W-M,y); y += 6;
+    const rows = [
+        { l:'Subtotal', v: fmtN(pedido.subtotal)+' COP' },
+        ...(pedido.descuento>0 ? [{ l:'Descuento', v:'-'+fmtN(pedido.descuento)+' COP', c:[34,197,94] }] : []),
+        { l:'Envío', v: pedido.envio>0 ? fmtN(pedido.envio)+' COP' : '¡Gratis!' }
+    ];
+    rows.forEach(r => {
+        doc.setFont('helvetica','normal'); doc.setFontSize(9);
+        doc.setTextColor(...(r.c||[100,100,100]));
+        doc.text(r.l, W-80, y); doc.text(r.v, W-M-2, y, {align:'right'}); y+=7;
+    });
+    y += 2;
+    doc.setFillColor(10,10,10); doc.roundedRect(W-90,y-6,70,12,2,2,'F');
+    doc.setTextColor(255,255,255); doc.setFont('helvetica','normal'); doc.setFontSize(9);
+    doc.text('TOTAL', W-86, y+2);
+    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(200,255,0);
+    doc.text(fmtN(pedido.total)+' COP', W-M-2, y+2.5, {align:'right'}); y += 22;
+
+    // ID
+    doc.setFillColor(245,245,245); doc.roundedRect(M,y,W-M*2,16,3,3,'F');
+    doc.setTextColor(100,100,100); doc.setFont('helvetica','normal'); doc.setFontSize(8);
+    doc.text('ID del pedido:', M+6, y+6);
+    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(10,10,10);
+    doc.text(idCorto, M+6, y+13);
+    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(100,100,100);
+    doc.text('cxr10s.github.io/tienda/mis-pedidos.html', W-M-2, y+13, {align:'right'}); y += 24;
+
+    doc.setTextColor(180,180,180); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
+    doc.text('Gracias por tu compra — Shop · Tienda Deportiva', W/2, y, {align:'center'});
+    doc.text('Conserva este tique como comprobante de tu pedido.', W/2, y+5, {align:'center'});
+
+    doc.save(`Tique-${idCorto}.pdf`);
+
+    // Guardar referencia del tique en sessionStorage para mis-pedidos
+    try {
+        const tiques = JSON.parse(localStorage.getItem('tiques_pedidos') || '{}');
+        tiques[pedido.id] = true;
+        localStorage.setItem('tiques_pedidos', JSON.stringify(tiques));
+    } catch(e) {}
+}
+
+// ── INIT ──
 init();
 </script>
 </body>
