@@ -40,12 +40,12 @@ async function generarFacturaPDF(pedido) {
     doc.setTextColor(...white);
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(26);
-    doc.text('STORE.', margin, y);
+    doc.text('Shop', margin, y);
 
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(200, 200, 200);
-    doc.text('EQUIPAMIENTO DE ALTO RENDIMIENTO', margin, y + 8);
+    doc.text('Alta Calidad', margin, y + 8);
 
     // Badge de ID de Factura
     doc.setFillColor(...accent);
@@ -81,13 +81,13 @@ async function generarFacturaPDF(pedido) {
     doc.text(infoCliente, margin, y + 2);
 
     // Formateo de Fecha y Hora
-    const fechaObj = new Date(pedido.created_at);
-    const fecha = fechaObj.toLocaleDateString('es-CO', {
-        day: '2-digit', month: 'long', year: 'numeric'
-    });
-    const hora = fechaObj.toLocaleTimeString('es-CO', {
-        hour: '2-digit', minute: '2-digit', hour12: false
-    });
+    const fechaObj = pedido.created_at ? new Date(pedido.created_at) : new Date();
+    const fecha = fechaObj.toLocaleDateString('es-CO', { day: '2-digit', month: 'long', year: 'numeric' });
+    const hora = fechaObj.toLocaleTimeString('es-CO', { 
+        hour: '2-digit', 
+        minute: '2-digit', 
+        hour12: true 
+    }).toUpperCase();
     
     doc.text(`${fecha}`, W/2 + 10, y + 2);
     doc.setFont('helvetica', 'bold');
