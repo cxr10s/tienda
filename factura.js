@@ -1,5 +1,5 @@
 // =============================================
-// FACTURA IMPROVED.JS — Versión Premium con Hora
+// FACTURA.JS
 // =============================================
 
 function fmt(n) {
