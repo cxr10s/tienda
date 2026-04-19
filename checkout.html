@@ -578,6 +578,78 @@
             }
         }
 
+        /* ── TIPO ENTREGA ── */
+        .entrega-section {
+            margin-bottom: 2rem;
+        }
+
+        .entrega-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 0.75rem;
+        }
+
+        .entrega-card {
+            border: 2px solid var(--border);
+            border-radius: var(--radius);
+            padding: 18px 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: var(--surface);
+            position: relative;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .entrega-card:hover { border-color: #bbb; background: #fafaf8; }
+        .entrega-card.selected { border-color: #0a0a0a; background: #fafaf8; }
+        .entrega-card.selected::after {
+            content: '✓';
+            position: absolute;
+            top: 11px; right: 13px;
+            width: 20px; height: 20px;
+            background: #0a0a0a; color: #fff;
+            border-radius: 50%; font-size: 11px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            line-height: 20px; text-align: center;
+        }
+        .entrega-icon { font-size: 22px; }
+        .entrega-name { font-size: 13px; font-weight: 700; color: var(--text); }
+        .entrega-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+        /* ── ENVÍO BADGE DINÁMICO ── */
+        .envio-status {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            font-size: 13px;
+            margin-top: 10px;
+            background: #f9f9f7;
+            transition: all 0.3s;
+        }
+        .envio-status.show { display: flex; }
+        .envio-status.calculando { color: var(--muted); }
+        .envio-status.gratis { background: var(--success-bg); border-color: #bbf7d0; color: var(--success); }
+        .envio-status.con-costo { background: #fff8f0; border-color: #fed7aa; color: #c2410c; }
+        .envio-status.fallback { background: #fafaf8; color: var(--muted); }
+        .envio-status-icon { font-size: 16px; flex-shrink: 0; }
+        .envio-status-text { flex: 1; line-height: 1.4; }
+        .envio-status-text strong { display: block; font-weight: 700; }
+        .envio-status-text span { font-size: 11px; opacity: 0.8; }
+
+        /* Campos de dirección visibles solo en domicilio */
+        .dir-fields { display: block; }
+        .dir-fields.hidden { display: none; }
+
+        @media (max-width: 480px) {
+            .entrega-options { grid-template-columns: 1fr; }
+        }
+
         /* ── ANIMATIONS ── */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(16px); }
@@ -637,6 +709,23 @@
             <div class="step">
                 <div class="step-num">3</div>
                 <span>CONFIRMACIÓN</span>
+            </div>
+        </div>
+
+        <!-- ── TIPO DE ENTREGA ── -->
+        <div class="entrega-section">
+            <div class="section-label">¿Cómo quieres recibir tu pedido? *</div>
+            <div class="entrega-options">
+                <div class="entrega-card" id="card-recoger" onclick="seleccionarEntrega('recoger')">
+                    <span class="entrega-icon">🏪</span>
+                    <div class="entrega-name">Recoger en tienda</div>
+                    <div class="entrega-desc">Ven a buscarlo. Sin costo de envío.</div>
+                </div>
+                <div class="entrega-card" id="card-domicilio" onclick="seleccionarEntrega('domicilio')">
+                    <span class="entrega-icon">🚚</span>
+                    <div class="entrega-name">Envío a domicilio</div>
+                    <div class="entrega-desc">Lo enviamos a tu dirección. Costo calculado por distancia.</div>
+                </div>
             </div>
         </div>
 
@@ -705,9 +794,9 @@
                 </div>
             </div>
 
-            <!-- Sección 3: Dirección -->
-            <div class="form-section">
-                <div class="section-label">Dirección de entrega</div>
+            <!-- Sección 3: Dirección (oculta si es recoger en tienda) -->
+            <div class="form-section dir-fields" id="dir-section">
+                <div class="section-label">Dirección de envío</div>
                 <div class="field-grid">
 
                     <div class="field">
@@ -751,6 +840,15 @@
                         <span class="field-error" id="err-direccion">Ingresa una dirección válida</span>
                     </div>
                 </div>
+
+                <!-- Badge dinámico del costo de envío -->
+                <div class="envio-status calculando" id="envio-status">
+                    <span class="envio-status-icon" id="envio-icon">⏳</span>
+                    <div class="envio-status-text">
+                        <strong id="envio-titulo">Calculando costo de envío...</strong>
+                        <span id="envio-detalle">Ingresa tu dirección completa</span>
+                    </div>
+                </div>
             </div>
 
             <!-- Sección 4: Notas -->
@@ -777,7 +875,7 @@
                 </button>
                 <div class="secure-note">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                    Pago seguro procesado por Wompi
+                    Tus datos están protegidos · Pago seguro
                 </div>
             </div>
 
@@ -821,12 +919,16 @@
 // =============================================
 const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
+const TIENDA_URL    = 'https://cxr10s.github.io/tienda/';
 
-const WOMPI_PUBLIC_KEY       = 'pub_test_9kFqdnduO7A4r7WelX97pzJgjA7aBpGV';
-const WOMPI_INTEGRITY_SECRET = 'test_integrity_itRExQlNZCY87qnVRdvNrXqXX7TEmPEr';
-const WOMPI_CHECKOUT_URL     = 'https://checkout.wompi.co/p/';
+// URL de la Edge Function de Supabase para calcular envío
+const EDGE_CALCULAR_ENVIO = `${SUPABASE_URL}/functions/v1/calcular-envio`;
 
-const TIENDA_URL = 'https://cxr10s.github.io/tienda/';
+// ── ESTADO GLOBAL ──
+let tipoEntrega  = null;  // 'recoger' | 'domicilio'
+let envioCalculado = 0;   // costo de envío calculado por la Edge Function
+let calculandoEnvio = false;
+let timerCalculoEnvio = null;
 
 // =============================================
 // CARRITO — leer desde localStorage
@@ -879,13 +981,34 @@ function renderOrder() {
         </div>
     `).join('');
 
+    actualizarTotalesUI();
+    totalsEl.style.display = 'block';
+}
+
+// Actualiza el resumen de precios según el envío calculado y tipo de entrega
+function actualizarTotalesUI() {
     const subtotal = cart.reduce((s, i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
     const { amount: descuento } = calcDiscount(subtotal);
-    const envio = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
+
+    // Si es recoger en tienda, envío = 0 siempre
+    const envio = tipoEntrega === 'recoger' ? 0 : envioCalculado;
     const total = subtotal - descuento + envio;
 
     document.getElementById('sum-subtotal').textContent = fmt(subtotal);
-    document.getElementById('sum-shipping').textContent = envio > 0 ? fmt(envio) : '¡Gratis!';
+
+    const shipEl = document.getElementById('sum-shipping');
+    const shipRow = document.getElementById('sum-shipping-row');
+    if (tipoEntrega === 'recoger') {
+        shipEl.textContent = 'Gratis (recogida)';
+        shipEl.style.color = 'var(--success)';
+        shipRow.style.display = 'flex';
+    } else if (tipoEntrega === 'domicilio') {
+        shipEl.textContent = envio > 0 ? fmt(envio) : '¡Gratis!';
+        shipEl.style.color = envio === 0 ? 'var(--success)' : '';
+        shipRow.style.display = 'flex';
+    } else {
+        shipRow.style.display = 'none';
+    }
 
     const discRow = document.getElementById('sum-discount-row');
     if (descuento > 0) {
@@ -896,7 +1019,6 @@ function renderOrder() {
     }
 
     document.getElementById('sum-total').textContent = fmt(total);
-    totalsEl.style.display = 'block';
 }
 
 // =============================================
@@ -931,7 +1053,19 @@ function validateField(item) {
 }
 
 function validateAll() {
-    return validations.map(validateField).every(Boolean);
+    // Si es recogida en tienda, saltamos los campos de dirección
+    const camposDireccion = ['departamento', 'ciudad', 'direccion'];
+    return validations.map(item => {
+        if (tipoEntrega === 'recoger' && camposDireccion.includes(item.id)) {
+            // Limpiar errores visuales de campos de dirección
+            const el  = document.getElementById(item.id);
+            const err = document.getElementById(item.err);
+            if (el) { el.classList.remove('error'); el.classList.remove('valid'); }
+            if (err) err.classList.remove('show');
+            return true;
+        }
+        return validateField(item);
+    }).every(Boolean);
 }
 
 // Live validation on blur
@@ -996,10 +1130,137 @@ function prefillFromSession() {
 }
 
 // =============================================
+// TIPO DE ENTREGA
+// =============================================
+function seleccionarEntrega(tipo) {
+    tipoEntrega = tipo;
+    document.getElementById('card-recoger').classList.toggle('selected', tipo === 'recoger');
+    document.getElementById('card-domicilio').classList.toggle('selected', tipo === 'domicilio');
+
+    const dirSection = document.getElementById('dir-section');
+    const envioStatus = document.getElementById('envio-status');
+
+    if (tipo === 'recoger') {
+        // Ocultar campos de dirección, sin costo de envío
+        dirSection.classList.add('hidden');
+        envioStatus.classList.remove('show');
+        envioCalculado = 0;
+        actualizarTotalesUI();
+    } else {
+        // Mostrar campos de dirección
+        dirSection.classList.remove('hidden');
+        // Si ya hay dirección ingresada, calcular envío
+        const dirVal = document.getElementById('direccion').value.trim();
+        const ciudadVal = document.getElementById('ciudad').value.trim();
+        if (dirVal.length >= 8 && ciudadVal.length >= 2) {
+            calcularEnvio();
+        } else {
+            mostrarEnvioEstado('esperando', '🚚', 'Costo de envío por distancia', 'Ingresa tu dirección para calcularlo');
+        }
+        actualizarTotalesUI();
+    }
+}
+
+// =============================================
+// CÁLCULO DE ENVÍO — Edge Function Supabase
+// =============================================
+function mostrarEnvioEstado(tipo, icon, titulo, detalle) {
+    const el = document.getElementById('envio-status');
+    el.className = 'envio-status show ' + tipo;
+    document.getElementById('envio-icon').textContent = icon;
+    document.getElementById('envio-titulo').textContent = titulo;
+    document.getElementById('envio-detalle').textContent = detalle;
+}
+
+async function calcularEnvio() {
+    if (tipoEntrega !== 'domicilio') return;
+    if (calculandoEnvio) return;
+
+    const direccion   = document.getElementById('direccion').value.trim();
+    const ciudad      = document.getElementById('ciudad').value.trim();
+    const departamento = document.getElementById('departamento').value;
+
+    // Necesitamos al menos dirección y ciudad
+    if (direccion.length < 8 || ciudad.length < 2) return;
+
+    const direccionCompleta = `${direccion}, ${ciudad}${departamento ? ', ' + departamento : ''}, Colombia`;
+    const subtotal = cart.reduce((s, i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
+
+    calculandoEnvio = true;
+    mostrarEnvioEstado('calculando', '⏳', 'Calculando costo de envío...', direccionCompleta);
+
+    try {
+        const res = await fetch(EDGE_CALCULAR_ENVIO, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'apikey': SUPABASE_ANON,
+                'Authorization': `Bearer ${SUPABASE_ANON}`
+            },
+            body: JSON.stringify({ direccion_comprador: direccionCompleta, subtotal })
+        });
+
+        if (!res.ok) throw new Error('Error de red');
+        const data = await res.json();
+
+        envioCalculado = data.envio || 0;
+        actualizarTotalesUI();
+
+        if (data.gratis_por === 'subtotal') {
+            mostrarEnvioEstado('gratis', '🎉', '¡Envío gratis!', 'Tu pedido supera $150.000');
+        } else if (envioCalculado === 0) {
+            mostrarEnvioEstado('gratis', '✅', '¡Envío gratis!', `Estás a ${data.distancia_km} km · ${data.duracion || ''}`);
+        } else {
+            const distTxt = data.distancia_km ? `${data.distancia_km} km · ${data.duracion || ''}` : '';
+            const fallbackTxt = data.fallback ? 'Tarifa estándar aplicada' : distTxt;
+            mostrarEnvioEstado('con-costo', '🚚', `Envío: $${Math.round(envioCalculado).toLocaleString('es-CO')} COP`, fallbackTxt);
+        }
+
+    } catch(err) {
+        console.error('Error calculando envío:', err);
+        // Fallback seguro: tarifa estándar
+        envioCalculado = 25000;
+        actualizarTotalesUI();
+        mostrarEnvioEstado('fallback', '🚚', 'Envío: $25.000 COP', 'Tarifa estándar — no se pudo calcular la distancia');
+    } finally {
+        calculandoEnvio = false;
+    }
+}
+
+// Calcular envío con debounce cuando el usuario escribe la dirección
+document.addEventListener('DOMContentLoaded', function() {
+    const triggerFields = ['direccion', 'ciudad', 'departamento'];
+    triggerFields.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('change', () => {
+            if (tipoEntrega !== 'domicilio') return;
+            clearTimeout(timerCalculoEnvio);
+            timerCalculoEnvio = setTimeout(calcularEnvio, 800);
+        });
+        // Para input también con debounce más largo
+        if (el.tagName === 'INPUT') {
+            el.addEventListener('input', () => {
+                if (tipoEntrega !== 'domicilio') return;
+                clearTimeout(timerCalculoEnvio);
+                timerCalculoEnvio = setTimeout(calcularEnvio, 1500);
+            });
+        }
+    });
+});
+
+// =============================================
 // SUBMIT
 // =============================================
 document.getElementById('checkout-form').addEventListener('submit', async function(e) {
     e.preventDefault();
+
+    // Validar que se eligió tipo de entrega
+    if (!tipoEntrega) {
+        showToast('⚠️ Selecciona cómo quieres recibir tu pedido');
+        document.querySelector('.entrega-section').scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+    }
 
     if (!validateAll()) {
         showToast('⚠️ Revisa los campos marcados en rojo');
@@ -1013,32 +1274,41 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
         return;
     }
 
+    // Si es domicilio y el envío aún se está calculando, esperar
+    if (tipoEntrega === 'domicilio' && calculandoEnvio) {
+        showToast('⏳ Espera, calculando el costo de envío...');
+        return;
+    }
+
     const btn = document.getElementById('submit-btn');
     btn.disabled = true;
     btn.classList.add('loading');
 
-    const nombre    = document.getElementById('nombre').value.trim();
-    const docTipo   = document.getElementById('doc-tipo').value;
-    const documento = document.getElementById('documento').value.trim();
-    const email     = document.getElementById('email').value.trim().toLowerCase();
-    const telefono  = document.getElementById('telefono').value.trim();
-    const depto     = document.getElementById('departamento').value;
-    const ciudad    = document.getElementById('ciudad').value.trim();
-    const direccion = document.getElementById('direccion').value.trim();
-    const notas     = document.getElementById('notas').value.trim();
+    const nombre     = document.getElementById('nombre').value.trim();
+    const docTipo    = document.getElementById('doc-tipo').value;
+    const documento  = document.getElementById('documento').value.trim();
+    const email      = document.getElementById('email').value.trim().toLowerCase();
+    const telefono   = document.getElementById('telefono').value.trim();
+    const depto      = document.getElementById('departamento').value;
+    const ciudad     = document.getElementById('ciudad').value.trim();
+    const direccion  = document.getElementById('direccion').value.trim();
+    const notas      = document.getElementById('notas').value.trim();
 
     const subtotal = cart.reduce((s, i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
     const { amount: descuento } = calcDiscount(subtotal);
-    const envio = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
+    const envio = tipoEntrega === 'recoger' ? 0 : envioCalculado;
     const total = subtotal - descuento + envio;
 
     const pedido = {
         nombre,
         email,
         telefono,
-        direccion: `${direccion}, ${ciudad}, ${depto}`,
+        direccion: tipoEntrega === 'domicilio'
+            ? `${direccion}, ${ciudad}, ${depto}`
+            : 'Recoge en tienda — Calle 13 #25-66, Bucaramanga, Santander',
         notas: notas || null,
         documento: `${docTipo} ${documento}`,
+        tipo_entrega: tipoEntrega,
         productos: cart.map(i => ({
             id: i.id, name: i.name, price: i.price,
             quantity: i.quantity, isGift: i.isGift || false
@@ -1048,40 +1318,18 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
     };
 
     try {
-        // Guardar en Supabase
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_ANON,
-                'Authorization': `Bearer ${SUPABASE_ANON}`,
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify(pedido)
-        });
+        // Guardar datos del pedido en sessionStorage para pago.html
+        sessionStorage.setItem('pago_pedido', JSON.stringify(pedido));
 
-        if (!res.ok) throw new Error('Error al guardar pedido');
-        const result = await res.json();
+        // Progreso
+        document.getElementById('progress-fill').style.width = '80%';
 
-        const pedidoGuardado = {
-            ...pedido,
-            id: Array.isArray(result) && result[0] ? result[0].id : ('local-' + Date.now()),
-            created_at: Array.isArray(result) && result[0] ? result[0].created_at : new Date().toISOString()
-        };
-
-        // Limpiar carrito
-        localStorage.removeItem('tienda_cart');
-        localStorage.removeItem('tienda_last_removed_gift');
-
-        // Progreso al 100%
-        document.getElementById('progress-fill').style.width = '100%';
-
-        // Mostrar alerta de factura y luego redirigir a Wompi
-        await mostrarAlertaFactura(pedidoGuardado);
+        // Redirigir a la página de pago
+        window.location.href = 'https://cxr10s.github.io/tienda/pago.html';
 
     } catch(err) {
         console.error(err);
-        showToast('❌ Error al guardar el pedido. Intenta de nuevo.');
+        showToast('❌ Error al procesar. Intenta de nuevo.');
         btn.disabled = false;
         btn.classList.remove('loading');
     }
@@ -1133,7 +1381,7 @@ async function generarFacturaPDF(pedido) {
     doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
     doc.setTextColor(200, 200, 200);
-    doc.text('ALTA CALIDAD', margin, y + 8); // Slogan actualizado
+    doc.text('Alta Calidad', margin, y + 8); // Slogan actualizado
 
     // Badge de ID
     doc.setFillColor(...accent);
