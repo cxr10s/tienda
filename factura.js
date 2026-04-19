@@ -1,5 +1,5 @@
 // =============================================
-// FACTURA IMPROVED.JS — Versión Premium Corregida
+// FACTURA IMPROVED.JS — Versión Premium con Hora
 // =============================================
 
 function fmt(n) {
@@ -64,7 +64,7 @@ async function generarFacturaPDF(pedido) {
     doc.setFont('helvetica', 'bold');
     doc.setFontSize(10);
     doc.text('ENVIAR A:', margin, y);
-    doc.text('FECHA DE COMPRA:', W/2 + 10, y);
+    doc.text('FECHA Y HORA:', W/2 + 10, y);
 
     y += 6;
     doc.setFont('helvetica', 'normal');
@@ -80,10 +80,18 @@ async function generarFacturaPDF(pedido) {
     ];
     doc.text(infoCliente, margin, y + 2);
 
-    const fecha = new Date(pedido.created_at).toLocaleDateString('es-CO', {
+    // Formateo de Fecha y Hora
+    const fechaObj = new Date(pedido.created_at);
+    const fecha = fechaObj.toLocaleDateString('es-CO', {
         day: '2-digit', month: 'long', year: 'numeric'
     });
-    doc.text(fecha, W/2 + 10, y + 2);
+    const hora = fechaObj.toLocaleTimeString('es-CO', {
+        hour: '2-digit', minute: '2-digit', hour12: false
+    });
+    
+    doc.text(`${fecha}`, W/2 + 10, y + 2);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Hora: ${hora}`, W/2 + 10, y + 7);
 
     y += 35;
 
@@ -119,7 +127,7 @@ async function generarFacturaPDF(pedido) {
         y += 5;
     });
 
-    // ── Resumen de Totales (Caja corregida) ───────
+    // ── Resumen de Totales ────────────────────────
     y += 5;
     const boxW = 80;
     const boxX = W - margin - boxW;
@@ -131,8 +139,6 @@ async function generarFacturaPDF(pedido) {
     const drawRow = (label, value, isTotal = false) => {
         doc.setFont('helvetica', isTotal ? 'bold' : 'normal');
         doc.setFontSize(isTotal ? 12 : 9);
-        
-        // CORRECCIÓN APLICADA: Spread con paréntesis para evitar el error de sintaxis
         doc.setTextColor(...(isTotal ? accent : textGray));
         
         doc.text(label, boxX + 5, rowY);
@@ -151,15 +157,15 @@ async function generarFacturaPDF(pedido) {
     doc.setFont('helvetica', 'italic');
     doc.setFontSize(10);
     doc.setTextColor(...accent);
-    doc.text('¡Gracias por elegirnos para superar tus límites!', W / 2, y, { align: 'center' });
+    doc.text('¡Gracias por elegirnos!', W / 2, y, { align: 'center' });
     
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
     doc.setTextColor(...textGray);
-    doc.text('Si te gusta lo que recibes, etiquétanos en Instagram: @TuTiendaDeportiva', W / 2, y + 6, { align: 'center' });
+    doc.text('Si te gusta lo que recibes, etiquétanos en Instagram: @tienda_deportiva912', W / 2, y + 6, { align: 'center' });
 
     doc.setFillColor(...accent);
     doc.rect(0, 287, W, 10, 'F'); 
 
-    doc.save(`Factura-${idCorto}-STORE.pdf`);
+    doc.save(`Factura-${idCorto}-Shop.pdf`);
 }
