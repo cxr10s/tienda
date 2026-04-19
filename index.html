@@ -815,7 +815,7 @@
     async function cargarContadorVentas() {
         const el = document.getElementById('ventas-counter');
         if (!el) return;
-        const BASE = 1235; // Base fija para darle credibilidad al contador
+        const BASE = 515; // Base fija para darle credibilidad al contador
         try {
             const res = await fetch(
                 `${_SB_URL}/rest/v1/pedidos?select=id`,
