@@ -1,6 +1,5 @@
 // =============================================
-// FACTURA.JS — Generador de facturas PDF
-// Usa jsPDF (cargado desde CDN)
+// FACTURA IMPROVED.JS — Versión Premium Corregida
 // =============================================
 
 function fmt(n) {
@@ -8,7 +7,7 @@ function fmt(n) {
 }
 
 async function generarFacturaPDF(pedido) {
-    // Cargar jsPDF dinámicamente si no está cargado
+    // Cargar jsPDF dinámicamente
     if (!window.jspdf) {
         await new Promise((resolve, reject) => {
             const script = document.createElement('script');
@@ -22,270 +21,145 @@ async function generarFacturaPDF(pedido) {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
 
-    const W = 210; // ancho A4
+    const W = 210; 
     const margin = 20;
-    let y = 20;
+    let y = 0;
 
-    // ── Colores ──────────────────────────────
-    const negro      = [10, 10, 10];
-    const gris       = [100, 100, 100];
-    const grisClaro  = [230, 230, 230];
-    const verde      = [34, 197, 94];
-    const rojo       = [239, 68, 68];
-    const amarillo   = [245, 158, 11];
-    const blanco     = [255, 255, 255];
+    // ── Paleta de Colores ────────────────────────
+    const accent     = [63, 81, 181]; // Indigo
+    const dark       = [30, 30, 30];
+    const lightGray  = [245, 247, 250];
+    const textGray   = [100, 100, 100];
+    const white      = [255, 255, 255];
 
-    // ── Fondo header ─────────────────────────
-    doc.setFillColor(...negro);
-    doc.rect(0, 0, W, 45, 'F');
+    // ── Header Moderno ───────────────────────────
+    doc.setFillColor(...dark);
+    doc.rect(0, 0, W, 60, 'F'); 
 
-    // Logo / nombre tienda
-    doc.setTextColor(...blanco);
+    y = 25;
+    doc.setTextColor(...white);
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(22);
-    doc.text('STORE.', margin, y + 8);
+    doc.setFontSize(26);
+    doc.text('STORE.', margin, y);
 
+    doc.setFontSize(10);
     doc.setFont('helvetica', 'normal');
+    doc.setTextColor(200, 200, 200);
+    doc.text('EQUIPAMIENTO DE ALTO RENDIMIENTO', margin, y + 8);
+
+    // Badge de ID de Factura
+    doc.setFillColor(...accent);
+    doc.roundedRect(W - margin - 50, y - 10, 50, 25, 3, 3, 'F');
+    doc.setTextColor(...white);
     doc.setFontSize(9);
-    doc.setTextColor(180, 180, 180);
-    doc.text('Tienda Deportiva', margin, y + 16);
-    doc.text('cxr10s.github.io/tienda', margin, y + 22);
-
-    // FACTURA label
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(200, 255, 0);
-    doc.text('FACTURA', W - margin, y + 8, { align: 'right' });
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(180, 180, 180);
+    doc.text('DETALLE DEL PEDIDO', W - margin - 25, y - 2, { align: 'center' });
+    doc.setFontSize(12);
     const idCorto = pedido.id.substring(0, 8).toUpperCase();
-    doc.text(`#${idCorto}`, W - margin, y + 15, { align: 'right' });
+    doc.text(`#${idCorto}`, W - margin - 25, y + 6, { align: 'center' });
+
+    y = 75;
+
+    // ── Bloque de Información ────────────────────
+    doc.setTextColor(...dark);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('ENVIAR A:', margin, y);
+    doc.text('FECHA DE COMPRA:', W/2 + 10, y);
+
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...textGray);
+    doc.setFontSize(9);
+    
+    // Datos cliente
+    const infoCliente = [
+        pedido.nombre,
+        pedido.direccion,
+        `Tel: ${pedido.telefono}`,
+        pedido.email
+    ];
+    doc.text(infoCliente, margin, y + 2);
 
     const fecha = new Date(pedido.created_at).toLocaleDateString('es-CO', {
         day: '2-digit', month: 'long', year: 'numeric'
     });
-    doc.text(fecha, W - margin, y + 21, { align: 'right' });
+    doc.text(fecha, W/2 + 10, y + 2);
 
-    y = 55;
+    y += 35;
 
-    // ── Info cliente ─────────────────────────
-    doc.setFillColor(245, 245, 245);
-    doc.roundedRect(margin, y, W - margin * 2, 42, 3, 3, 'F');
-
-    doc.setTextColor(...gris);
+    // ── Tabla de Productos ────────────────────────
+    doc.setFillColor(...lightGray);
+    doc.roundedRect(margin, y, W - (margin * 2), 10, 2, 2, 'F');
+    
     doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
-    doc.text('INFORMACIÓN DEL CLIENTE', margin + 6, y + 7);
+    doc.setTextColor(...dark);
+    doc.text('PRODUCTO', margin + 5, y + 6.5);
+    doc.text('CANT.', W - 70, y + 6.5, { align: 'right' });
+    doc.text('TOTAL', W - margin - 5, y + 6.5, { align: 'right' });
 
-    doc.setTextColor(...negro);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.text(pedido.nombre, margin + 6, y + 15);
-
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.setTextColor(...gris);
-    doc.text(`Email: ${pedido.email}`, margin + 6, y + 23);
-    doc.text(`Tel: ${pedido.telefono}`, margin + 6, y + 30);
-    doc.text(`Dir: ${pedido.direccion}`, margin + 6, y + 37);
-
-    if (pedido.notas) {
-        doc.text(`Nota: ${pedido.notas}`, margin + 6, y + 44);
-        y += 8;
-    }
-
-    y += 52;
-
-    // ── Estado del pedido ─────────────────────
-    const estadoColors = {
-        pendiente: [245, 158, 11],
-        enviado:   [59, 130, 246],
-        entregado: [34, 197, 94],
-        cancelado: [239, 68, 68],
-    };
-    const estadoColor = estadoColors[pedido.estado] || negro;
-
-    doc.setFillColor(...estadoColor);
-    doc.roundedRect(margin, y - 6, 44, 10, 2, 2, 'F');
-    doc.setTextColor(...blanco);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    doc.text(pedido.estado.toUpperCase(), margin + 22, y + 1, { align: 'center' });
-
-    // ── Estado del PAGO (al lado del estado del pedido) ──
-    const estadoPago = pedido.estado_pago || 'pendiente';
-    let pagoColor, pagoLabel, pagoIcon;
-
-    if (estadoPago === 'pagado') {
-        pagoColor = verde;
-        pagoLabel = 'PAGO CONFIRMADO';
-        pagoIcon  = '✅';
-    } else if (estadoPago === 'error') {
-        pagoColor = rojo;
-        pagoLabel = 'PAGO RECHAZADO';
-        pagoIcon  = '❌';
-    } else {
-        pagoColor = amarillo;
-        pagoLabel = 'PAGO PENDIENTE';
-        pagoIcon  = '⏳';
-    }
-
-    // Fondo del badge de pago
-    doc.setFillColor(pagoColor[0], pagoColor[1], pagoColor[2]);
-    doc.roundedRect(margin + 50, y - 6, 60, 10, 2, 2, 'F');
-    doc.setTextColor(...blanco);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    doc.text(`${pagoIcon} ${pagoLabel}`, margin + 80, y + 1, { align: 'center' });
-
-    y += 16;
-
-    // ── Tabla productos ───────────────────────
-    doc.setTextColor(...gris);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(7);
-    doc.text('PRODUCTOS', margin, y);
-    y += 5;
-
-    // Header tabla
-    doc.setFillColor(...negro);
-    doc.rect(margin, y, W - margin * 2, 8, 'F');
-    doc.setTextColor(...blanco);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(8);
-    doc.text('PRODUCTO', margin + 4, y + 5.5);
-    doc.text('CANT.', W - 65, y + 5.5, { align: 'right' });
-    doc.text('PRECIO UNIT.', W - 42, y + 5.5, { align: 'right' });
-    doc.text('TOTAL', W - margin - 2, y + 5.5, { align: 'right' });
-    y += 8;
+    y += 15;
 
     const productos = Array.isArray(pedido.productos) ? pedido.productos : [];
-    productos.forEach((prod, i) => {
-        const bg = i % 2 === 0 ? [255, 255, 255] : [248, 248, 248];
-        doc.setFillColor(...bg);
-        doc.rect(margin, y, W - margin * 2, 9, 'F');
-
-        doc.setTextColor(...negro);
-        doc.setFont('helvetica', prod.isGift ? 'italic' : 'normal');
-        doc.setFontSize(8.5);
-
-        const nombre = prod.name + (prod.isGift ? ' (REGALO)' : '');
-        doc.text(nombre, margin + 4, y + 6);
-
+    productos.forEach((prod) => {
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...dark);
+        doc.text(prod.name.toUpperCase(), margin + 5, y);
+        
         doc.setFont('helvetica', 'normal');
-        doc.text(String(prod.quantity), W - 65, y + 6, { align: 'right' });
+        doc.setTextColor(...textGray);
+        doc.text(`${prod.quantity} x $${fmt(prod.price)}`, margin + 5, y + 5);
 
-        if (prod.isGift) {
-            doc.setTextColor(...verde);
-            doc.text('GRATIS', W - 42, y + 6, { align: 'right' });
-            doc.text('GRATIS', W - margin - 2, y + 6, { align: 'right' });
-        } else {
-            doc.setTextColor(...negro);
-            doc.text(`$${fmt(prod.price)} COP`, W - 42, y + 6, { align: 'right' });
-            doc.text(`$${fmt(prod.price * prod.quantity)} COP`, W - margin - 2, y + 6, { align: 'right' });
-        }
+        doc.setTextColor(...dark);
+        const totalProd = prod.isGift ? 'GRATIS' : `$${fmt(prod.price * prod.quantity)}`;
+        doc.text(totalProd, W - margin - 5, y + 2.5, { align: 'right' });
 
-        y += 9;
+        y += 12;
+        doc.setDrawColor(230, 230, 230);
+        doc.line(margin + 5, y - 2, W - margin - 5, y - 2);
+        y += 5;
     });
 
-    // ── Totales ───────────────────────────────
-    y += 4;
-    doc.setDrawColor(...grisClaro);
-    doc.line(margin, y, W - margin, y);
-    y += 6;
+    // ── Resumen de Totales (Caja corregida) ───────
+    y += 5;
+    const boxW = 80;
+    const boxX = W - margin - boxW;
+    
+    doc.setFillColor(...lightGray);
+    doc.roundedRect(boxX, y, boxW, 35, 3, 3, 'F');
 
-    const totales = [
-        { label: 'Subtotal', value: `$${fmt(pedido.subtotal)} COP` },
-    ];
-    if (pedido.descuento > 0) {
-        totales.push({ label: `Descuento`, value: `-$${fmt(pedido.descuento)} COP`, color: verde });
-    }
-    totales.push({
-        label: 'Envío',
-        value: pedido.envio > 0 ? `$${fmt(pedido.envio)} COP` : '¡Gratis!'
-    });
+    let rowY = y + 8;
+    const drawRow = (label, value, isTotal = false) => {
+        doc.setFont('helvetica', isTotal ? 'bold' : 'normal');
+        doc.setFontSize(isTotal ? 12 : 9);
+        
+        // CORRECCIÓN APLICADA: Spread con paréntesis para evitar el error de sintaxis
+        doc.setTextColor(...(isTotal ? accent : textGray));
+        
+        doc.text(label, boxX + 5, rowY);
+        doc.text(value, W - margin - 5, rowY, { align: 'right' });
+        rowY += 8;
+    };
 
-    totales.forEach(t => {
-        doc.setFont('helvetica', 'normal');
-        doc.setFontSize(9);
-        doc.setTextColor(...(t.color || gris));
-        doc.text(t.label, W - 80, y);
-        doc.text(t.value, W - margin - 2, y, { align: 'right' });
-        y += 7;
-    });
+    drawRow('Subtotal', `$${fmt(pedido.subtotal)}`);
+    drawRow('Envío', pedido.envio > 0 ? `$${fmt(pedido.envio)}` : 'Bonificado');
+    doc.setDrawColor(200, 200, 200);
+    doc.line(boxX + 5, rowY - 4, W - margin - 5, rowY - 4);
+    drawRow('TOTAL COP', `$${fmt(pedido.total)}`, true);
 
-    // Total final
-    y += 2;
-    doc.setFillColor(...negro);
-    doc.roundedRect(W - 90, y - 6, 70, 12, 2, 2, 'F');
-    doc.setTextColor(...blanco);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(9);
-    doc.text('TOTAL', W - 86, y + 2);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(11);
-    doc.setTextColor(200, 255, 0);
-    doc.text(`$${fmt(pedido.total)} COP`, W - margin - 2, y + 2.5, { align: 'right' });
-
-    y += 20;
-
-    // ── Bloque estado de pago detallado ───────
-    // Fondo coloreado según el estado del pago
-    doc.setFillColor(pagoColor[0], pagoColor[1], pagoColor[2], 0.15);
-    const pagoBoxHeight = pedido.estado_pago === 'error' ? 26 : 22;
-    doc.roundedRect(margin, y, W - margin * 2, pagoBoxHeight, 3, 3, 'F');
-
-    // Borde izquierdo de color sólido
-    doc.setFillColor(...pagoColor);
-    doc.rect(margin, y, 4, pagoBoxHeight, 'F');
-
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(9);
-    doc.setTextColor(...pagoColor);
-    doc.text(`${pagoIcon} ${pagoLabel}`, margin + 10, y + 8);
-
+    // ── Pie de página ─────────────────────────────
+    y += 50;
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(10);
+    doc.setTextColor(...accent);
+    doc.text('¡Gracias por elegirnos para superar tus límites!', W / 2, y, { align: 'center' });
+    
     doc.setFont('helvetica', 'normal');
     doc.setFontSize(8);
-    doc.setTextColor(...gris);
+    doc.setTextColor(...textGray);
+    doc.text('Si te gusta lo que recibes, etiquétanos en Instagram: @TuTiendaDeportiva', W / 2, y + 6, { align: 'center' });
 
-    if (estadoPago === 'pagado') {
-        doc.text('El pago fue procesado correctamente a través de Wompi.', margin + 10, y + 16);
-    } else if (estadoPago === 'error') {
-        doc.text('El pago fue rechazado, cancelado o no fue completado.', margin + 10, y + 16);
-        doc.text('Contacta al cliente para coordinar el pago.', margin + 10, y + 22);
-    } else {
-        doc.text('El pago aún no ha sido procesado o está en espera de confirmación.', margin + 10, y + 16);
-    }
+    doc.setFillColor(...accent);
+    doc.rect(0, 287, W, 10, 'F'); 
 
-    y += pagoBoxHeight + 10;
-
-    // ── ID del pedido ─────────────────────────
-    doc.setFillColor(245, 245, 245);
-    doc.roundedRect(margin, y, W - margin * 2, 18, 3, 3, 'F');
-    doc.setTextColor(...gris);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.text('Guarda este ID para consultar tu pedido en cualquier momento:', margin + 6, y + 6);
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(12);
-    doc.setTextColor(...negro);
-    doc.text(`ID: ${idCorto}`, margin + 6, y + 14);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(8);
-    doc.setTextColor(...gris);
-    doc.text('cxr10s.github.io/tienda/mis-pedidos.html', W - margin - 2, y + 14, { align: 'right' });
-
-    y += 26;
-
-    // ── Footer ────────────────────────────────
-    doc.setTextColor(180, 180, 180);
-    doc.setFont('helvetica', 'normal');
-    doc.setFontSize(7.5);
-    doc.text('Gracias por tu compra - STORE. Tienda Deportiva', W / 2, y, { align: 'center' });
-    doc.text('Este documento es tu comprobante de pedido.', W / 2, y + 5, { align: 'center' });
-
-    // ── Descargar ─────────────────────────────
-    doc.save(`Factura-${idCorto}.pdf`);
+    doc.save(`Factura-${idCorto}-STORE.pdf`);
 }
