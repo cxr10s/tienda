@@ -147,7 +147,7 @@ async function generarFacturaPDF(pedido) {
     };
 
     drawRow('Subtotal', `$${fmt(pedido.subtotal)}`);
-    drawRow('Envío', pedido.envio > 0 ? `$${fmt(pedido.envio)}` : 'Bonificado');
+    drawRow('Envío', pedido.envio > 0 ? `$${fmt(pedido.envio)}` : 'Gratis');
     doc.setDrawColor(200, 200, 200);
     doc.line(boxX + 5, rowY - 4, W - margin - 5, rowY - 4);
     drawRow('TOTAL COP', `$${fmt(pedido.total)}`, true);
