@@ -1090,139 +1090,248 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
 // =============================================
 // ALERTA FACTURA
 // =============================================
+function fmt(n) {
+    return Math.round(Number(n)).toLocaleString('es-CO');
+}
+
 async function generarFacturaPDF(pedido) {
+    // 1. Carga de librería (Lógica del primer código)
     if (!window.jspdf) {
         await new Promise((resolve, reject) => {
-            const s = document.createElement('script');
-            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
-            s.onload = resolve; s.onerror = reject;
-            document.head.appendChild(s);
+            const script = document.createElement('script');
+            script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+            script.onload = resolve;
+            script.onerror = reject;
+            document.head.appendChild(script);
         });
     }
+
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    const W = 210, margin = 20;
-    let y = 20;
-    const negro=[10,10,10],gris=[100,100,100],grisClaro=[230,230,230],verde=[34,197,94],rojo=[239,68,68],amarillo=[245,158,11],blanco=[255,255,255];
 
-    doc.setFillColor(...negro); doc.rect(0,0,W,45,'F');
-    doc.setTextColor(...blanco); doc.setFont('helvetica','bold'); doc.setFontSize(22);
-    doc.text('STORE.',margin,y+8);
-    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(180,180,180);
-    doc.text('Tienda Deportiva',margin,y+16);
-    doc.text('cxr10s.github.io/tienda',margin,y+22);
-    doc.setFont('helvetica','bold'); doc.setFontSize(11); doc.setTextColor(200,255,0);
-    doc.text('FACTURA',W-margin,y+8,{align:'right'});
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(180,180,180);
-    const idCorto=pedido.id.substring(0,8).toUpperCase();
-    doc.text(`#${idCorto}`,W-margin,y+15,{align:'right'});
-    const fecha=new Date(pedido.created_at).toLocaleDateString('es-CO',{day:'2-digit',month:'long',year:'numeric'});
-    doc.text(fecha,W-margin,y+21,{align:'right'});
-    y=55;
+    const W = 210; 
+    const margin = 20;
+    let y = 0;
 
-    doc.setFillColor(245,245,245); doc.roundedRect(margin,y,W-margin*2,48,3,3,'F');
-    doc.setTextColor(...gris); doc.setFont('helvetica','bold'); doc.setFontSize(7);
-    doc.text('INFORMACIÓN DEL CLIENTE',margin+6,y+7);
-    doc.setTextColor(...negro); doc.setFont('helvetica','bold'); doc.setFontSize(11);
-    doc.text(pedido.nombre,margin+6,y+15);
-    doc.setFont('helvetica','normal'); doc.setFontSize(9); doc.setTextColor(...gris);
-    doc.text(`Email: ${pedido.email}`,margin+6,y+23);
-    doc.text(`Tel: ${pedido.telefono}`,margin+6,y+30);
-    doc.text(`Doc: ${pedido.documento||'N/A'}`,margin+6,y+37);
-    doc.text(`Dir: ${pedido.direccion}`,margin+6,y+44);
-    y+=58;
+    // ── Paleta de Colores (Diseño Premium) ────────
+    const accent     = [63, 81, 181]; // Indigo
+    const dark       = [30, 30, 30];
+    const lightGray  = [245, 247, 250];
+    const textGray   = [100, 100, 100];
+    const white      = [255, 255, 255];
 
-    const estadoColors={pendiente:[245,158,11],enviado:[59,130,246],entregado:[34,197,94],cancelado:[239,68,68]};
-    const estadoColor=estadoColors[pedido.estado]||negro;
-    doc.setFillColor(...estadoColor); doc.roundedRect(margin,y-6,44,10,2,2,'F');
-    doc.setTextColor(...blanco); doc.setFont('helvetica','bold'); doc.setFontSize(8);
-    doc.text(pedido.estado.toUpperCase(),margin+22,y+1,{align:'center'});
-    const estadoPago=pedido.estado_pago||'pendiente';
-    const pagoColor=estadoPago==='pagado'?verde:estadoPago==='error'?rojo:amarillo;
-    const pagoLabel=estadoPago==='pagado'?'PAGO CONFIRMADO':estadoPago==='error'?'PAGO RECHAZADO':'PAGO PENDIENTE';
-    doc.setFillColor(...pagoColor); doc.roundedRect(margin+50,y-6,60,10,2,2,'F');
-    doc.setTextColor(...blanco); doc.text(pagoLabel,margin+80,y+1,{align:'center'});
-    y+=16;
+    // ── Header con Nuevo Branding ────────────────
+    doc.setFillColor(...dark);
+    doc.rect(0, 0, W, 60, 'F'); 
 
-    doc.setTextColor(...gris); doc.setFont('helvetica','bold'); doc.setFontSize(7);
-    doc.text('PRODUCTOS',margin,y); y+=5;
-    doc.setFillColor(...negro); doc.rect(margin,y,W-margin*2,8,'F');
-    doc.setTextColor(...blanco); doc.setFont('helvetica','bold'); doc.setFontSize(8);
-    doc.text('PRODUCTO',margin+4,y+5.5);
-    doc.text('CANT.',W-65,y+5.5,{align:'right'});
-    doc.text('PRECIO UNIT.',W-42,y+5.5,{align:'right'});
-    doc.text('TOTAL',W-margin-2,y+5.5,{align:'right'}); y+=8;
+    y = 25;
+    doc.setTextColor(...white);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(26);
+    doc.text('STORE.', margin, y); // Nombre actualizado
 
-    const fmtN=n=>Math.round(Number(n)).toLocaleString('es-CO');
-    (pedido.productos||[]).forEach((prod,i)=>{
-        const bg=i%2===0?[255,255,255]:[248,248,248];
-        doc.setFillColor(...bg); doc.rect(margin,y,W-margin*2,9,'F');
-        doc.setTextColor(...negro); doc.setFont('helvetica',prod.isGift?'italic':'normal'); doc.setFontSize(8.5);
-        doc.text(prod.name+(prod.isGift?' (REGALO)':''),margin+4,y+6);
-        doc.setFont('helvetica','normal'); doc.text(String(prod.quantity),W-65,y+6,{align:'right'});
-        if(prod.isGift){doc.setTextColor(...verde);doc.text('GRATIS',W-42,y+6,{align:'right'});doc.text('GRATIS',W-margin-2,y+6,{align:'right'});}
-        else{doc.setTextColor(...negro);doc.text(`$${fmtN(prod.price)} COP`,W-42,y+6,{align:'right'});doc.text(`$${fmtN(prod.price*prod.quantity)} COP`,W-margin-2,y+6,{align:'right'});}
-        y+=9;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(200, 200, 200);
+    doc.text('EQUIPAMIENTO DE ALTO RENDIMIENTO', margin, y + 8); // Slogan actualizado
+
+    // Badge de ID
+    doc.setFillColor(...accent);
+    doc.roundedRect(W - margin - 50, y - 10, 50, 25, 3, 3, 'F');
+    doc.setTextColor(...white);
+    doc.setFontSize(9);
+    doc.text('DETALLE DEL PEDIDO', W - margin - 25, y - 2, { align: 'center' });
+    doc.setFontSize(12);
+    const idCorto = (pedido.id || '000000').substring(0, 8).toUpperCase();
+    doc.text(`#${idCorto}`, W - margin - 25, y + 6, { align: 'center' });
+
+    y = 75;
+
+    // ── Bloque de Información ────────────────────
+    doc.setTextColor(...dark);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text('ENVIAR A:', margin, y);
+    doc.text('FECHA Y HORA:', W/2 + 10, y);
+
+    y += 6;
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...textGray);
+    doc.setFontSize(9);
+    
+    const infoCliente = [
+        pedido.nombre || 'N/A',
+        pedido.direccion || 'N/A',
+        `Tel: ${pedido.telefono || 'N/A'}`,
+        pedido.email || ''
+    ];
+    doc.text(infoCliente, margin, y + 2);
+
+    // Fecha y Hora Dinámica
+    const fechaObj = pedido.created_at ? new Date(pedido.created_at) : new Date();
+    const fecha = fechaObj.toLocaleDateString('es-CO', {
+        day: '2-digit', month: 'long', year: 'numeric'
+    });
+    const hora = fechaObj.toLocaleTimeString('es-CO', {
+        hour: '2-digit', minute: '2-digit', hour12: false
+    });
+    
+    doc.text(`${fecha}`, W/2 + 10, y + 2);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Hora: ${hora}`, W/2 + 10, y + 7);
+
+    y += 35;
+
+    // ── Tabla de Productos ────────────────────────
+    doc.setFillColor(...lightGray);
+    doc.roundedRect(margin, y, W - (margin * 2), 10, 2, 2, 'F');
+    
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...dark);
+    doc.text('PRODUCTO', margin + 5, y + 6.5);
+    doc.text('CANT.', W - 70, y + 6.5, { align: 'right' });
+    doc.text('TOTAL', W - margin - 5, y + 6.5, { align: 'right' });
+
+    y += 15;
+
+    const productos = Array.isArray(pedido.productos) ? pedido.productos : [];
+    productos.forEach((prod) => {
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(...dark);
+        doc.text((prod.name || 'Producto').toUpperCase(), margin + 5, y);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setTextColor(...textGray);
+        doc.text(`${prod.quantity} x $${fmt(prod.price)}`, margin + 5, y + 5);
+
+        doc.setTextColor(...dark);
+        const totalProd = prod.isGift ? 'GRATIS' : `$${fmt(prod.price * prod.quantity)}`;
+        doc.text(totalProd, W - margin - 5, y + 2.5, { align: 'right' });
+
+        y += 12;
+        doc.setDrawColor(230, 230, 230);
+        doc.line(margin + 5, y - 2, W - margin - 5, y - 2);
+        y += 5;
+
+        // Evitar que el contenido se salga de la página
+        if (y > 250) {
+            doc.addPage();
+            y = 20;
+        }
     });
 
-    y+=4; doc.setDrawColor(...grisClaro); doc.line(margin,y,W-margin,y); y+=6;
-    [{label:'Subtotal',value:`$${fmtN(pedido.subtotal)} COP`},
-     ...(pedido.descuento>0?[{label:'Descuento',value:`-$${fmtN(pedido.descuento)} COP`,color:verde}]:[]),
-     {label:'Envío',value:pedido.envio>0?`$${fmtN(pedido.envio)} COP`:'¡Gratis!'}
-    ].forEach(t=>{
-        doc.setFont('helvetica','normal'); doc.setFontSize(9);
-        doc.setTextColor(...(t.color||gris));
-        doc.text(t.label,W-80,y); doc.text(t.value,W-margin-2,y,{align:'right'}); y+=7;
-    });
+    // ── Resumen de Totales ────────────────────────
+    if (y > 230) { doc.addPage(); y = 20; }
+    
+    y += 5;
+    const boxW = 80;
+    const boxX = W - margin - boxW;
+    
+    doc.setFillColor(...lightGray);
+    doc.roundedRect(boxX, y, boxW, 35, 3, 3, 'F');
 
-    y+=2; doc.setFillColor(...negro); doc.roundedRect(W-90,y-6,70,12,2,2,'F');
-    doc.setTextColor(...blanco); doc.setFont('helvetica','normal'); doc.setFontSize(9);
-    doc.text('TOTAL',W-86,y+2); doc.setFont('helvetica','bold'); doc.setFontSize(11);
-    doc.setTextColor(200,255,0);
-    doc.text(`$${fmtN(pedido.total)} COP`,W-margin-2,y+2.5,{align:'right'}); y+=20;
+    let rowY = y + 8;
+    const drawRow = (label, value, isTotal = false) => {
+        doc.setFont('helvetica', isTotal ? 'bold' : 'normal');
+        doc.setFontSize(isTotal ? 12 : 9);
+        doc.setTextColor(...(isTotal ? accent : textGray));
+        
+        doc.text(label, boxX + 5, rowY);
+        doc.text(value, W - margin - 5, rowY, { align: 'right' });
+        rowY += 8;
+    };
 
-    doc.setFillColor(245,245,245); doc.roundedRect(margin,y,W-margin*2,18,3,3,'F');
-    doc.setTextColor(...gris); doc.setFont('helvetica','normal'); doc.setFontSize(8);
-    doc.text('Guarda este ID para consultar tu pedido:',margin+6,y+6);
-    doc.setFont('helvetica','bold'); doc.setFontSize(12); doc.setTextColor(...negro);
-    doc.text(`ID: ${idCorto}`,margin+6,y+14);
-    doc.setFont('helvetica','normal'); doc.setFontSize(8); doc.setTextColor(...gris);
-    doc.text('cxr10s.github.io/tienda/mis-pedidos.html',W-margin-2,y+14,{align:'right'}); y+=26;
+    drawRow('Subtotal', `$${fmt(pedido.subtotal || 0)}`);
+    drawRow('Envío', (pedido.envio > 0) ? `$${fmt(pedido.envio)}` : 'Bonificado');
+    doc.setDrawColor(200, 200, 200);
+    doc.line(boxX + 5, rowY - 4, W - margin - 5, rowY - 4);
+    drawRow('TOTAL COP', `$${fmt(pedido.total || 0)}`, true);
 
-    doc.setTextColor(180,180,180); doc.setFont('helvetica','normal'); doc.setFontSize(7.5);
-    doc.text('Gracias por tu compra - STORE. Tienda Deportiva',W/2,y,{align:'center'});
-    doc.text('Este documento es tu comprobante de pedido.',W/2,y+5,{align:'center'});
-    doc.save(`Factura-${idCorto}.pdf`);
+    // ── Pie de página ─────────────────────────────
+    y = 275; // Posición fija al final de la hoja A4
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(10);
+    doc.setTextColor(...accent);
+    doc.text('¡Gracias por elegirnos!', W / 2, y, { align: 'center' });
+    
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(8);
+    doc.setTextColor(...textGray);
+    doc.text('Si te gusta lo que recibes, etiquétanos en Instagram: @tienda_deportiva912', W / 2, y + 6, { align: 'center' });
+
+    // Barra decorativa final
+    doc.setFillColor(...accent);
+    doc.rect(0, 287, W, 10, 'F'); 
+
+    doc.save(`Factura-${idCorto}-STORE.pdf`);
 }
 
 function mostrarAlertaFactura(pedido) {
     return new Promise(resolve => {
         const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:99999;display:flex;align-items:center;justify-content:center;padding:1rem;';
-        const idCorto = pedido.id.substring(0,8).toUpperCase();
-        const total = Math.round(pedido.total).toLocaleString('es-CO');
+        // Estilos base del overlay
+        overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.85);z-index:99999;display:flex;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(4px);';
+        
+        const idCorto = (pedido.id || '000000').substring(0, 8).toUpperCase();
+        const total = Math.round(pedido.total || 0).toLocaleString('es-CO');
+        
         overlay.innerHTML = `
-            <div style="background:#fff;border-radius:20px;max-width:400px;width:100%;padding:2rem 1.8rem;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,0.2);">
-                <div style="font-size:2.5rem;margin-bottom:1rem;">🧾</div>
-                <h2 style="color:#0a0a0a;font-size:1.3rem;margin:0 0 0.5rem;font-family:'Syne',sans-serif;font-weight:800;">¡Pedido registrado!</h2>
-                <p style="color:#888;font-size:0.9rem;margin:0 0 1.2rem;line-height:1.6;">Tu pedido por <strong style="color:#0a0a0a;">$${total} COP</strong> fue guardado.<br>Descarga tu factura antes de ir al pago.</p>
-                <div style="display:inline-block;background:#f5f5f3;border:1px solid #e5e5e0;border-radius:8px;padding:0.4rem 1rem;font-family:'DM Mono',monospace;font-size:1rem;color:#0a0a0a;margin-bottom:1.4rem;letter-spacing:1px;">ID: ${idCorto}</div><br>
-                <button id="btn-dl" style="display:block;width:100%;padding:0.9rem;background:#0a0a0a;color:#fff;font-weight:700;font-size:1rem;border:none;border-radius:12px;cursor:pointer;margin-bottom:0.75rem;font-family:'Syne',sans-serif;">⬇ Descargar Factura PDF</button>
-                <button id="btn-skip" style="display:block;width:100%;padding:0.7rem;background:transparent;color:#aaa;font-size:0.88rem;border:none;cursor:pointer;font-family:'Syne',sans-serif;">Continuar sin descargar</button>
+            <div style="background:#fff;border-radius:24px;max-width:400px;width:100%;padding:2.5rem 2rem;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,0.5);border:1px solid #eee;">
+                <div style="font-size:3rem;margin-bottom:1.5rem;">📦</div>
+                
+                <h2 style="color:#0a0a0a;font-size:1.5rem;margin:0 0 0.5rem;font-family:'Syne',sans-serif;font-weight:800;letter-spacing:-0.5px;">
+                    ¡PEDIDO REGISTRADO!
+                </h2>
+                
+                <p style="color:#666;font-size:0.95rem;margin:0 0 1.5rem;line-height:1.6;">
+                    Tu orden en <strong style="color:#3f51b5;">STORE.</strong> por <br>
+                    <span style="color:#0a0a0a; font-weight:700; font-size:1.1rem;">$${total} COP</span> está lista.
+                </p>
+
+                <div style="display:inline-block;background:#f8f9fa;border:1px dashed #ccc;border-radius:8px;padding:0.5rem 1.2rem;font-family:'DM Mono',monospace;font-size:0.9rem;color:#333;margin-bottom:1.8rem;">
+                    REF: ${idCorto}
+                </div>
+
+                <button id="btn-dl" style="display:block;width:100%;padding:1.1rem;background:#3f51b5;color:#fff;font-weight:700;font-size:1rem;border:none;border-radius:14px;cursor:pointer;margin-bottom:0.8rem;font-family:'Syne',sans-serif;transition:transform 0.2s;">
+                    ⬇ Descargar Factura PDF
+                </button>
+
+                <button id="btn-skip" style="display:block;width:100%;padding:0.7rem;background:transparent;color:#999;font-size:0.85rem;border:none;cursor:pointer;font-family:'Syne',sans-serif;text-decoration:underline;">
+                    Continuar al pago sin descargar
+                </button>
             </div>`;
+
         document.body.appendChild(overlay);
 
-        overlay.querySelector('#btn-dl').addEventListener('click', async () => {
-            try { await generarFacturaPDF(pedido); } catch(e) { console.error(e); }
+        // --- Lógica de Botones ---
+
+        const cerrarYContinuar = async () => {
             document.body.removeChild(overlay);
             resolve();
-            await redirigirAWompi(pedido);
+            if (typeof redirigirAWompi === "function") {
+                await redirigirAWompi(pedido);
+            }
+        };
+
+        // Opción 1: Descargar y luego ir a Wompi
+        overlay.querySelector('#btn-dl').addEventListener('click', async (e) => {
+            const btn = e.currentTarget;
+            btn.innerText = "Generando...";
+            btn.style.opacity = "0.7";
+            btn.disabled = true;
+
+            try { 
+                await generarFacturaPDF(pedido); 
+            } catch(e) { 
+                console.error("Error al generar PDF:", e); 
+            }
+            
+            await cerrarYContinuar();
         });
 
+        // Opción 2: Saltar descarga e ir directo a Wompi
         overlay.querySelector('#btn-skip').addEventListener('click', async () => {
-            document.body.removeChild(overlay);
-            resolve();
-            await redirigirAWompi(pedido);
+            await cerrarYContinuar();
         });
     });
 }
