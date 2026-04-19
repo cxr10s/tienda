@@ -215,11 +215,12 @@ function mostrarAlertaFactura(pedido) {
         overlay.id = 'factura-alert-overlay';
         overlay.style.cssText = `
             position: fixed; inset: 0;
-            background: rgba(0,0,0,0.82);
+            background: rgba(10, 10, 15, 0.9);
             z-index: 99999;
             display: flex; align-items: center; justify-content: center;
             padding: 1rem;
             animation: facturaFadeIn 0.3s ease;
+            backdrop-filter: blur(4px);
         `;
 
         const idCorto = pedido.id.substring(0, 8).toUpperCase();
@@ -227,44 +228,90 @@ function mostrarAlertaFactura(pedido) {
 
         overlay.innerHTML = `
             <style>
-                @keyframes facturaFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
-                #factura-alert-box { background:#111; border:1px solid rgba(255,255,255,0.1); border-radius:18px; max-width:420px; width:100%; padding:2rem 1.8rem; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.7); }
-                #factura-alert-box .fa-icon { font-size:3rem; margin-bottom:1rem; }
-                #factura-alert-box h2 { color:#fff; font-size:1.3rem; margin:0 0 0.5rem; }
-                #factura-alert-box p { color:#aaa; font-size:0.92rem; margin:0 0 1.4rem; line-height:1.6; }
-                #factura-alert-box .order-id { display:inline-block; background:#1e1e1e; border:1px solid #333; border-radius:8px; padding:0.35rem 1rem; font-family:monospace; font-size:1rem; color:#adff2f; margin-bottom:1.4rem; letter-spacing:1px; }
-                #factura-alert-box .btn-download { display:block; width:100%; padding:0.85rem; background:#adff2f; color:#000; font-weight:700; font-size:1rem; border:none; border-radius:10px; cursor:pointer; margin-bottom:0.75rem; transition:opacity 0.2s; }
-                #factura-alert-box .btn-download:hover { opacity:0.85; }
-                #factura-alert-box .btn-skip { display:block; width:100%; padding:0.7rem; background:transparent; color:#666; font-size:0.88rem; border:none; cursor:pointer; }
-                #factura-alert-box .btn-skip:hover { color:#999; }
+            @keyframes facturaFadeIn { from { opacity:0; transform:scale(0.95); } to { opacity:1; transform:scale(1); } }
+            #factura-alert-box { 
+                background:#1e1e26; 
+                border:1px solid rgba(255,255,255,0.05); 
+                border-radius:24px; 
+                max-width:420px; 
+                width:100%; 
+                padding:2.5rem 2rem; 
+                text-align:center; 
+                box-shadow:0 30px 70px rgba(0,0,0,0.5); 
+            }
+            #factura-alert-box .fa-icon { font-size:3.5rem; margin-bottom:1rem; filter: drop-shadow(0 0 10px rgba(63, 81, 181, 0.3)); }
+            #factura-alert-box h2 { color:#fff; font-size:1.5rem; margin:0 0 0.8rem; font-family: 'helvetica', sans-serif; }
+            #factura-alert-box p { color:#94a3b8; font-size:0.95rem; margin:0 0 1.8rem; line-height:1.6; }
+            #factura-alert-box .order-id { 
+                display:inline-block; 
+                background:rgba(63, 81, 181, 0.15); 
+                border:1px solid rgba(63, 81, 181, 0.3); 
+                border-radius:100px; 
+                padding:0.4rem 1.2rem; 
+                font-family:monospace; 
+                font-size:1rem; 
+                color:#818cf8; 
+                margin-bottom:1.8rem; 
+                font-weight: bold;
+            }
+            #factura-alert-box .btn-download { 
+                display:flex; align-items:center; justify-content:center; gap:8px;
+                width:100%; padding:1rem; 
+                background:#3f51b5; 
+                color:#fff; 
+                font-weight:700; font-size:1rem; 
+                border:none; border-radius:12px; 
+                cursor:pointer; margin-bottom:0.75rem; 
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(63, 81, 181, 0.4);
+            }
+            #factura-alert-box .btn-download:hover { background:#303f9f; transform: translateY(-2px); }
+            #factura-alert-box .btn-skip { 
+                display:block; width:100%; padding:0.7rem; 
+                background:transparent; color:#64748b; 
+                font-size:0.88rem; border:none; 
+                cursor:pointer; text-decoration: underline;
+            }
+            #factura-alert-box .btn-skip:hover { color:#94a3b8; }
             </style>
             <div id="factura-alert-box">
-                <div class="fa-icon">🧾</div>
-                <h2>¡Pedido registrado!</h2>
-                <p>Tu pedido por <strong style="color:#fff">$${total} COP</strong> fue guardado correctamente.<br>Descarga tu factura antes de continuar al pago.</p>
-                <div class="order-id">ID: ${idCorto}</div>
-                <button class="btn-download" id="btn-dl-factura">⬇ Descargar Factura PDF</button>
-                <button class="btn-skip" id="btn-skip-factura">Continuar sin descargar</button>
+                <div class="fa-icon">🛡️</div>
+                <h2>¡Pedido Asegurado!</h2>
+                <p>Hemos registrado tu solicitud por <strong style="color:#fff">$${total} COP</strong>. 
+                Recomendamos descargar tu comprobante antes de realizar el pago.</p>
+                <div class="order-id">ORDEN: #${idCorto}</div>
+                <button class="btn-download" id="btn-dl-factura">
+                    <span style="font-size:1.2rem">⬇</span> Descargar Factura Premium
+                </button>
+                <button class="btn-skip" id="btn-skip-factura">Omitir y pagar ahora</button>
             </div>
         `;
 
         document.body.appendChild(overlay);
 
+        // Evento Descargar
         document.getElementById('btn-dl-factura').addEventListener('click', async () => {
+            const btn = document.getElementById('btn-dl-factura');
+            btn.innerText = "Generando...";
+            btn.style.opacity = "0.7";
+            
             try {
+                // Llama a la función mejorada que hicimos antes
                 await generarFacturaPDF(pedido);
             } catch(e) {
                 console.error('Error generando factura:', e);
             }
+            
             document.body.removeChild(overlay);
             resolve();
-            await redirigirAWompi(pedido);
+            if (typeof redirigirAWompi === 'function') await redirigirAWompi(pedido);
         });
 
+        // Evento Omitir
         document.getElementById('btn-skip-factura').addEventListener('click', async () => {
             document.body.removeChild(overlay);
             resolve();
-            await redirigirAWompi(pedido);
+            if (typeof redirigirAWompi === 'function') await redirigirAWompi(pedido);
         });
     });
 }
