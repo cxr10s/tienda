@@ -858,10 +858,10 @@ function compartirWeb() {
     navigator.share({
       title: document.title,
       text: ' Sitio Web de Tienda Deportiva ',
-      url: window.location.href
+      url: 'https://cxr10s.github.io/tienda/'
     });
   } else {
-    navigator.clipboard.writeText(window.location.href);
+    navigator.clipboard.writeText('https://cxr10s.github.io/tienda/');
     alert('Link copiado ');
   }
 }
