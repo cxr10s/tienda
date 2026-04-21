@@ -1,4 +1,5 @@
 
+
 /* Fondo general y centrado */
 .wrapper {
   display: flex;
@@ -3253,4 +3254,576 @@ body.modal-open {
 @media (max-width: 400px) {
     .contactos-title { font-size: 1.6rem; }
     .contactos-card-icon { width: 38px; height: 38px; font-size: 17px; }
+}
+
+/* ==============================================
+   SISTEMA DE TEMAS — DARK / LIGHT MODE
+   ============================================== */
+
+/* ─── Variables del tema oscuro (por defecto) ─── */
+:root {
+  --bg-base:          #111111;
+  --bg-surface:       #1a1a1a;
+  --bg-surface2:      #222222;
+  --bg-surface3:      #2a2a2a;
+  --bg-elevated:      #1e1e1e;
+  --bg-section-alt:   #141414;
+  --bg-section-dark:  #0a0a0a;
+
+  --text-primary:     #f0f0f0;
+  --text-secondary:   #b0b0b0;
+  --text-muted:       #777777;
+  --text-faint:       #444444;
+
+  --border-subtle:    rgba(255,255,255,0.07);
+  --border-light:     rgba(255,255,255,0.1);
+  --border-medium:    rgba(255,255,255,0.15);
+
+  --accent:           #adff2f;
+  --accent-dark:      #7ab800;
+  --accent-text:      #0a0a0a;
+
+  --brand:            #917771;
+  --brand-hover:      #b09490;
+
+  --navbar-bg:        rgba(14,14,14,0.55);
+  --navbar-border:    rgba(255,255,255,0.08);
+  --navbar-mobile-bg: #ffffff;
+  --navbar-mobile-color: #1a1a1a;
+
+  --card-bg:          #1a1a1a;
+  --card-img-bg:      #222222;
+  --card-shadow:      0 2px 16px rgba(0,0,0,0.45);
+  --card-shadow-hover:0 16px 40px rgba(0,0,0,0.6);
+
+  --cart-bg:          #0e0e0e;
+  --cart-item-bg:     #1a1a1a;
+  --cart-item-hover:  #222222;
+
+  --modal-bg:         #1a1a1a;
+  --modal-bg-dark:    #111111;
+  --modal-catalog-bg: #2a2a2a;
+  --modal-img-bg:     #1e1e1e;
+
+  --input-bg:         #1a1a1a;
+  --input-border:     rgba(255,255,255,0.1);
+  --input-text:       #e8e8e8;
+  --input-placeholder:#444444;
+
+  --auth-modal-bg:    #111111;
+  --auth-action-bg:   rgba(255,255,255,0.04);
+
+  --mobile-menu-bg:   #ffffff;
+  --mobile-menu-text: #1a1a1a;
+  --mobile-menu-hover:#f5f5f5;
+  --mobile-menu-div:  #f0f0f0;
+
+  --scrollbar-track:  #0e0e0e;
+  --scrollbar-thumb:  #333333;
+
+  --hero-text-main:   #ffffff;
+  --hero-para:        #888888;
+
+  --share-copy-bg:    #2a2a2a;
+  --share-copy-color: #DED7D7;
+
+  --contactos-bg:     #0a0a0a;
+  --contactos-card-bg:#111111;
+  --contactos-card-border: #1e1e1e;
+  --contactos-card-hover:  #161616;
+  --contactos-title:  #f0f0f0;
+  --contactos-handle: #555555;
+  --contactos-footer: #2e2e2e;
+  --contactos-share-bg: transparent;
+  --contactos-share-border: #2a2a2a;
+  --contactos-share-color: #888888;
+
+  --section-border:   rgba(145,119,113,0.2);
+  --section-h2:       #e0e0e0;
+
+  --switch-track-off: #3a3a3a;
+  --switch-track-on:  #4a4a4a;
+  --switch-thumb-off: #d0d0d0;
+  --switch-thumb-on:  #212121;
+  --switch-moon-color:#adff2f;
+  --switch-sun-color: #ffcc00;
+}
+
+/* ─── Variables del tema claro ─── */
+[data-theme="light"] {
+  --bg-base:          #f5f5f5;
+  --bg-surface:       #ffffff;
+  --bg-surface2:      #f0f0f0;
+  --bg-surface3:      #e8e8e8;
+  --bg-elevated:      #ffffff;
+  --bg-section-alt:   #ececec;
+  --bg-section-dark:  #f0f0f0;
+
+  --text-primary:     #111111;
+  --text-secondary:   #444444;
+  --text-muted:       #777777;
+  --text-faint:       #aaaaaa;
+
+  --border-subtle:    rgba(0,0,0,0.07);
+  --border-light:     rgba(0,0,0,0.1);
+  --border-medium:    rgba(0,0,0,0.18);
+
+  --accent:           #5b9a00;
+  --accent-dark:      #3d6a00;
+  --accent-text:      #ffffff;
+
+  --brand:            #7a5e58;
+  --brand-hover:      #5a3e38;
+
+  --navbar-bg:        rgba(255,255,255,0.82);
+  --navbar-border:    rgba(0,0,0,0.08);
+  --navbar-mobile-bg: #ffffff;
+  --navbar-mobile-color: #1a1a1a;
+
+  --card-bg:          #ffffff;
+  --card-img-bg:      #f5f5f5;
+  --card-shadow:      0 2px 16px rgba(0,0,0,0.08);
+  --card-shadow-hover:0 16px 40px rgba(0,0,0,0.15);
+
+  --cart-bg:          #f8f8f8;
+  --cart-item-bg:     #ffffff;
+  --cart-item-hover:  #f5f5f5;
+
+  --modal-bg:         #ffffff;
+  --modal-bg-dark:    #f8f8f8;
+  --modal-catalog-bg: #f5f5f5;
+  --modal-img-bg:     #eeeeee;
+
+  --input-bg:         #f8f8f8;
+  --input-border:     rgba(0,0,0,0.15);
+  --input-text:       #111111;
+  --input-placeholder:#aaaaaa;
+
+  --auth-modal-bg:    #ffffff;
+  --auth-action-bg:   rgba(0,0,0,0.03);
+
+  --mobile-menu-bg:   #ffffff;
+  --mobile-menu-text: #1a1a1a;
+  --mobile-menu-hover:#f5f5f5;
+  --mobile-menu-div:  #eeeeee;
+
+  --scrollbar-track:  #f0f0f0;
+  --scrollbar-thumb:  #cccccc;
+
+  --hero-text-main:   #111111;
+  --hero-para:        #555555;
+
+  --share-copy-bg:    #f0f0f0;
+  --share-copy-color: #333333;
+
+  --contactos-bg:     #eeeeee;
+  --contactos-card-bg:#ffffff;
+  --contactos-card-border: #e0e0e0;
+  --contactos-card-hover:  #f8f8f8;
+  --contactos-title:  #111111;
+  --contactos-handle: #888888;
+  --contactos-footer: #cccccc;
+  --contactos-share-bg: transparent;
+  --contactos-share-border: #dddddd;
+  --contactos-share-color: #555555;
+
+  --section-border:   rgba(145,119,113,0.18);
+  --section-h2:       #222222;
+
+  --switch-track-off: #d0d0d0;
+  --switch-track-on:  #3a3a3a;
+  --switch-thumb-off: #f0f0f0;
+  --switch-thumb-on:  #212121;
+  --switch-moon-color:#555555;
+  --switch-sun-color: #e87c00;
+}
+
+/* ─── Aplicar variables al body y elementos base ─── */
+body {
+  background-color: var(--bg-base) !important;
+  color: var(--text-primary) !important;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+.products-section { background: var(--bg-base) !important; }
+.products-section:nth-child(even) { background: var(--bg-section-alt) !important; }
+.products-section.featured { background: var(--bg-section-alt) !important; }
+.sports-section { background: var(--bg-base) !important; }
+
+/* Navbar desktop */
+.navbar {
+  background: var(--navbar-bg) !important;
+  border-color: var(--navbar-border) !important;
+  transition: background 0.35s ease, border-color 0.35s ease;
+}
+.navbar.scrolled {
+  background: var(--navbar-bg) !important;
+}
+[data-theme="light"] .navbar {
+  box-shadow: 0 4px 24px rgba(0,0,0,0.1), 0 1px 0 rgba(0,0,0,0.05) inset !important;
+}
+
+.nav-logo-link { color: var(--text-primary) !important; }
+.nav-logo-icon { color: var(--text-primary) !important; }
+.nav-logo-text { color: var(--text-primary) !important; }
+
+.nav-menu a { color: var(--text-secondary) !important; }
+.nav-menu a:hover { color: var(--text-primary) !important; background: var(--bg-surface2) !important; }
+.nav-menu a[aria-current="page"] { color: var(--accent) !important; }
+
+.nav-icon-btn {
+  background: var(--auth-action-bg) !important;
+  border-color: var(--border-light) !important;
+  color: var(--text-secondary) !important;
+}
+.nav-icon-btn:hover {
+  background: var(--bg-surface2) !important;
+  border-color: var(--border-medium) !important;
+  color: var(--text-primary) !important;
+}
+.nav-icon-label { color: var(--text-secondary) !important; }
+
+/* Navbar mobile */
+@media (max-width: 768px) {
+  .navbar {
+    background: var(--navbar-mobile-bg) !important;
+    border-bottom-color: var(--border-light) !important;
+  }
+  .nav-logo-link { color: var(--navbar-mobile-color) !important; }
+  .nav-logo-icon { color: var(--navbar-mobile-color) !important; }
+  .nav-logo-text { color: var(--navbar-mobile-color) !important; }
+  .nav-icon-btn { color: var(--navbar-mobile-color) !important; }
+  [data-theme="light"] .nav-cart-count {
+    background: #111 !important;
+    color: #fff !important;
+  }
+}
+
+/* Mobile menu panel */
+.mobile-menu {
+  background: var(--mobile-menu-bg) !important;
+  transition: background 0.35s ease;
+}
+.mobile-menu-logo { color: var(--mobile-menu-text) !important; }
+.mobile-menu-close { color: var(--mobile-menu-text) !important; }
+.mobile-menu-close:hover { background: var(--mobile-menu-hover) !important; }
+.mobile-menu-item { color: var(--mobile-menu-text) !important; }
+.mobile-menu-item:hover { background: var(--mobile-menu-hover) !important; }
+.mobile-menu-divider { background: var(--mobile-menu-div) !important; }
+.mobile-menu-pedidos { color: var(--mobile-menu-text) !important; }
+.mobile-menu-pedidos:hover { background: var(--mobile-menu-hover) !important; }
+
+/* Hero */
+.hero-text h2 { color: var(--hero-text-main) !important; }
+.hero-text p { color: var(--hero-para) !important; }
+.stat-num { color: var(--text-primary) !important; }
+.stat-label { color: var(--text-muted) !important; }
+[data-theme="light"] .hero::before {
+  background: linear-gradient(to right, rgba(255,255,255,0.92) 30%, rgba(255,255,255,0.55) 60%, rgba(255,255,255,0.1)) !important;
+}
+[data-theme="light"] .hero-bg-grid {
+  background-image:
+    linear-gradient(rgba(0,0,0,0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,0,0,0.06) 1px, transparent 1px) !important;
+}
+
+/* Product cards */
+.product-card {
+  background: var(--card-bg) !important;
+  box-shadow: var(--card-shadow) !important;
+}
+.product-card:hover { box-shadow: var(--card-shadow-hover) !important; }
+.product-card img { background: var(--card-img-bg) !important; }
+.product-card h3 { color: var(--text-primary) !important; }
+.product-card .price { color: var(--accent) !important; }
+
+/* Section headers */
+.section-header { border-bottom-color: var(--section-border) !important; }
+.section-header h2 { color: var(--section-h2) !important; }
+.btn-catalog { color: var(--accent) !important; }
+.btn-catalog:hover { border-bottom-color: var(--accent) !important; }
+
+/* Carousel buttons */
+.carousel-btn {
+  background: var(--bg-surface) !important;
+  border-color: var(--border-light) !important;
+  color: var(--text-primary) !important;
+}
+.carousel-btn:hover {
+  background: var(--bg-surface2) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+/* Add to cart button */
+.add-to-cart-btn {
+  background: var(--accent) !important;
+  color: var(--accent-text) !important;
+}
+.add-to-cart-btn:hover { background: color-mix(in srgb, var(--accent) 80%, white) !important; }
+
+/* Cart sidebar */
+.cart-sidebar {
+  background: var(--cart-bg) !important;
+  border-left-color: var(--border-subtle) !important;
+  color: var(--text-primary) !important;
+  transition: background 0.35s ease;
+}
+.cart-header {
+  background: var(--cart-bg) !important;
+  border-bottom-color: var(--border-subtle) !important;
+}
+.cart-header-left { color: var(--text-primary) !important; }
+.cart-header h3 { color: var(--text-primary) !important; }
+.close-cart {
+  background: var(--auth-action-bg) !important;
+  border-color: var(--border-light) !important;
+  color: var(--text-secondary) !important;
+}
+.close-cart:hover { background: var(--bg-surface2) !important; color: var(--text-primary) !important; }
+
+.cart-items {
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track) !important;
+}
+.cart-items::-webkit-scrollbar-track { background: var(--scrollbar-track) !important; }
+.cart-items::-webkit-scrollbar-thumb { background: var(--scrollbar-thumb) !important; }
+
+.cart-item {
+  background: var(--cart-item-bg) !important;
+  border-color: var(--border-subtle) !important;
+}
+.cart-item:hover { background: var(--cart-item-hover) !important; }
+.cart-item img { background: var(--bg-surface3) !important; }
+.cart-item-info h4 { color: var(--text-primary) !important; }
+
+.quantity-btn {
+  background: var(--bg-surface3) !important;
+  color: var(--text-secondary) !important;
+  border-color: var(--border-light) !important;
+}
+.quantity-btn:hover { background: var(--accent) !important; color: var(--accent-text) !important; border-color: var(--accent) !important; }
+
+.cart-summary {
+  background: var(--cart-bg) !important;
+  border-top-color: var(--border-subtle) !important;
+}
+.cart-total {
+  background: var(--cart-item-bg) !important;
+  border-color: var(--border-subtle) !important;
+}
+.cart-total-row { color: var(--text-muted) !important; }
+.cart-total-row.total { color: var(--text-primary) !important; border-top-color: var(--border-subtle) !important; }
+
+.checkout-btn--locked {
+  background: var(--bg-surface3) !important;
+  color: var(--text-faint) !important;
+}
+
+/* Modals */
+.modal-content {
+  background: var(--modal-bg) !important;
+  border-color: var(--section-border) !important;
+}
+.payment-modal .modal-content { background: var(--modal-bg-dark) !important; }
+.payment-modal .modal-header { background: var(--cart-bg) !important; border-bottom-color: var(--border-subtle) !important; }
+.payment-modal .modal-header h3 { color: var(--text-primary) !important; }
+.payment-summary {
+  background: var(--cart-item-bg) !important;
+  border-color: var(--border-subtle) !important;
+}
+.payment-item { color: var(--text-secondary) !important; border-bottom-color: var(--section-border) !important; }
+.payment-total { color: var(--text-primary) !important; border-top-color: var(--border-subtle) !important; }
+.summary-label, .contact-section-label { color: var(--text-muted) !important; }
+.payment-benefits { border-top-color: var(--border-subtle) !important; }
+.benefit-item { color: var(--text-muted) !important; }
+.modal-header h3 { color: var(--text-primary) !important; }
+.modal-header { border-bottom-color: var(--border-subtle) !important; }
+.modal-body { color: var(--text-primary) !important; }
+
+.close-modal {
+  background: var(--auth-action-bg) !important;
+  border-color: var(--border-light) !important;
+  color: var(--text-muted) !important;
+}
+.close-modal:hover { background: var(--bg-surface2) !important; color: var(--text-primary) !important; }
+
+.pm-input-wrap input, .pm-input-wrap textarea {
+  background: var(--input-bg) !important;
+  border-color: var(--input-border) !important;
+  color: var(--input-text) !important;
+}
+.pm-input-wrap input::placeholder, .pm-input-wrap textarea::placeholder { color: var(--input-placeholder) !important; }
+.pm-field-group label { color: var(--text-muted) !important; }
+.optional-tag { color: var(--text-faint) !important; }
+
+.catalog-modal .modal-content { background: var(--modal-bg) !important; }
+.catalog-item {
+  background: var(--modal-catalog-bg) !important;
+  border-color: var(--section-border) !important;
+}
+.catalog-item img { background: var(--modal-img-bg) !important; }
+.catalog-item h4 { color: var(--text-primary) !important; }
+.catalog-item .price { color: var(--brand) !important; }
+
+/* Auth modal */
+.auth-modal {
+  background: var(--auth-modal-bg) !important;
+  border-color: var(--border-light) !important;
+}
+.auth-logo { color: var(--text-primary) !important; }
+.auth-title { color: var(--text-primary) !important; }
+.auth-subtitle { color: var(--text-muted) !important; }
+.auth-action-link {
+  background: var(--auth-action-bg) !important;
+  border-color: var(--border-light) !important;
+  color: var(--text-secondary) !important;
+}
+.auth-action-link:hover { background: var(--bg-surface2) !important; color: var(--text-primary) !important; }
+.auth-divider { background: var(--border-subtle) !important; }
+.auth-terms { color: var(--text-faint) !important; }
+.auth-terms a { color: var(--text-muted) !important; }
+.auth-terms a:hover { color: var(--accent) !important; }
+
+/* Contactos */
+.Contactos { background: var(--contactos-bg) !important; }
+.contactos-title { color: var(--contactos-title) !important; }
+.contactos-logo-row {
+  background: var(--auth-action-bg) !important;
+  border-color: var(--border-light) !important;
+}
+.contactos-brand, .contactos-gh-icon { color: var(--text-primary) !important; }
+.contactos-card {
+  background: var(--contactos-card-bg) !important;
+  border-color: var(--contactos-card-border) !important;
+}
+.contactos-card:hover { background: var(--contactos-card-hover) !important; }
+.contactos-card-name { color: var(--text-primary) !important; }
+.contactos-card-handle { color: var(--contactos-handle) !important; }
+.contactos-share-btn {
+  background: var(--contactos-share-bg) !important;
+  border-color: var(--contactos-share-border) !important;
+  color: var(--contactos-share-color) !important;
+}
+.contactos-footer-note { color: var(--contactos-footer) !important; }
+.contactos-subtitle { color: var(--text-muted) !important; }
+
+/* Share buttons */
+.share-copy { background: var(--share-copy-bg) !important; color: var(--share-copy-color) !important; }
+
+/* Misc */
+.cart-secure-note { color: var(--text-faint) !important; }
+.secure-payment { color: var(--text-faint) !important; }
+.payment-header-sub { color: var(--text-muted) !important; }
+.gift-badge { color: var(--text-primary) !important; }
+
+/* ─── THEME SWITCH WIDGET ─── */
+.theme-switch-wrap {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.theme-switch {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  direction: rtl;
+}
+
+#theme-checkbox { display: none; }
+
+#theme-checkbox + label {
+  font-size: 1.55rem;
+  height: 1em;
+  width: 2.5em;
+  border-radius: 0.25em;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--switch-track-off);
+  position: relative;
+  transition: background-color 0.4s ease, transform 0.2s;
+  border: 1px solid var(--border-medium);
+  box-shadow: 0 0 0 2px transparent;
+}
+
+#theme-checkbox + label:hover {
+  box-shadow: 0 0 0 2px var(--accent);
+}
+
+#theme-checkbox:checked + label {
+  background-color: var(--switch-track-on);
+}
+
+#theme-checkbox + label:active {
+  transform: scale(0.88);
+  transition: transform 0.15s;
+}
+
+#theme-checkbox + label div {
+  width: 0.8em;
+  height: 0.8em;
+  border-radius: inherit;
+  position: absolute;
+  top: 0.1em;
+  left: 0.1em;
+  z-index: 10;
+  transition: 0.5s cubic-bezier(1, 0.33, 0.11, 1.34);
+  background-color: var(--switch-thumb-off);
+}
+
+#theme-checkbox:checked + label div {
+  left: 1.6em;
+  background-color: var(--switch-thumb-on);
+}
+
+#theme-checkbox + label span {
+  display: flex;
+}
+
+#theme-checkbox + label svg {
+  display: inline-block;
+  height: 1em;
+  width: 1em;
+  padding: 0.15em;
+  box-sizing: border-box;
+}
+
+/* Moon icon (left, shown in dark mode) */
+#theme-checkbox + label span:first-of-type {
+  color: var(--switch-moon-color);
+}
+
+/* Sun icon (right, shown in light mode) */
+#theme-checkbox + label span:last-of-type {
+  color: var(--switch-sun-color);
+}
+
+/* Mobile switch in hamburger area */
+@media (max-width: 768px) {
+  .theme-switch-wrap {
+    margin-right: 2px;
+  }
+  #theme-checkbox + label {
+    font-size: 1.25rem;
+    border-color: rgba(0,0,0,0.15);
+  }
+  [data-theme="light"] #theme-checkbox + label {
+    background-color: #d8d8d8;
+    border-color: rgba(0,0,0,0.2);
+  }
+}
+
+/* Smooth all theme transitions */
+*, *::before, *::after {
+  transition-property: background-color, color, border-color, box-shadow, background;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+}
+
+/* But don't slow down transforms / animations */
+button, a, .product-card, .carousel-btn, .nav-icon-btn,
+.add-to-cart-btn, .checkout-btn, .modal, .cart-sidebar {
+  transition-property: background-color, color, border-color, box-shadow,
+    transform, opacity, background;
 }
