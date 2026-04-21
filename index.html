@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" data-theme="dark">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -145,7 +145,6 @@
             }
         }
     </script>
-    <script src="theme-switch.js"></script>
 </head>
 <body>
     
@@ -196,25 +195,6 @@
                     <span class="nav-cart-count" id="nav-cart-count" data-count="0">0</span>
                 </button>
 
-                <!-- Theme Switch -->
-                <div class="theme-switch-wrap">
-                  <div class="theme-switch">
-                    <input type="checkbox" id="theme-checkbox" onchange="toggleTheme(this.checked)" />
-                    <label for="theme-checkbox" title="Cambiar tema">
-                      <div></div>
-                      <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                          <path fill-rule="evenodd" d="M9.528 1.718a.75.75 0 01.162.819A8.97 8.97 0 009 6a9 9 0 009 9 8.97 8.97 0 003.463-.69.75.75 0 01.981.98 10.503 10.503 0 01-9.694 6.46c-5.799 0-10.5-4.701-10.5-10.5 0-4.368 2.667-8.112 6.46-9.694a.75.75 0 01.818.162z" clip-rule="evenodd"></path>
-                        </svg>
-                      </span>
-                      <span>
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
-                          <path d="M12 2.25a.75.75 0 01.75.75v2.25a.75.75 0 01-1.5 0V3a.75.75 0 01.75-.75zM7.5 12a4.5 4.5 0 119 0 4.5 4.5 0 01-9 0zM18.894 6.166a.75.75 0 00-1.06-1.06l-1.591 1.59a.75.75 0 101.06 1.061l1.591-1.59zM21.75 12a.75.75 0 01-.75.75h-2.25a.75.75 0 010-1.5H21a.75.75 0 01.75.75zM17.834 18.894a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 10-1.061 1.06l1.59 1.591zM12 18a.75.75 0 01.75.75V21a.75.75 0 01-1.5 0v-2.25A.75.75 0 0112 18zM7.758 17.303a.75.75 0 00-1.061-1.06l-1.591 1.59a.75.75 0 001.06 1.061l1.591-1.59zM6 12a.75.75 0 01-.75.75H3a.75.75 0 010-1.5h2.25A.75.75 0 016 12zM6.697 7.757a.75.75 0 001.06-1.06l-1.59-1.591a.75.75 0 00-1.061 1.06l1.59 1.591z"></path>
-                        </svg>
-                      </span>
-                    </label>
-                  </div>
-                </div>
                 <!-- Hamburger (solo móvil) -->
                 <button class="nav-icon-btn nav-hamburger" id="nav-hamburger" onclick="toggleMobileMenu()" title="Menú" aria-label="Abrir menú">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
@@ -237,13 +217,14 @@
         </div>
         <p class="mobile-menu-label">SECCIONES</p>
         <nav class="mobile-menu-nav">
-            <a href="#inicio"    class="mobile-menu-item" onclick="scrollToSection('inicio')"><span class="mmi-icon">🏠</span><span>Inicio</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
-            <a href="#camisetas" class="mobile-menu-item" onclick="scrollToSection('camisetas')"><span class="mmi-icon">👕</span><span>Camisetas</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
-            <a href="#tenis"     class="mobile-menu-item" onclick="scrollToSection('tenis')"><span class="mmi-icon">👟</span><span>Tenis</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
-            <a href="#jeans"     class="mobile-menu-item" onclick="scrollToSection('jeans')"><span class="mmi-icon">👖</span><span>Jeans</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
-            <a href="#cascos"    class="mobile-menu-item" onclick="scrollToSection('cascos')"><span class="mmi-icon">🪖</span><span>Cascos</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
-            <a href="#deportes"  class="mobile-menu-item" onclick="scrollToSection('deportes')"><span class="mmi-icon">⚽</span><span>Deportes</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
-            <a href="#regalos"   class="mobile-menu-item" onclick="scrollToSection('regalos')"><span class="mmi-icon">🎁</span><span>Regalos</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#inicio"    class="mobile-menu-item" onclick="scrollToSection('inicio')"><span class="mmi-icon"></span><span>Inicio</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#camisetas" class="mobile-menu-item" onclick="scrollToSection('camisetas')"><span class="mmi-icon"></span><span>Camisetas</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#tenis"     class="mobile-menu-item" onclick="scrollToSection('tenis')"><span class="mmi-icon"></span><span>Tenis</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#jeans"     class="mobile-menu-item" onclick="scrollToSection('jeans')"><span class="mmi-icon"></span><span>Jeans</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#cascos"    class="mobile-menu-item" onclick="scrollToSection('cascos')"><span class="mmi-icon"></span><span>Cascos</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></a>
+            <a href="#deportes"  class="mobile-menu-item" onclick="scrollToSection('deportes')"><span class="mmi-icon"></span><span>Deportes</span><svg class="mmi-arrow" xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width("width") + "px";
+    document.getElementById("height").style.height = parseInt(document.getElementById("height").value) * parseInt(document.getElementById("width").value) / parseInt(document.getElementById("width").value) + "px";
+}
         </nav>
         <div class="mobile-menu-divider"></div>
         <a href="https://cxr10s.github.io/tienda/mis-pedidos.html" class="mobile-menu-pedidos">
@@ -257,7 +238,7 @@
         <div class="hero-bg-grid"></div>
         <div class="hero-content">
             <div class="hero-text">
-                <span class="hero-tag">⚡ Nueva Colección 2026</span>
+                <span class="hero-tag">Nueva Colección 2026</span>
                 <h2>ESTILO <br><span class="hero-accent">SIN LÍMITES</span></h2>
                 <p>Camisetas, Tenis, Jeans, Cascos y más — todo lo que necesitas para tu estilo de vida activo.</p>
                 <div class="hero-actions">
@@ -279,7 +260,7 @@
     <!-- Camisetas Adidas Section -->
     <section id="camisetas" class="products-section">
         <div class="section-header">
-            <h2> 👕 Camisetas Adidas</h2>
+            <h2>Camisetas Adidas</h2>
             <div class="section-header-actions"><a class="btn-catalog" href="#" onclick="showCatalog('camisetas'); return false;">Ver catálogo <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></div>
         </div>
         <div class="products-carousel">
@@ -317,7 +298,7 @@
     <!-- Tenis Adidas Section -->
     <section id="tenis" class="products-section featured">
         <div class="section-header">
-            <h2> 👟 Tenis Adidas</h2>
+            <h2>Tenis Adidas</h2>
             <div class="section-header-actions"><a class="btn-catalog" href="#" onclick="showCatalog('tenis'); return false;">Ver catálogo <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></div>
         </div>
         <div class="products-carousel">
@@ -355,7 +336,7 @@
     <!-- Jeans Section -->
     <section id="jeans" class="products-section">
         <div class="section-header">
-            <h2> 👖 Jeans</h2>
+            <h2>Jeans</h2>
             <div class="section-header-actions"><a class="btn-catalog" href="#" onclick="showCatalog('jeans'); return false;">Ver catálogo <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></div>
         </div>
         <div class="products-carousel">
@@ -393,7 +374,7 @@
     <!-- Cascos para Motos Section -->
     <section id="cascos" class="products-section">
         <div class="section-header">
-            <h2> 🪖 Cascos para Motos</h2>
+            <h2>Cascos para Motos</h2>
             <div class="section-header-actions"><a class="btn-catalog" href="#" onclick="showCatalog('cascos'); return false;">Ver catálogo <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></div>
         </div>
         <div class="products-carousel">
@@ -431,7 +412,7 @@
     <!-- Deportes Section -->
     <section id="deportes" class="sports-section">
         <div class="section-header">
-            <h2> 🚴🏋️‍♂️ Equipos Deportivos</h2>
+            <h2>Equipos Deportivos</h2>
             <div class="section-header-actions"><a class="btn-catalog" href="#" onclick="showCatalog('deportes'); return false;">Ver catálogo <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg></a></div>
         </div>
         <div class="products-carousel">
@@ -472,42 +453,6 @@
             <button class="carousel-btn next" onclick="moveCarousel('deportes', 1)">›</button>
         </div>
     </section>
-
-    <!-- Productos de Regalo Section -->
-    <!--
-    <section id="regalos" class="products-section">
-        <div class="section-header">
-            <h2> 🎁 Productos de Regalo</h2>
-            <p class="contactos-subtitle">El regalo se agrega solo. Si deseas otro, borra el actual. </p>
-        </div>
-        <div class="products-carousel">
-            <button class="carousel-btn prev" onclick="moveCarousel('regalos', -1)">‹</button>
-            <div class="products-container" id="regalos-container">
-                <div class="product-card gift-card" data-product='{"id": "gafas-1", "name": "Gafas Deportivas", "price": , "category": "regalos"}'>
-                    <img loading="lazy" src="gafas.png" alt="Gafas Deportivas">
-                    <h3>Gafas Deportivas</h3>
-                    <span class="gift-label"> 🎁 Regalo</span>
-                </div>
-                <div class="product-card gift-card" data-product='{"id": "gorra-1", "name": "Gorra Mossimo", "price": , "category": "regalos"}'>
-                    <img loading="lazy" src="gorranueva.png" alt="Gorra Mossimo">
-                    <h3>Gorra Mossimo</h3>
-                    <span class="gift-label"> 🎁 Regalo</span>
-                </div>
-                <div class="product-card gift-card" data-product='{"id": "peluche-1", "name": "Peluche Cordero", "price": , "category": "regalos"}'>
-                    <img loading="lazy" src="peluche.png" alt="Peluche Cordero">
-                    <h3>Peluche Cordero</h3>
-                    <span class="gift-label"> 🎁 Regalo</span>
-                </div>
-                <div class="product-card gift-card" data-product='{"id": "bandana-1", "name": "Bufanda Deportiva", "price": , "category": "regalos"}'>
-                    <img loading="lazy" src="bandanaDepor.png" alt="Bufanda Deportiva">
-                    <h3>Bufanda Deportiva</h3>
-                    <span class="gift-label"> 🎁 Regalo</span>
-                </div>
-            </div>
-            <button class="carousel-btn next" onclick="moveCarousel('regalos', 1)">›</button>
-        </div>
-    </section>-->
-
     <!-- Footer / Contactos -->
 <section class="Contactos" id="contactos">
     <div class="contactos-inner">
