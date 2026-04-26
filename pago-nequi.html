@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pago con Nequi — STORE.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f4f4f7;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ── TOP BAR ── */
+.topbar {
+    width: 100%;
+    background: #fff;
+    border-bottom: 1px solid #e8e8ed;
+    padding: 0 1.5rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.topbar-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+}
+
+.topbar-logo-box {
+    width: 40px;
+    height: 40px;
+    background: #111;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.topbar-logo-box svg { width: 22px; height: 22px; fill: #fff; }
+
+.topbar-brand {
+    font-size: 17px;
+    font-weight: 700;
+    color: #111;
+    letter-spacing: 0.3px;
+}
+
+.topbar-amount {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #111;
+    cursor: pointer;
+}
+
+.topbar-amount svg { width: 16px; height: 16px; color: #888; }
+
+/* ── PROGRESS TABS ── */
+.tabs {
+    width: 100%;
+    max-width: 600px;
+    background: #fff;
+    border-bottom: 1px solid #e8e8ed;
+    display: flex;
+}
+
+.tab {
+    flex: 1;
+    padding: 14px 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #bbb;
+    border-bottom: 3px solid transparent;
+    transition: all .2s;
+}
+
+.tab.active {
+    color: #1a56db;
+    border-bottom-color: #1a56db;
+    font-weight: 600;
+}
+
+.tab.done {
+    color: #16a34a;
+    border-bottom-color: #16a34a;
+}
+
+/* ── CARD ── */
+.card-wrap {
+    width: 100%;
+    max-width: 600px;
+    padding: 0;
+    background: #fff;
+    min-height: calc(100vh - 130px);
+    display: flex;
+    flex-direction: column;
+}
+
+.card-body {
+    padding: 2rem 2rem 1rem;
+    flex: 1;
+}
+
+/* ── SCREENS ── */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn .25s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── SCREEN 1: Entrega ── */
+.section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #111;
+    margin-bottom: 6px;
+}
+
+.section-sub {
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 1.8rem;
+    line-height: 1.5;
+}
+
+.entrega-opts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.entrega-card {
+    border: 2px solid #e8e8ed;
+    border-radius: 14px;
+    padding: 1.2rem 1rem;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    background: #fff;
+}
+
+.entrega-card:hover { border-color: #c0c0cc; background: #fafafa; }
+
+.entrega-card.sel {
+    border-color: #1a56db;
+    background: #f0f4ff;
+}
+
+.entrega-icon { font-size: 1.8rem; margin-bottom: 10px; display: block; }
+.entrega-name { font-size: 15px; font-weight: 700; color: #111; margin-bottom: 3px; }
+.entrega-desc { font-size: 12px; color: #888; line-height: 1.4; }
+
+.entrega-radio {
+    position: absolute;
+    top: 12px; right: 12px;
+    width: 18px; height: 18px;
+    border: 2px solid #ddd;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: all .2s;
+}
+
+.entrega-card.sel .entrega-radio {
+    border-color: #1a56db;
+    background: #1a56db;
+}
+
+.entrega-card.sel .entrega-radio::after {
+    content: '';
+    width: 6px; height: 6px;
+    background: #fff;
+    border-radius: 50%;
+}
+
+/* Domicilio fields */
+.domicilio-box {
+    display: none;
+    background: #f8f9ff;
+    border: 1px solid #d0d9ff;
+    border-radius: 12px;
+    padding: 1.2rem;
+    margin-bottom: 1.2rem;
+    animation: fadeIn .2s ease;
+}
+
+.domicilio-box.show { display: block; }
+
+.field { margin-bottom: 1rem; }
+.field:last-child { margin-bottom: 0; }
+.field label { display: block; font-size: 12px; font-weight: 600; color: #555; margin-bottom: 5px; letter-spacing: .3px; }
+.field input, .field textarea, .field select {
+    width: 100%;
+    padding: 11px 13px;
+    border: 1.5px solid #ddd;
+    border-radius: 9px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #111;
+    outline: none;
+    background: #fff;
+    transition: border .18s;
+}
+.field input:focus, .field textarea:focus, .field select:focus { border-color: #1a56db; }
+.field input.err { border-color: #ef4444; }
+.err-msg { font-size: 11px; color: #ef4444; margin-top: 4px; display: none; }
+.err-msg.show { display: block; }
+.field textarea { resize: vertical; min-height: 68px; }
+.field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.envio-note {
+    display: flex; align-items: center; gap: 7px;
+    background: #fff7ed; border: 1px solid #fed7aa;
+    border-radius: 8px; padding: 9px 12px;
+    font-size: 13px; color: #c2410c;
+    margin-top: 10px;
+}
+.envio-note.free { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
+
+/* ── SCREEN 2: Nequi número ── */
+.nequi-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 1.5rem;
+}
+
+.nequi-logo {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, #6D1AF3, #8B3FF5);
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+}
+
+.nequi-title { font-size: 20px; font-weight: 700; color: #111; margin-bottom: 2px; }
+.nequi-sub { font-size: 13px; color: #666; }
+
+.phone-field {
+    border: 1.5px solid #e8e8ed;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    transition: border .2s;
+}
+
+.phone-field:focus-within { border-color: #1a56db; }
+.phone-field.err { border-color: #ef4444; }
+
+.phone-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    padding: 10px 14px 0;
+    letter-spacing: .5px;
+}
+
+.phone-row {
+    display: flex;
+    align-items: center;
+    padding: 6px 14px 12px;
+    gap: 10px;
+}
+
+.flag-prefix {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 15px;
+    color: #333;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.flag-img { font-size: 1.3rem; }
+
+.phone-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #111;
+    background: transparent;
+    min-width: 0;
+}
+
+.phone-input::placeholder { color: #bbb; }
+
+.phone-note {
+    font-size: 13px;
+    color: #666;
+    display: flex; align-items: center; gap: 6px;
+    margin-bottom: 1.5rem;
+}
+
+.phone-note svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+/* ── SCREEN 3: Esperando confirmación ── */
+.waiting-box {
+    text-align: center;
+    padding: 1.5rem 0;
+}
+
+.nequi-phone-anim {
+    width: 120px; height: 120px;
+    background: linear-gradient(135deg, #f3e8ff, #ede9fe);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+    font-size: 3.5rem;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(109,26,243,.2); }
+    50% { transform: scale(1.04); box-shadow: 0 0 0 16px rgba(109,26,243,0); }
+}
+
+.waiting-title { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 8px; }
+.waiting-msg { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 1.5rem; max-width: 340px; margin-left: auto; margin-right: auto; }
+
+.nequi-number-display {
+    background: #f8f4ff;
+    border: 1.5px solid #e0d0ff;
+    border-radius: 10px;
+    padding: 10px 18px;
+    display: inline-block;
+    font-family: 'DM Mono', monospace;
+    font-size: 18px;
+    font-weight: 500;
+    color: #6D1AF3;
+    margin-bottom: 1.5rem;
+    letter-spacing: 2px;
+}
+
+.countdown-ring {
+    position: relative;
+    width: 70px; height: 70px;
+    margin: 0 auto 1.2rem;
+}
+
+.countdown-ring svg { transform: rotate(-90deg); }
+.countdown-ring circle { fill: none; stroke-width: 5; }
+.ring-bg { stroke: #f0e8ff; }
+.ring-fill { stroke: #6D1AF3; stroke-linecap: round; transition: stroke-dashoffset .9s linear; }
+.countdown-num {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 18px;
+    font-weight: 700;
+    color: #6D1AF3;
+}
+
+.status-bar {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    font-size: 13px; color: #888;
+    margin-bottom: 1rem;
+}
+
+.dot-anim { display: flex; gap: 4px; }
+.dot-anim span {
+    width: 6px; height: 6px;
+    background: #6D1AF3;
+    border-radius: 50%;
+    animation: dotBounce .9s ease-in-out infinite;
+}
+.dot-anim span:nth-child(2) { animation-delay: .15s; }
+.dot-anim span:nth-child(3) { animation-delay: .3s; }
+@keyframes dotBounce { 0%,60%,100%{transform:translateY(0)} 30%{transform:translateY(-6px)} }
+
+.cancel-link {
+    background: none; border: none;
+    color: #888; font-size: 13px;
+    cursor: pointer; text-decoration: underline;
+    font-family: 'Inter', sans-serif;
+    margin-top: .5rem;
+}
+
+/* ── SCREEN 4: Resultados ── */
+.result-box {
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.result-icon {
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.4rem;
+    font-size: 2.5rem;
+}
+
+.result-icon.success { background: #f0fdf4; border: 2px solid #bbf7d0; }
+.result-icon.failed  { background: #fef2f2; border: 2px solid #fecaca; }
+.result-icon.pending { background: #fff7ed; border: 2px solid #fed7aa; }
+
+.result-title { font-size: 24px; font-weight: 800; color: #111; margin-bottom: 8px; }
+.result-msg { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 1.5rem; max-width: 320px; margin-left:auto; margin-right:auto; }
+
+.result-id {
+    background: #f4f4f7;
+    border-radius: 8px;
+    padding: 9px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    color: #555;
+    margin-bottom: 1.5rem;
+    display: inline-block;
+    letter-spacing: 1px;
+}
+
+.result-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+
+/* ── RESUMEN (aside) ── */
+.amount-detail {
+    background: #f8f8fb;
+    border-top: 1px solid #eee;
+    padding: 1rem 2rem;
+    font-size: 13px;
+}
+
+.amount-row {
+    display: flex; justify-content: space-between;
+    padding: 4px 0;
+    color: #666;
+}
+
+.amount-row.total {
+    font-size: 15px;
+    font-weight: 700;
+    color: #111;
+    border-top: 1px solid #e8e8ed;
+    margin-top: 6px;
+    padding-top: 8px;
+}
+
+.amount-row span:last-child { font-family: 'DM Mono', monospace; }
+
+/* ── FOOTER BUTTONS ── */
+.card-footer {
+    padding: 1.2rem 2rem;
+    background: #fff;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    position: sticky;
+    bottom: 0;
+}
+
+.btn-back {
+    display: flex; align-items: center; gap: 5px;
+    background: none; border: none;
+    color: #1a56db; font-family: 'Inter', sans-serif;
+    font-size: 14px; font-weight: 600;
+    cursor: pointer; padding: 10px 0;
+}
+
+.btn-back svg { width: 16px; height: 16px; }
+
+.btn-primary {
+    background: #1a56db;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    padding: 13px 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex; align-items: center; gap: 8px;
+    min-width: 140px; justify-content: center;
+}
+
+.btn-primary:hover { background: #1447b8; transform: translateY(-1px); }
+.btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.btn-primary.loading .btn-txt { display: none; }
+.btn-primary:not(.loading) .btn-spin { display: none; }
+.btn-spin {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.btn-secondary {
+    background: #fff;
+    color: #111;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex; align-items: center;
+    transition: all .18s;
+}
+.btn-secondary:hover { border-color: #aaa; }
+
+/* ── TOAST ── */
+.toast {
+    position: fixed; bottom: 1.5rem; left: 50%;
+    transform: translateX(-50%) translateY(10px);
+    background: #111; color: #fff;
+    padding: 10px 18px; border-radius: 100px;
+    font-size: 13px; font-weight: 600;
+    opacity: 0; transition: all .3s;
+    z-index: 999; pointer-events: none; white-space: nowrap;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+@media(max-width: 640px) {
+    .card-body { padding: 1.5rem 1.2rem .8rem; }
+    .card-footer { padding: 1rem 1.2rem; }
+    .entrega-opts { grid-template-columns: 1fr; }
+    .field-row { grid-template-columns: 1fr; }
+    .amount-detail { padding: .8rem 1.2rem; }
+    .topbar { padding: 0 1rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top bar -->
+<div class="topbar">
+    <a href="https://cxr10s.github.io/tienda/" class="topbar-logo">
+        <div class="topbar-logo-box">
+            <svg viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+        </div>
+        <span class="topbar-brand">STORE.</span>
+    </a>
+    <div class="topbar-amount" id="topbar-amount">
+        <span id="amount-display">COP 0</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+    <div class="tab done" id="tab-datos">Datos</div>
+    <div class="tab active" id="tab-entrega">Entrega</div>
+    <div class="tab" id="tab-pago">Pago</div>
+    <div class="tab" id="tab-confirm">Confirmación</div>
+</div>
+
+<!-- Card -->
+<div class="card-wrap">
+<div class="card-body">
+
+    <!-- SCREEN 1: Tipo de entrega -->
+    <div class="screen active" id="screen-entrega">
+        <div class="section-title">¿Cómo quieres recibir tu pedido?</div>
+        <div class="section-sub">Selecciona una opción para continuar</div>
+
+        <div class="entrega-opts">
+            <div class="entrega-card" id="opt-tienda" onclick="selEntrega('tienda')">
+                <div class="entrega-radio"></div>
+                <span class="entrega-icon">🏪</span>
+                <div class="entrega-name">Recoger en tienda</div>
+                <div class="entrega-desc">Sin costo adicional. Recoge cuando quieras.</div>
+            </div>
+            <div class="entrega-card" id="opt-domicilio" onclick="selEntrega('domicilio')">
+                <div class="entrega-radio"></div>
+                <span class="entrega-icon">🚚</span>
+                <div class="entrega-name">Envío a domicilio</div>
+                <div class="entrega-desc">Te lo llevamos a tu puerta.</div>
+            </div>
+        </div>
+
+        <!-- Campos domicilio -->
+        <div class="domicilio-box" id="domicilio-box">
+            <div class="field-row">
+                <div class="field">
+                    <label>Ciudad *</label>
+                    <input type="text" id="env-ciudad" placeholder="Bogotá">
+                    <div class="err-msg" id="err-ciudad">Ingresa tu ciudad</div>
+                </div>
+                <div class="field">
+                    <label>Dirección *</label>
+                    <input type="text" id="env-dir" placeholder="Calle 123 # 45-67">
+                    <div class="err-msg" id="err-dir">Ingresa tu dirección</div>
+                </div>
+            </div>
+            <div class="field">
+                <label>Barrio / Referencias <span style="font-weight:400;color:#aaa">(opcional)</span></label>
+                <textarea id="env-ref" placeholder="Barrio, apartamento, punto de referencia..."></textarea>
+            </div>
+            <div class="envio-note" id="envio-note">
+                <span>📦</span>
+                <span id="envio-note-txt">Calculando costo de envío...</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: Ingresa número Nequi -->
+    <div class="screen" id="screen-nequi">
+        <div class="nequi-header">
+            <div class="nequi-logo">💜</div>
+            <div>
+                <div class="nequi-title">Confirma tu número Nequi</div>
+                <div class="nequi-sub">Revisa que sea el número asociado a tu Nequi. Si no es correcto, edítalo.</div>
+            </div>
+        </div>
+
+        <div class="phone-field" id="phone-field-wrap">
+            <div class="phone-label">TELÉFONO</div>
+            <div class="phone-row">
+                <div class="flag-prefix">
+                    <span class="flag-img">🇨🇴</span>
+                    <span>+57</span>
+                </div>
+                <input type="tel" class="phone-input" id="nequi-phone"
+                    placeholder="300 000 0000"
+                    maxlength="10"
+                    inputmode="numeric"
+                    oninput="this.value=this.value.replace(/\D/g,'')">
+            </div>
+        </div>
+
+        <div class="phone-note">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+            Recibirás una notificación push en tu teléfono
+        </div>
+    </div>
+
+    <!-- SCREEN 3: Esperando confirmación en Nequi -->
+    <div class="screen" id="screen-waiting">
+        <div class="waiting-box">
+            <div class="nequi-phone-anim">📱</div>
+            <div class="waiting-title">Revisa tu Nequi</div>
+            <div class="waiting-msg">
+                Enviamos una notificación push a tu teléfono.<br>
+                <strong>Acepta el pago en la app de Nequi</strong> para completar tu compra.
+            </div>
+            <div class="nequi-number-display" id="display-phone">--- --- ----</div>
+
+            <div class="countdown-ring">
+                <svg width="70" height="70" viewBox="0 0 70 70">
+                    <circle class="ring-bg" cx="35" cy="35" r="30"/>
+                    <circle class="ring-fill" id="ring-fill" cx="35" cy="35" r="30"
+                        stroke-dasharray="188.5" stroke-dashoffset="0"/>
+                </svg>
+                <div class="countdown-num" id="countdown-num">120</div>
+            </div>
+
+            <div class="status-bar">
+                <div class="dot-anim">
+                    <span></span><span></span><span></span>
+                </div>
+                Esperando confirmación
+            </div>
+
+            <button class="cancel-link" onclick="cancelarEspera()">Cancelar y volver</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 4: Resultados -->
+    <div class="screen" id="screen-result">
+        <div class="result-box" id="result-box"></div>
+    </div>
+
+</div>
+
+<!-- Resumen de montos -->
+<div class="amount-detail" id="amount-detail" style="display:none;">
+    <div class="amount-row"><span>Subtotal</span><span id="rs-subtotal">$0</span></div>
+    <div class="amount-row" id="rs-desc-row" style="display:none;"><span style="color:#16a34a;">Descuento</span><span id="rs-descuento" style="color:#16a34a;">-$0</span></div>
+    <div class="amount-row"><span>Envío</span><span id="rs-envio">$0</span></div>
+    <div class="amount-row total"><span>Total</span><span id="rs-total">$0</span></div>
+</div>
+
+<!-- Footer buttons -->
+<div class="card-footer" id="card-footer">
+    <button class="btn-back" id="btn-back" onclick="goBack()" style="visibility:hidden;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+        VOLVER
+    </button>
+    <button class="btn-primary" id="btn-next" onclick="goNext()">
+        <span class="btn-txt">Continuar</span>
+        <div class="btn-spin"></div>
+    </button>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────
+const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
+const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
+
+// ── ESTADO ──────────────────────────────────────────────────────
+let currentScreen = 0; // 0=entrega, 1=nequi, 2=waiting, 3=result
+let tipoEntrega   = null;
+let cart          = [];
+let pedidoData    = null;
+let pedidoId      = null;
+let pollingTimer  = null;
+let countdownTimer = null;
+let countdownSecs  = 120;
+
+const SCREENS = ['screen-entrega','screen-nequi','screen-waiting','screen-result'];
+const TABS    = ['tab-entrega','tab-pago','tab-confirm'];
+
+// ── INIT ────────────────────────────────────────────────────────
+function init() {
+    try { cart = JSON.parse(localStorage.getItem('tienda_cart') || '[]'); } catch(e) {}
+    try { pedidoData = JSON.parse(sessionStorage.getItem('store_pedido') || 'null'); } catch(e) {}
+
+    if (!cart.length && !pedidoData) {
+        window.location.href = 'https://cxr10s.github.io/tienda/';
+        return;
+    }
+
+    // Prefill phone from stored user or pedido
+    const user = JSON.parse(sessionStorage.getItem('store_user') || 'null');
+    if (user?.phone) document.getElementById('nequi-phone').value = user.phone.replace(/^\+57/, '');
+    if (pedidoData?.telefono) document.getElementById('nequi-phone').value = pedidoData.telefono;
+
+    renderResumen();
+}
+
+// ── UTILIDADES ──────────────────────────────────────────────────
+function fmt(n) { return '$' + Math.round(Number(n)).toLocaleString('es-CO'); }
+
+function calcDiscount(sub) {
+    if (sub >= 900000) return { amount: Math.round(sub*.20) };
+    if (sub >= 600000) return { amount: Math.round(sub*.15) };
+    if (sub >= 400000) return { amount: Math.round(sub*.12) };
+    if (sub >= 250000) return { amount: Math.round(sub*.08) };
+    if (sub >= 150000) return { amount: Math.round(sub*.05) };
+    return { amount: 0 };
+}
+
+function getTotals() {
+    const subtotal   = cart.reduce((s,i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
+    const { amount: descuento } = calcDiscount(subtotal);
+    const envioBase  = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
+    const envio      = tipoEntrega === 'tienda' ? 0 : envioBase;
+    const total      = subtotal - descuento + envio;
+    return { subtotal, descuento, envio, total };
+}
+
+function showToast(msg, dur=3000) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), dur);
+}
+
+// ── RESUMEN ─────────────────────────────────────────────────────
+function renderResumen() {
+    const { subtotal, descuento, envio, total } = getTotals();
+
+    document.getElementById('amount-display').textContent =
+        'COP ' + Math.round(total).toLocaleString('es-CO');
+
+    document.getElementById('rs-subtotal').textContent = fmt(subtotal);
+    document.getElementById('rs-envio').textContent    = tipoEntrega === 'tienda' ? 'Gratis' : (envio > 0 ? fmt(envio) : '¡Gratis!');
+    document.getElementById('rs-total').textContent    = fmt(total);
+
+    const descRow = document.getElementById('rs-desc-row');
+    if (descuento > 0) {
+        descRow.style.display = 'flex';
+        document.getElementById('rs-descuento').textContent = '-' + fmt(descuento);
+    } else {
+        descRow.style.display = 'none';
+    }
+}
+
+// ── SELECCIÓN ENTREGA ────────────────────────────────────────────
+function selEntrega(tipo) {
+    tipoEntrega = tipo;
+    document.getElementById('opt-tienda').classList.toggle('sel', tipo === 'tienda');
+    document.getElementById('opt-domicilio').classList.toggle('sel', tipo === 'domicilio');
+
+    const box = document.getElementById('domicilio-box');
+    box.classList.toggle('show', tipo === 'domicilio');
+
+    if (tipo === 'domicilio') {
+        const { envio } = getTotals();
+        const note = document.getElementById('envio-note');
+        const txt  = document.getElementById('envio-note-txt');
+        note.className = envio === 0 ? 'envio-note free' : 'envio-note';
+        txt.textContent = envio === 0 ? '¡Envío gratis! Tu pedido supera los $150.000' : `Costo de envío: ${fmt(envio)} COP`;
+    }
+
+    renderResumen();
+}
+
+// ── VALIDACIÓN DOMICILIO ─────────────────────────────────────────
+function validarDomicilio() {
+    if (tipoEntrega !== 'domicilio') return true;
+    let ok = true;
+    const ciudad = document.getElementById('env-ciudad').value.trim();
+    const dir    = document.getElementById('env-dir').value.trim();
+    if (ciudad.length < 2) {
+        document.getElementById('env-ciudad').classList.add('err');
+        document.getElementById('err-ciudad').classList.add('show');
+        ok = false;
+    } else {
+        document.getElementById('env-ciudad').classList.remove('err');
+        document.getElementById('err-ciudad').classList.remove('show');
+    }
+    if (dir.length < 5) {
+        document.getElementById('env-dir').classList.add('err');
+        document.getElementById('err-dir').classList.add('show');
+        ok = false;
+    } else {
+        document.getElementById('env-dir').classList.remove('err');
+        document.getElementById('err-dir').classList.remove('show');
+    }
+    return ok;
+}
+
+// ── NAVEGACIÓN ───────────────────────────────────────────────────
+function showScreen(idx) {
+    SCREENS.forEach((s,i) => {
+        const el = document.getElementById(s);
+        el.classList.toggle('active', i === idx);
+    });
+    currentScreen = idx;
+
+    // Tabs
+    const tabMap = [0, 1, 1, 2];
+    TABS.forEach((t,i) => {
+        const el = document.getElementById(t);
+        el.className = 'tab';
+        if (i < tabMap[idx]) el.classList.add('done');
+        if (i === tabMap[idx]) el.classList.add('active');
+    });
+
+    // Botones footer
+    const back = document.getElementById('btn-back');
+    const next = document.getElementById('btn-next');
+    const amountDetail = document.getElementById('amount-detail');
+
+    back.style.visibility = (idx === 0 || idx >= 2) ? 'hidden' : 'visible';
+
+    if (idx === 0) { next.querySelector('.btn-txt').textContent = 'Continuar'; next.style.display = 'flex'; amountDetail.style.display = 'none'; }
+    if (idx === 1) { next.querySelector('.btn-txt').textContent = 'CONFIRMAR'; next.style.display = 'flex'; amountDetail.style.display = 'block'; renderResumen(); }
+    if (idx === 2) { next.style.display = 'none'; amountDetail.style.display = 'block'; }
+    if (idx === 3) { next.style.display = 'none'; amountDetail.style.display = 'none'; }
+}
+
+async function goNext() {
+    if (currentScreen === 0) {
+        if (!tipoEntrega) { showToast('⚠️ Selecciona cómo quieres recibir tu pedido'); return; }
+        if (!validarDomicilio()) { showToast('⚠️ Completa los datos de envío'); return; }
+        showScreen(1);
+    } else if (currentScreen === 1) {
+        await iniciarPagoNequi();
+    }
+}
+
+function goBack() {
+    if (currentScreen === 1) showScreen(0);
+}
+
+// ── GUARDAR PEDIDO EN SUPABASE ───────────────────────────────────
+async function guardarPedido(nequiPhone) {
+    const { subtotal, descuento, envio, total } = getTotals();
+    const ciudad = document.getElementById('env-ciudad')?.value.trim() || '';
+    const dir    = document.getElementById('env-dir')?.value.trim() || '';
+    const ref    = document.getElementById('env-ref')?.value.trim() || '';
+
+    const pedido = {
+        ...(pedidoData || {}),
+        productos: cart.map(i => ({
+            id: i.id, name: i.name, price: i.price,
+            quantity: i.quantity, isGift: i.isGift || false
+        })),
+        subtotal, descuento, envio, total,
+        estado:          'pendiente',
+        estado_pago:     'pendiente',
+        tipo_entrega:    tipoEntrega,
+        metodo_pago:     'nequi',
+        nequi_numero:    nequiPhone,
+        direccion_envio: tipoEntrega === 'domicilio'
+            ? `${dir}, ${ciudad}${ref ? ' — Ref: ' + ref : ''}`
+            : null,
+    };
+
+    if (!pedido.nombre) pedido.nombre = pedidoData?.nombre || 'Cliente';
+    if (!pedido.email)  pedido.email  = pedidoData?.email  || '';
+    if (!pedido.telefono) pedido.telefono = nequiPhone;
+
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos`, {
+        method: 'POST',
+        headers: {
+            'Content-Type':  'application/json',
+            'apikey':        SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`,
+            'Prefer':        'return=representation'
+        },
+        body: JSON.stringify(pedido)
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+    const result = await res.json();
+    return Array.isArray(result) && result[0] ? result[0].id : ('local-' + Date.now());
+}
+
+// ── ACTUALIZAR ESTADO EN SUPABASE ────────────────────────────────
+async function actualizarEstadoPago(id, estadoPago, estado) {
+    const body = { estado_pago: estadoPago };
+    if (estado) body.estado = estado;
+    await fetch(`${SUPABASE_URL}/rest/v1/pedidos?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: {
+            'Content-Type':  'application/json',
+            'apikey':        SUPABASE_ANON,
+            'Authorization': `Bearer ${SUPABASE_ANON}`
+        },
+        body: JSON.stringify(body)
+    });
+}
+
+// ── INICIAR PAGO NEQUI ───────────────────────────────────────────
+async function iniciarPagoNequi() {
+    const phoneRaw = document.getElementById('nequi-phone').value.replace(/\D/g, '');
+
+    if (phoneRaw.length !== 10) {
+        document.getElementById('phone-field-wrap').classList.add('err');
+        showToast('⚠️ Ingresa un número de 10 dígitos');
+        return;
+    }
+
+    document.getElementById('phone-field-wrap').classList.remove('err');
+
+    const btn = document.getElementById('btn-next');
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    try {
+        // 1. Guardar pedido en Supabase
+        pedidoId = await guardarPedido(phoneRaw);
+
+        // 2. Limpiar carrito y sesión
+        localStorage.removeItem('tienda_cart');
+        localStorage.removeItem('tienda_last_removed_gift');
+        sessionStorage.removeItem('store_pedido');
+        sessionStorage.removeItem('store_user');
+        cart = [];
+
+        // 3. Mostrar pantalla de espera
+        document.getElementById('display-phone').textContent =
+            phoneRaw.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+
+        showScreen(2);
+        iniciarContador();
+
+        // 4. Simular envío de notificación push Nequi
+        // ⚠️ NOTA PARA PRODUCCIÓN: Aquí se llamaría tu Supabase Edge Function
+        // que hace el POST a api.nequi.com.co/pagos/v2/-/link-qr/pagos/cobros
+        // con el token OAuth de Nequi y el número del cliente.
+        // Por ahora iniciamos polling para detectar cambio manual o auto.
+        iniciarPolling();
+
+    } catch(err) {
+        console.error(err);
+        showToast('❌ Error al procesar. Intenta de nuevo.');
+        btn.disabled = false;
+        btn.classList.remove('loading');
+    }
+}
+
+// ── COUNTDOWN ────────────────────────────────────────────────────
+function iniciarContador() {
+    countdownSecs = 120;
+    const ringEl  = document.getElementById('ring-fill');
+    const numEl   = document.getElementById('countdown-num');
+    const circ    = 188.5;
+
+    clearInterval(countdownTimer);
+    countdownTimer = setInterval(() => {
+        countdownSecs--;
+        numEl.textContent = countdownSecs;
+        ringEl.style.strokeDashoffset = circ * (1 - countdownSecs / 120);
+
+        if (countdownSecs <= 0) {
+            clearInterval(countdownTimer);
+            clearInterval(pollingTimer);
+            actualizarEstadoPago(pedidoId, 'pendiente');
+            mostrarResultado('pending');
+        }
+    }, 1000);
+}
+
+// ── POLLING — consulta Supabase cada 5s ──────────────────────────
+// En producción: el webhook de Nequi actualiza Supabase automáticamente.
+// El polling detecta ese cambio y reacciona en la UI.
+function iniciarPolling() {
+    clearInterval(pollingTimer);
+    pollingTimer = setInterval(async () => {
+        if (!pedidoId || pedidoId.startsWith('local-')) return;
+        try {
+            const res = await fetch(
+                `${SUPABASE_URL}/rest/v1/pedidos?id=eq.${pedidoId}&select=estado_pago`,
+                { headers: { 'apikey': SUPABASE_ANON, 'Authorization': `Bearer ${SUPABASE_ANON}` }}
+            );
+            const data = await res.json();
+            if (!data || !data[0]) return;
+            const ep = data[0].estado_pago;
+
+            if (ep === 'pagado') {
+                clearInterval(pollingTimer);
+                clearInterval(countdownTimer);
+                mostrarResultado('success');
+            } else if (ep === 'cancelado' || ep === 'rechazado' || ep === 'error') {
+                clearInterval(pollingTimer);
+                clearInterval(countdownTimer);
+                mostrarResultado('failed');
+            }
+        } catch(e) {}
+    }, 5000);
+}
+
+// ── CANCELAR ESPERA ──────────────────────────────────────────────
+async function cancelarEspera() {
+    clearInterval(pollingTimer);
+    clearInterval(countdownTimer);
+    if (pedidoId) await actualizarEstadoPago(pedidoId, 'cancelado');
+    mostrarResultado('failed');
+}
+
+// ── MOSTRAR RESULTADO ────────────────────────────────────────────
+function mostrarResultado(tipo) {
+    showScreen(3);
+    const idCorto = pedidoId ? pedidoId.substring(0, 8).toUpperCase() : '--------';
+    const misPedidos = `https://cxr10s.github.io/tienda/mis-pedidos.html`;
+
+    const configs = {
+        success: {
+            icon: '✅', cls: 'success',
+            title: '¡Pago confirmado!',
+            msg: 'Tu pago fue aprobado exitosamente por Nequi. Tu pedido está siendo procesado.',
+            actions: `<a href="${misPedidos}" class="btn-primary" style="text-decoration:none;">Ver mi pedido</a>
+                      <a href="https://cxr10s.github.io/tienda/" class="btn-secondary">Seguir comprando</a>`
+        },
+        failed: {
+            icon: '❌', cls: 'failed',
+            title: 'Pago no completado',
+            msg: 'El pago fue cancelado o rechazado. Tu pedido quedó registrado como pendiente. Puedes intentar de nuevo o contactarnos.',
+            actions: `<button class="btn-primary" onclick="location.reload()">Intentar de nuevo</button>
+                      <a href="${misPedidos}" class="btn-secondary">Ver mis pedidos</a>`
+        },
+        pending: {
+            icon: '⏳', cls: 'pending',
+            title: 'Tiempo agotado',
+            msg: 'No recibimos confirmación a tiempo. Tu pedido quedó guardado. Puedes contactarnos para coordinar el pago.',
+            actions: `<a href="${misPedidos}" class="btn-primary" style="text-decoration:none;">Ver mi pedido</a>
+                      <a href="https://cxr10s.github.io/tienda/" class="btn-secondary">Inicio</a>`
+        }
+    };
+
+    const c = configs[tipo];
+    document.getElementById('result-box').innerHTML = `
+        <div class="result-icon ${c.cls}">${c.icon}</div>
+        <div class="result-title">${c.title}</div>
+        <div class="result-msg">${c.msg}</div>
+        <div class="result-id">Pedido #${idCorto}</div>
+        <div class="result-actions">${c.actions}</div>`;
+
+    // Actualizar tab
+    document.getElementById('tab-confirm').className = 'tab ' + (tipo === 'success' ? 'done' : 'active');
+}
+
+init();
+</script>
+</body>
+</html>

@@ -1069,19 +1069,18 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
             created_at: Array.isArray(result) && result[0] ? result[0].created_at : new Date().toISOString()
         };
 
-        // Limpiar carrito
-        localStorage.removeItem('tienda_cart');
-        localStorage.removeItem('tienda_last_removed_gift');
+        // Guardar datos del pedido en sessionStorage para pago-nequi.html
+        sessionStorage.setItem('store_pedido', JSON.stringify(pedido));
 
-        // Progreso al 100%
-        document.getElementById('progress-fill').style.width = '100%';
+        // Progreso al 75%
+        document.getElementById('progress-fill').style.width = '75%';
 
-        // Mostrar alerta de factura y luego redirigir a Wompi
-        await mostrarAlertaFactura(pedidoGuardado);
+        // Ir a la página de pago Nequi
+        window.location.href = 'https://cxr10s.github.io/tienda/pago-nequi.html';
 
     } catch(err) {
         console.error(err);
-        showToast('❌ Error al guardar el pedido. Intenta de nuevo.');
+        showToast('❌ Error al procesar. Intenta de nuevo.');
         btn.disabled = false;
         btn.classList.remove('loading');
     }
