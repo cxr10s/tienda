@@ -629,13 +629,14 @@
                 <span>TUS DATOS</span>
             </div>
             <div class="step">
+                <div class="step-num"></div>
                 <span></span>
             </div>
             <div class="step-sep"></div>
             <div class="step">
                 <div class="step-num">2</div>
                 <span>ENTREGA</span>
-            </div>     
+            </div>    
         </div>
 
         <form id="checkout-form" novalidate>
@@ -648,7 +649,7 @@
                         <label for="nombre">Nombre completo *</label>
                         <div class="input-wrap">
                             <span class="input-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></span>
-                            <input type="text" id="nombre" placeholder="Carlos Gonzales" inputmode="text">
+                            <input type="text" id="nombre" name="" placeholder="Carlos Gonzales" autocomplete="off" inputmode="text">
                         </div>
                         <span class="field-error" id="err-nombre">Solo letras y espacios, mínimo 3 caracteres</span>
                     </div>
@@ -799,7 +800,7 @@
                 <span>Descuento</span><span id="sum-discount">-$0</span>
             </div>
             <div class="order-row" id="sum-shipping-row">
-                <span>Envío</span><span>$0</span>
+                <span>Envío</span><span id="sum-sgipping">-</span>
             </div>
             <div class="order-total">
                 <span class="order-total-label">Total a pagar</span>
@@ -819,10 +820,6 @@
 // =============================================
 const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
 const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
-
-const WOMPI_PUBLIC_KEY       = 'pub_test_9kFqdnduO7A4r7WelX97pzJgjA7aBpGV';
-const WOMPI_INTEGRITY_SECRET = 'test_integrity_itRExQlNZCY87qnVRdvNrXqXX7TEmPEr';
-const WOMPI_CHECKOUT_URL     = 'https://checkout.wompi.co/p/';
 
 const TIENDA_URL = 'https://cxr10s.github.io/tienda/';
 
@@ -883,7 +880,7 @@ function renderOrder() {
     const total = subtotal - descuento + envio;
 
     document.getElementById('sum-subtotal').textContent = fmt(subtotal);
-    document.getElementById('sum-shipping').textContent = envio > 0 ? fmt(envio) : '¡Gratis!';
+    document.getElementById('sum-shipping').textContent = "-";
 
     const discRow = document.getElementById('sum-discount-row');
     if (descuento > 0) {
@@ -901,7 +898,7 @@ function renderOrder() {
 // VALIDACIONES
 // =============================================
 function validateNombre(v) { return /^[A-Za-zÁáÉéÍíÓóÚúÑñ\s]{3,}$/.test(v.trim()) && v.trim().split(/\s+/).length >= 2; }
-function validateDoc(v)    { return /^[0-9A-Za-z]{5,12}$/.test(v.trim()); }
+function validateDoc(v)    { return /^[0-9A-Za-z]{7,12}$/.test(v.trim()); }
 function validateEmail(v)  { return /^[a-z0-9._%+-]+@(gmail\.com|hotmail\.com|outlook\.com)$/i.test(v.trim()); }
 function validatePhone(v)  { return /^[0-9]{10}$/.test(v.trim()); }
 function validateCiudad(v) { return v.trim().length >= 2; }
@@ -986,9 +983,6 @@ function prefillFromSession() {
             el.setAttribute('readonly', true);
             el.style.background = '#f5f5f3';
             el.title = 'Correo de tu cuenta Google';
-        }
-        if (user.displayName) {
-            document.getElementById('nombre').value = user.displayName;
         }
     } catch(e) {}
 }
