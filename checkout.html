@@ -703,8 +703,7 @@
                 </div>
             </div>
 
-           
- <!-- Sección 3: Dirección 
+            <!-- Sección 3: Dirección 
             <div class="form-section">
                 <div class="section-label">Dirección de entrega</div>
                 <div class="field-grid">
@@ -751,7 +750,7 @@
                     </div>
                 </div>
             </div>
--->
+            -->
             <!-- Sección 4: Notas -->
             <div class="form-section">
                 <div class="section-label">Información adicional</div>
@@ -800,7 +799,7 @@
                 <span>Descuento</span><span id="sum-discount">-$0</span>
             </div>
             <div class="order-row" id="sum-shipping-row">
-                <span>Envío</span><span id="sum-sgipping">-</span>
+                <span>Envío</span><span id="sum-shipping">-</span>
             </div>
             <div class="order-total">
                 <span class="order-total-label">Total a pagar</span>
@@ -1010,9 +1009,6 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
     const documento = document.getElementById('documento').value.trim();
     const email     = document.getElementById('email').value.trim().toLowerCase();
     const telefono  = document.getElementById('telefono').value.trim();
-    const depto     = document.getElementById('departamento').value;
-    const ciudad    = document.getElementById('ciudad').value.trim();
-    const direccion = document.getElementById('direccion').value.trim();
     const notas     = document.getElementById('notas').value.trim();
 
     const subtotal = cart.reduce((s, i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
@@ -1024,7 +1020,6 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
         nombre,
         email,
         telefono,
-        direccion: `${direccion}, ${ciudad}, ${depto}`,
         notas: notas || null,
         documento: `${docTipo} ${documento}`,
         productos: cart.map(i => ({
