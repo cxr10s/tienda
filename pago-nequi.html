@@ -326,6 +326,7 @@ body {
     0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(109,26,243,.2); }
     50% { transform: scale(1.04); box-shadow: 0 0 0 16px rgba(109,26,243,0); }
 }
+
 .nequi-phone-anim img {
     max-width: 80%;
     max-height: 80%;
@@ -334,6 +335,7 @@ body {
     display: block;
     object-fit: contain;
 }
+
 .waiting-title { font-size: 22px; font-weight: 700; color: #111; margin-bottom: 8px; }
 .waiting-msg { font-size: 14px; color: #666; line-height: 1.6; margin-bottom: 1.5rem; max-width: 340px; margin-left: auto; margin-right: auto; }
 
@@ -596,9 +598,44 @@ body {
         <div class="domicilio-box" id="domicilio-box">
             <div class="field-row">
                 <div class="field">
-                    <label>Ciudad *</label>
-                    <input type="text" id="env-ciudad" placeholder="Bogotá">
-                    <div class="err-msg" id="err-ciudad">Ingresa tu ciudad</div>
+                    <label for="ciudad">Ciudad / Municipio *</label>
+                <div class="input-wrap">
+                    <select id="ciudad" name="ciudad" class="no-icon" style="padding-left:14px;">
+                        <option value="">Selecciona...</option>
+
+                        <!-- Santander (zona Bucaramanga) -->
+                        <option>Bucaramanga</option>
+                        <option>Floridablanca</option>
+                        <option>Girón</option>
+                        <option>Piedecuesta</option>
+                        <option>Lebrija</option>
+                        <option>Rionegro</option>
+                        <option>Los Santos</option>
+                        <option>Zapatoca</option>
+                        <option>Barbosa</option>
+                        <option>San Gil</option>
+                        <option>Socorro</option>
+
+                        <!-- Norte de Santander -->
+                        <option>Cúcuta</option>
+                        <option>Ocaña</option>
+                        <option>Villa del Rosario</option>
+
+                        <!-- Bolívar -->
+                        <option>Cartagena</option>
+                        <option>Magangué</option>
+                        <option>Simití</option>
+
+                        <!-- Bogotá -->
+                        <option>Bogotá D.C.</option>
+
+                        <!-- Otros -->
+                        <option>Medellín</option>
+                        <option>Cali</option>
+                        <option>Barranquilla</option>
+                    </select>
+                </div>
+                <span class="field-error" id="err-ciudad">Selecciona una ciudad</span>
                 </div>
                 <div class="field">
                     <label>Dirección *</label>
@@ -826,28 +863,35 @@ function selEntrega(tipo) {
 // ── VALIDACIÓN DOMICILIO ─────────────────────────────────────────
 function validarDomicilio() {
     if (tipoEntrega !== 'domicilio') return true;
+
     let ok = true;
-    const ciudad = document.getElementById('env-ciudad').value.trim();
-    const dir    = document.getElementById('env-dir').value.trim();
-    if (ciudad.length < 2) {
-        document.getElementById('env-ciudad').classList.add('err');
+
+    const ciudadEl = document.getElementById('ciudad');
+    const dirEl    = document.getElementById('env-dir');
+
+    const ciudad = ciudadEl.value;
+    const dir    = dirEl.value.trim();
+
+    // Ciudad
+    if (!ciudad) {
+        ciudadEl.classList.add('err');
         document.getElementById('err-ciudad').classList.add('show');
         ok = false;
     } else {
-        document.getElementById('env-ciudad').classList.remove('err');
+        ciudadEl.classList.remove('err');
         document.getElementById('err-ciudad').classList.remove('show');
     }
+    // Dirección
     if (dir.length < 5) {
-        document.getElementById('env-dir').classList.add('err');
+        dirEl.classList.add('err');
         document.getElementById('err-dir').classList.add('show');
         ok = false;
     } else {
-        document.getElementById('env-dir').classList.remove('err');
+        dirEl.classList.remove('err');
         document.getElementById('err-dir').classList.remove('show');
     }
     return ok;
 }
-
 // ── NAVEGACIÓN ───────────────────────────────────────────────────
 function showScreen(idx) {
     SCREENS.forEach((s,i) => {
@@ -895,7 +939,7 @@ function goBack() {
 // ── GUARDAR PEDIDO EN SUPABASE ───────────────────────────────────
 async function guardarPedido(nequiPhone) {
     const { subtotal, descuento, envio, total } = getTotals();
-    const ciudad = document.getElementById('env-ciudad')?.value.trim() || '';
+    const ciudad = document.getElementById('ciudad')?.value.trim() || '';
     const dir    = document.getElementById('env-dir')?.value.trim() || '';
     const ref    = document.getElementById('env-ref')?.value.trim() || '';
 
