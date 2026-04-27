@@ -629,6 +629,7 @@
                 <span>TUS DATOS</span>
             </div>
             <div class="step">
+                <div class="step-num"></div>
                 <span></span>
             </div>
             <div class="step-sep"></div>
@@ -817,8 +818,7 @@
 // =============================================
 // CONFIGURACIÓN
 // =============================================
-const SUPABASE_URL  = 'https://qvaaistunotxgpyqebya.supabase.co';
-const SUPABASE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF2YWFpc3R1bm90eGdweXFlYnlhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQxMTk2MzMsImV4cCI6MjA4OTY5NTYzM30.eG62aFEYEtigW7Vb9wJ2VCDK4HVzKCxEredHmVNZXjU';
+// ── CARRITO ──────────────────────────────────────────────────────
 
 const TIENDA_URL = 'https://cxr10s.github.io/tienda/';
 
@@ -1039,28 +1039,7 @@ document.getElementById('checkout-form').addEventListener('submit', async functi
     };
 
     try {
-        // Guardar en Supabase
-        const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'apikey': SUPABASE_ANON,
-                'Authorization': `Bearer ${SUPABASE_ANON}`,
-                'Prefer': 'return=representation'
-            },
-            body: JSON.stringify(pedido)
-        });
-
-        if (!res.ok) throw new Error('Error al guardar pedido');
-        const result = await res.json();
-
-        const pedidoGuardado = {
-            ...pedido,
-            id: Array.isArray(result) && result[0] ? result[0].id : ('local-' + Date.now()),
-            created_at: Array.isArray(result) && result[0] ? result[0].created_at : new Date().toISOString()
-        };
-
-        // Guardar datos del pedido en sessionStorage para pago-nequi.html
+        // Solo sessionStorage — Supabase se escribe en pago-nequi.html al confirmar
         sessionStorage.setItem('store_pedido', JSON.stringify(pedido));
 
         // Progreso al 75%
