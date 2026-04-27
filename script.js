@@ -850,7 +850,7 @@ function shareVia(platform) {
     const title = 'Tienda Deportiva';
     const text  = 'Mira esta tienda deportiva: Camisetas, Tenis, Jeans, Cascos y más. Envío gratis desde $150.000 COP.';
 
-    const textLargo = `⚡ Shop — Tienda Deportiva Online\n\n` +
+    const textLargo = ` Shop — Tienda Deportiva Online\n\n` +
         `Te comparto esta tienda deportiva. Camisetas, tenis, jeans, cascos y equipos deportivos al mejor precio.\n\n` +
         `🚚 Envío GRATIS desde $150.000\n` +
         `💳 Descuentos hasta el 20%\n\n` +
