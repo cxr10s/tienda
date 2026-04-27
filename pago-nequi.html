@@ -751,11 +751,13 @@ function calcDiscount(sub) {
 }
 
 function getTotals() {
-    const subtotal   = cart.reduce((s,i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
+    const subtotal              = cart.reduce((s,i) => s + (i.isGift ? 0 : i.price * i.quantity), 0);
     const { amount: descuento } = calcDiscount(subtotal);
-    const envioBase  = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
-    const envio      = tipoEntrega === 'tienda' ? 0 : envioBase;
-    const total      = subtotal - descuento + envio;
+    const envioBase             = subtotal > 0 && subtotal < 150000 ? 25000 : 0;
+    const envio = tipoEntrega === 'tienda'   ? 0
+                : tipoEntrega === 'domicilio' ? envioBase
+                : 0; // sin selección aún
+    const total = subtotal - descuento + envio;
     return { subtotal, descuento, envio, total };
 }
 
@@ -770,12 +772,20 @@ function showToast(msg, dur=3000) {
 function renderResumen() {
     const { subtotal, descuento, envio, total } = getTotals();
 
+    // Si aún no eligió entrega, mostrar total sin envío
+    const totalDisplay = tipoEntrega === null ? (subtotal - descuento) : total;
     document.getElementById('amount-display').textContent =
-        'COP ' + Math.round(total).toLocaleString('es-CO');
+        'COP ' + Math.round(totalDisplay).toLocaleString('es-CO');
 
     document.getElementById('rs-subtotal').textContent = fmt(subtotal);
-    document.getElementById('rs-envio').textContent    = tipoEntrega === 'tienda' ? '0' : (envio > 0 ? fmt(envio) : 'Gratis');
-    document.getElementById('rs-total').textContent    = fmt(total);
+
+    // Envío: "—" hasta que el usuario elija entrega
+    const envioEl = document.getElementById('rs-envio');
+    if (tipoEntrega === null)       envioEl.textContent = '—';
+    else if (tipoEntrega === 'tienda')    envioEl.textContent = 'Gratis';
+    else envioEl.textContent = envio > 0 ? fmt(envio) : '¡Gratis!';
+
+    document.getElementById('rs-total').textContent = fmt(totalDisplay);
 
     const descRow = document.getElementById('rs-desc-row');
     if (descuento > 0) {
