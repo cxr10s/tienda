@@ -776,7 +776,17 @@ function getPagoBanner(estadoPago, pedido) {
             <span class="pago-banner-icon">💳</span>
             <div class="pago-banner-text">
                 <div>Pago confirmado</div>
-                <div class="pago-banner-sub">Tu pago fue recibido exitosamente a través de Wompi.</div>
+                <div class="pago-banner-sub">Tu pago fue recibido exitosamente a través de Nequi.</div>
+            </div>
+        </div>`;
+    }
+
+    if (ep === 'cancelado') {
+        return `<div class="pago-banner pago-banner-error">
+            <span class="pago-banner-icon">❌</span>
+            <div class="pago-banner-text">
+                <div>Pedido cancelado</div>
+                <div class="pago-banner-sub">Este pedido fue cancelado y no se procesó ningún pago.</div>
             </div>
         </div>`;
     }
@@ -879,28 +889,32 @@ function renderPedido(p, abierto) {
             <div class="productos-title">PRODUCTOS</div>
             ${productosHTML}
 
+            ${(p.estado_pago === 'cancelado' || p.estado === 'cancelado') ? `
+            <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:10px;padding:12px 14px;font-size:13px;color:#ef4444;margin:1rem 0;">
+                Este pedido fue cancelado. No se realizó ningún cobro.
+            </div>` : `
             <div class="pedido-totales">
                 <div class="total-row"><span>Subtotal</span><span>$${fmt(p.subtotal)} COP</span></div>
                 ${p.descuento > 0 ? `<div class="total-row" style="color:var(--entregado);"><span>Descuento aplicado</span><span>-$${fmt(p.descuento)} COP</span></div>` : ''}
-                <div class="total-row">
-                    <span>Envío</span>
-                    <span>${p.tipo_entrega === 'tienda' ? '—' : (p.envio > 0 ? '$' + fmt(p.envio) + ' COP' : '¡Gratis!')}</span>
-                </div>
+                <div class="total-row"><span>Envío</span><span>${p.tipo_entrega === 'tienda' ? '—' : (p.envio > 0 ? '$' + fmt(p.envio) + ' COP' : '¡Gratis!')}</span></div>
                 <div class="total-row final"><span>TOTAL PAGADO</span><span>$${fmt(p.total)} COP</span></div>
             </div>
-
-            <div style="margin:1rem 0; padding:12px 14px; background:var(--surface2); border-radius:10px; font-size:13px;">
+            <div style="margin:1rem 0;padding:12px 14px;background:var(--surface2);border-radius:10px;font-size:13px;">
                 ${p.tipo_entrega === 'domicilio' ? `
-                    <div style="font-weight:700; margin-bottom:4px;">🚚 Envío a domicilio</div>
+                    <div style="font-weight:700;margin-bottom:4px;">🚚 Envío a domicilio</div>
                     <div style="color:var(--muted);">${p.direccion_envio || p.direccion || '—'}</div>
                 ` : `
-                    <div style="font-weight:700; margin-bottom:4px;">🏪 Recogida en tienda</div>
-                    <div style="color:var(--muted);">Calle 13 #25-66 — Recuerda traer el ID de tu pedido: <strong>#${p.id.substring(0,8).toUpperCase()}</strong></div>
+                    <div style="font-weight:700;margin-bottom:4px;">🏪 Recogida en tienda</div>
+                    <div style="color:var(--muted);">Calle 13 #25-66 — Recuerda traer el ID: <strong>#${p.id.substring(0,8).toUpperCase()}</strong></div>
                 `}
-            </div>
+            </div>`}
 
             <div class="pedido-acciones">
-                <button class="accion-btn accion-factura" data-pedido-id="${p.id}" onclick="descargarFactura(this)">
+                <button class="accion-btn accion-factura"
+                    data-pedido-id="${p.id}"
+                    ${(p.estado_pago === 'cancelado' || p.estado === 'cancelado')
+                        ? 'style="cursor:not-allowed;opacity:0.4;" title="No disponible — pedido cancelado"'
+                        : 'onclick="descargarFactura(this)"'}>
                     <i class="fa-solid fa-file-invoice"></i> Descargar Factura
                 </button>
                 <a class="accion-btn accion-whatsapp" href="https://wa.me/${WA_NUMBER}?text=${waMsg}" target="_blank" rel="noopener">
