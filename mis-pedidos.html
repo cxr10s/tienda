@@ -882,8 +882,21 @@ function renderPedido(p, abierto) {
             <div class="pedido-totales">
                 <div class="total-row"><span>Subtotal</span><span>$${fmt(p.subtotal)} COP</span></div>
                 ${p.descuento > 0 ? `<div class="total-row" style="color:var(--entregado);"><span>Descuento aplicado</span><span>-$${fmt(p.descuento)} COP</span></div>` : ''}
-                <div class="total-row"><span>Envío</span><span>${p.envio > 0 ? '$' + fmt(p.envio) + ' COP' : '¡Gratis!'}</span></div>
+                <div class="total-row">
+                    <span>Envío</span>
+                    <span>${p.tipo_entrega === 'tienda' ? '—' : (p.envio > 0 ? '$' + fmt(p.envio) + ' COP' : '¡Gratis!')}</span>
+                </div>
                 <div class="total-row final"><span>TOTAL PAGADO</span><span>$${fmt(p.total)} COP</span></div>
+            </div>
+
+            <div style="margin:1rem 0; padding:12px 14px; background:var(--surface2); border-radius:10px; font-size:13px;">
+                ${p.tipo_entrega === 'domicilio' ? `
+                    <div style="font-weight:700; margin-bottom:4px;">🚚 Envío a domicilio</div>
+                    <div style="color:var(--muted);">${p.direccion_envio || p.direccion || '—'}</div>
+                ` : `
+                    <div style="font-weight:700; margin-bottom:4px;">🏪 Recogida en tienda</div>
+                    <div style="color:var(--muted);">Calle 13 #25-66 — Recuerda traer el ID de tu pedido: <strong>#${p.id.substring(0,8).toUpperCase()}</strong></div>
+                `}
             </div>
 
             <div class="pedido-acciones">
