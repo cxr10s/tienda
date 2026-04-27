@@ -41,7 +41,7 @@
 tienda/
 ├── index.html           # Pagina principal — productos, Navegacion, carrito
 ├── mis-pedidos.html     # Consulta de pedidos por correo o ID
-├── pago-nequi.html  # Resultado del pago Nequi
+├── pago-nequi.html      # Resultado del pago Nequi
 ├── admin.html           # Panel de administracion de pedidos
 ├── script.js            # Logica del carrito, Interfaz de usuario, sincronizacion Firestore
 ├── order-system.js      # Submit del pedido → Supabase →Nequi
