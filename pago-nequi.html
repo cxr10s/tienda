@@ -943,10 +943,6 @@ async function guardarPedido(nequiPhone) {
     const dir    = document.getElementById('env-dir')?.value.trim() || '';
     const ref    = document.getElementById('env-ref')?.value.trim() || '';
 
-    const direccionEnvio = tipoEntrega === 'domicilio'
-        ? `${dir}, ${ciudad}${ref ? ' — Ref: ' + ref : ''}`
-        : null;
-
     const pedido = {
         ...(pedidoData || {}),
         productos: cart.map(i => ({
@@ -959,12 +955,13 @@ async function guardarPedido(nequiPhone) {
         tipo_entrega:    tipoEntrega,
         metodo_pago:     'nequi',
         nequi_numero:    nequiPhone,
-        direccion:       direccionEnvio || pedidoData?.direccion || null,
-        direccion_envio: direccionEnvio,
+        direccion_envio: tipoEntrega === 'domicilio'
+            ? `${dir}, ${ciudad}${ref ? ' — Ref: ' + ref : ''}`
+            : null,
     };
 
-    if (!pedido.nombre)   pedido.nombre   = pedidoData?.nombre   || 'Cliente';
-    if (!pedido.email)    pedido.email    = pedidoData?.email    || '';
+    if (!pedido.nombre) pedido.nombre = pedidoData?.nombre || 'Cliente';
+    if (!pedido.email)  pedido.email  = pedidoData?.email  || '';
     if (!pedido.telefono) pedido.telefono = nequiPhone;
 
     const res = await fetch(`${SUPABASE_URL}/rest/v1/pedidos`, {
@@ -1063,7 +1060,7 @@ function iniciarContador() {
         if (countdownSecs <= 0) {
             clearInterval(countdownTimer);
             clearInterval(pollingTimer);
-            actualizarEstadoPago(pedidoId, 'pendiente');
+            actualizarEstadoPago(pedidoId, 'pendiente', null);
             mostrarResultado('pending');
         }
     }, 1000);
@@ -1102,7 +1099,7 @@ function iniciarPolling() {
 async function cancelarEspera() {
     clearInterval(pollingTimer);
     clearInterval(countdownTimer);
-    if (pedidoId) await actualizarEstadoPago(pedidoId, 'cancelado');
+    if (pedidoId) await actualizarEstadoPago(pedidoId, 'cancelado', 'cancelado');
     mostrarResultado('failed');
 }
 
