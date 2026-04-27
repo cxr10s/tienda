@@ -310,7 +310,7 @@ function updateCartDisplay() {
         const shippingAmount = document.getElementById('shipping-amount');
         if (shippingInfo && shippingAmount) {
             shippingInfo.style.display = 'block';
-            shippingAmount.textContent = `$0 (¡Gratis!)`;
+            shippingAmount.textContent = `-`;
         }
 
         if (discountInfo) discountInfo.style.display = 'none';
@@ -381,9 +381,9 @@ function updateCartDisplay() {
     if (shippingInfo && shippingAmount) {
         shippingInfo.style.display = 'block';
         if (shippingCost > 0) {
-            shippingAmount.textContent = `$${shippingCost.toLocaleString()} COP`;
+            shippingAmount.textContent = `-`;
         } else {
-            shippingAmount.textContent = `$0 Gratis!`;
+            shippingAmount.textContent = `-`;
         }
     }
     
@@ -695,6 +695,7 @@ function getCatalogProducts(category) {
     return catalogProducts[category] || [];
 }
 
+
 // Flujo de registro de pedidos
 function openReservationModal() {
     if (cart.length === 0) {
@@ -856,7 +857,7 @@ function shareVia(platform) {
     const title = 'Tienda Deportiva';
     const text  = 'Mira esta tienda deportiva: Camisetas, Tenis, Jeans, Cascos y más. Envío gratis desde $150.000 COP.';
 
-    const textLargo = `⚡ STORE. — Tienda Deportiva Online\n\n` +
+    const textLargo = `⚡ Shop — Tienda Deportiva Online\n\n` +
         `Te comparto esta tienda deportiva. Camisetas, tenis, jeans, cascos y equipos deportivos al mejor precio.\n\n` +
         `🎁 Regalo GRATIS desde $150.000\n` +
         `🚚 Envío GRATIS desde $150.000\n` +
@@ -864,7 +865,7 @@ function shareVia(platform) {
         `¡También está disponible para la venta como negocio digital!\n\n` +
         `👉 ${url}`;
 
-    const titleEmail = '⚡ STORE. — Tienda Deportiva Online';
+    const titleEmail = '⚡ Shop — Tienda Deportiva Online';
 
     const links = {
         whatsapp: `https://wa.me/?text=${encodeURIComponent(url)}`,
