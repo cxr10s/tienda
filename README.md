@@ -29,7 +29,7 @@
 | 🛒 | **Carrito en la nube** | Sincronizado con la cuenta de Google via Firestore. Se restaura en cualquier dispositivo. |
 | 🔐 | **Autenticación Google** | Firebase Auth. El modal se actualiza en tiempo real sin recargar la pagina. |
 | 💳 | **Pagos con Nequi** | Integracion completa con firma de integridad y redireccion de resultado. |
-| 🧾 | **Facturas PDF** | Generacion automatica con PDF antes de redirigir al pago. |
+| 🧾 | **Facturas PDF** | Generacion automatica con PDF para usuarios |
 | 📦 | **Consulta de pedidos** | Búsqueda por correo o ID de factura con historial completo del estado. |
 | 🎁 | **Descuentos** | Descuentos progresivos por cantidad desde $150.000 COP. |
 
