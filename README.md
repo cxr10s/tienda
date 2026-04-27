@@ -28,10 +28,10 @@
 |---|---|---|
 | 🛒 | **Carrito en la nube** | Sincronizado con la cuenta de Google via Firestore. Se restaura en cualquier dispositivo. |
 | 🔐 | **Autenticación Google** | Firebase Auth. El modal se actualiza en tiempo real sin recargar la pagina. |
-| 💳 | **Pagos con Wompi** | Integracion completa con firma de integridad y redireccion de resultado. |
+| 💳 | **Pagos con Nequi** | Integracion completa con firma de integridad y redireccion de resultado. |
 | 🧾 | **Facturas PDF** | Generacion automatica con PDF antes de redirigir al pago. |
 | 📦 | **Consulta de pedidos** | Búsqueda por correo o ID de factura con historial completo del estado. |
-| 🎁 | **Descuentos y regalos** | Descuentos progresivos por cantidad y regalo gratis desde $150.000 COP. |
+| 🎁 | **Descuentos** | Descuentos progresivos por cantidad desde $150.000 COP. |
 
 ---
 
@@ -41,10 +41,10 @@
 tienda/
 ├── index.html           # Pagina principal — productos, Navegacion, carrito
 ├── mis-pedidos.html     # Consulta de pedidos por correo o ID
-├── pago-resultado.html  # Resultado del pago Wompi
+├── pago-nequi.html  # Resultado del pago Nequi
 ├── admin.html           # Panel de administracion de pedidos
 ├── script.js            # Logica del carrito, Interfaz de usuario, sincronizacion Firestore
-├── order-system.js      # Submit del pedido → Supabase → Wompi
+├── order-system.js      # Submit del pedido → Supabase →Nequi
 ├── factura.js           # Generador de PDF con jsPDF
 └── styles.css           # Estilos globales
 ```
@@ -59,7 +59,7 @@ tienda/
 | Autenticación | Firebase Auth (Google) |
 | Base de datos pedidos | Supabase (SQL) |
 | Carrito en la nube | Firestore (Firebase) |
-| Pagos | Wompi (Colombia) |
+| Pagos | Nequi (Colombia) |
 | Facturas PDF | jsPDF |
 | Hosting | GitHub Pages |
 
