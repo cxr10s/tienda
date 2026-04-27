@@ -789,8 +789,8 @@ function renderResumen() {
     // Envío: "—" hasta que el usuario elija entrega
     const envioEl = document.getElementById('rs-envio');
     if (tipoEntrega === null)       envioEl.textContent = '—';
-    else if (tipoEntrega === 'tienda')    envioEl.textContent = 'Gratis';
-    else envioEl.textContent = envio > 0 ? fmt(envio) : '¡Gratis!';
+    else if (tipoEntrega === 'tienda')    envioEl.textContent = '──';
+    else envioEl.textContent = envio > 0 ? fmt(envio) : 'Gratis';
 
     document.getElementById('rs-total').textContent = fmt(totalDisplay);
 
@@ -817,7 +817,7 @@ function selEntrega(tipo) {
         const note = document.getElementById('envio-note');
         const txt  = document.getElementById('envio-note-txt');
         note.className = envio === 0 ? 'envio-note free' : 'envio-note';
-        txt.textContent = envio === 0 ? '¡Envío gratis! Tu pedido supera los $150.000' : `Costo de envío: ${fmt(envio)} COP`;
+        txt.textContent = envio === 0 ? '¡Envío gratis! Tu pedido supera los $150.000 COP' : `Costo de envío: ${fmt(envio)} COP`;
     }
 
     renderResumen();
