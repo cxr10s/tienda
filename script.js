@@ -361,30 +361,21 @@ function updateCartDisplay() {
     // Calcular descuentos
     const { pct: discountPct, amount: discount } = calcDiscount(subtotal);
     const hasGift = cart.some(item => item.isGift === true);
-    
-    // Calcular costo de envío
-    let shippingCost = 0;
-    const shippingInfo = document.getElementById('shipping-info');
+
+    // El envío se define en pago-nequi.html según el tipo de entrega elegido.
+    // En el carrito siempre mostramos "—" para no confundir al usuario.
+    const shippingInfo   = document.getElementById('shipping-info');
     const shippingAmount = document.getElementById('shipping-amount');
-    
-    // Envío gratis si el subtotal cumple la condición o si el carrito está vacío
-    if (subtotal > 0 && subtotal < 150000) {
-        shippingCost = 25000; // Costo de envío cuando no se cumple la condición
-    }
-    
-    const total = subtotal - discount + shippingCost;
-    
-    cartSubtotal.textContent = `$${subtotal.toLocaleString()} COP`;
-    cartTotalElement.textContent = `$${total.toLocaleString()} COP`;
-    
-    // Mostrar información de envío
+
+    // Total sin envío — el envío se suma en pago-nequi.html
+    const total = subtotal - discount;
+
+    cartSubtotal.textContent      = `$${subtotal.toLocaleString()} COP`;
+    cartTotalElement.textContent  = `$${total.toLocaleString()} COP`;
+
     if (shippingInfo && shippingAmount) {
-        shippingInfo.style.display = 'block';
-        if (shippingCost > 0) {
-            shippingAmount.textContent = `-`;
-        } else {
-            shippingAmount.textContent = `-`;
-        }
+        shippingInfo.style.display  = 'block';
+        shippingAmount.textContent  = '—';
     }
     
     if (discount > 0) {
@@ -741,7 +732,9 @@ function openReservationModal() {
         `;
     }
     items.innerHTML = html;
-    total.textContent = `$${cartTotal.toLocaleString()} COP`;
+    // Total sin envío — el envío se define en pago-nequi.html
+    const totalSinEnvio = computedSubtotal - computedDiscount;
+    total.textContent = `$${totalSinEnvio.toLocaleString()} COP`;
 
     // Cerrar carrito automáticamente si está abierto (sin perder productos)
     const cartSidebar = document.getElementById('cart-sidebar');
@@ -859,13 +852,12 @@ function shareVia(platform) {
 
     const textLargo = `⚡ Shop — Tienda Deportiva Online\n\n` +
         `Te comparto esta tienda deportiva. Camisetas, tenis, jeans, cascos y equipos deportivos al mejor precio.\n\n` +
-        `🎁 Regalo GRATIS desde $150.000\n` +
         `🚚 Envío GRATIS desde $150.000\n` +
         `💳 Descuentos hasta el 20%\n\n` +
         `¡También está disponible para la venta como negocio digital!\n\n` +
         `👉 ${url}`;
 
-    const titleEmail = '⚡ Shop — Tienda Deportiva Online';
+    const titleEmail = ' Shop — Tienda Deportiva Online';
 
     const links = {
         whatsapp: `https://wa.me/?text=${encodeURIComponent(url)}`,
