@@ -375,7 +375,7 @@ function updateCartDisplay() {
 
     if (shippingInfo && shippingAmount) {
         shippingInfo.style.display  = 'block';
-        shippingAmount.textContent  = '—';
+        shippingAmount.textContent  = '';
     }
     
     if (discount > 0) {
