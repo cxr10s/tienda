@@ -822,15 +822,25 @@ function getPagoBanner(estadoPago, pedido) {
     </div>`;
 }
 
-function getTimeline(estado) {
-    const pasos = [
+function getTimeline(estado, tipoEntrega) {
+    const tipo = tipoEntrega || 'tienda';
+
+    const pasosRecogida  = [
+        { key: 'pendiente', icon: '🕐', label: 'RECIBIDO'  },
+        { key: 'pagado',    icon: '💳', label: 'PAGADO'    },
+        { key: 'entregado', icon: '✅', label: 'ENTREGADO' },
+    ];
+    const pasosDomicilio = [
         { key: 'pendiente', icon: '🕐', label: 'RECIBIDO'  },
         { key: 'pagado',    icon: '💳', label: 'PAGADO'    },
         { key: 'enviado',   icon: '🚚', label: 'EN CAMINO' },
         { key: 'entregado', icon: '✅', label: 'ENTREGADO' },
     ];
 
-    const orden = { pendiente: 0, pagado: 1, enviado: 2, entregado: 3, cancelado: -1 };
+    const pasos = tipo === 'domicilio' ? pasosDomicilio : pasosRecogida;
+    const ordenRecogida  = { pendiente:0, pagado:1, entregado:2, cancelado:-1 };
+    const ordenDomicilio = { pendiente:0, pagado:1, enviado:2, entregado:3, cancelado:-1 };
+    const orden  = tipo === 'domicilio' ? ordenDomicilio : ordenRecogida;
     const actual = orden[estado] ?? 0;
 
     if (estado === 'cancelado') {
@@ -884,7 +894,7 @@ function renderPedido(p, abierto) {
         </div>
         <div class="pedido-card-body">
             ${getPagoBanner(p.estado_pago, p)}
-            ${getTimeline(p.estado)}
+            ${getTimeline(p.estado, p.tipo_entrega)}
 
             <div class="productos-title">PRODUCTOS</div>
             ${productosHTML}
@@ -892,6 +902,13 @@ function renderPedido(p, abierto) {
             ${(p.estado_pago === 'cancelado' || p.estado === 'cancelado') ? `
             <div style="background:rgba(239,68,68,0.06);border:1px solid rgba(239,68,68,0.15);border-radius:10px;padding:12px 14px;font-size:13px;color:#ef4444;margin:1rem 0;">
                 Este pedido fue cancelado. No se realizó ningún cobro.
+            </div>` : p.estado_pago !== 'pagado' ? `
+            <div style="background:rgba(245,158,11,0.06);border:1px solid rgba(245,158,11,0.2);border-radius:10px;padding:12px 14px;font-size:13px;color:#f59e0b;margin:1rem 0;">
+                ⏳ Tu pedido está pendiente de pago.
+                ${p.tipo_entrega === 'domicilio'
+                    ? 'Una vez confirmado tu pago procesaremos el envío a tu domicilio.'
+                    : 'Una vez confirmado tu pago podrás recogerlo en Calle 13 #25-66.'}
+                <div style="margin-top:6px;font-size:12px;opacity:0.8;">La factura estará disponible cuando el pago sea confirmado.</div>
             </div>` : `
             <div class="pedido-totales">
                 <div class="total-row"><span>Subtotal</span><span>$${fmt(p.subtotal)} COP</span></div>
@@ -912,8 +929,8 @@ function renderPedido(p, abierto) {
             <div class="pedido-acciones">
                 <button class="accion-btn accion-factura"
                     data-pedido-id="${p.id}"
-                    ${(p.estado_pago === 'cancelado' || p.estado === 'cancelado')
-                        ? 'style="cursor:not-allowed;opacity:0.4;" title="No disponible — pedido cancelado"'
+                    ${(p.estado_pago !== 'pagado')
+                        ? 'style="cursor:not-allowed;opacity:0.4;" title="Disponible cuando el pago sea confirmado"'
                         : 'onclick="descargarFactura(this)"'}>
                     <i class="fa-solid fa-file-invoice"></i> Descargar Factura
                 </button>
