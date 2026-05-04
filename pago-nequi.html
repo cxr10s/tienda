@@ -229,7 +229,107 @@ body {
 }
 .envio-note.free { background: #f0fdf4; border-color: #bbf7d0; color: #15803d; }
 
-/* ── SCREEN 2: Nequi número ── */
+/* ── SCREEN 2: Nequi QR ── */
+.nq-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 1.4rem; gap: 10px;
+}
+.nq-logo-wrap { display: flex; align-items: center; gap: 10px; }
+.nq-logo-text .nq-title { font-size: 17px; font-weight: 700; color: #111; }
+.nq-logo-text .nq-sub   { font-size: 12px; color: #888; margin-top: 1px; }
+.nq-amount-badge {
+    background: #f0f4ff; border: 1.5px solid #c7d7ff;
+    border-radius: 100px; padding: 6px 14px;
+    font-size: 14px; font-weight: 700; color: #1a56db;
+    font-family: 'DM Mono', monospace; white-space: nowrap;
+}
+.nq-qr-section { display: flex; justify-content: center; margin-bottom: 1.2rem; }
+.nq-qr-wrap { text-align: center; }
+.nq-qr-img {
+    width: 200px; height: 200px;
+    object-fit: cover; object-position: center;
+    border-radius: 16px;
+    border: 3px solid #e8e8ed;
+    display: block; margin: 0 auto 8px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.10);
+}
+.nq-qr-caption {
+    display: flex; align-items: center; justify-content: center; gap: 5px;
+    font-size: 12px; color: #888;
+}
+.nq-divider {
+    display: flex; align-items: center; gap: 10px;
+    margin: 1rem 0; font-size: 12px; color: #bbb;
+}
+.nq-divider::before,.nq-divider::after { content:''; flex:1; height:1px; background:#e8e8ed; }
+.nq-open-btn {
+    width: 100%; padding: 13px 16px;
+    background: linear-gradient(135deg, #6D1AF3, #9B3FF8);
+    color: #fff; border: none; border-radius: 12px;
+    font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    gap: 10px; margin-bottom: 1rem;
+    transition: all .2s; box-shadow: 0 4px 16px rgba(109,26,243,0.3);
+}
+.nq-open-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(109,26,243,0.4); }
+.nequi-logo-sm { width: 24px; height: 24px; border-radius: 6px; overflow: hidden; }
+.nequi-logo-sm img { width: 100%; height: 100%; object-fit: cover; }
+.nq-key-box {
+    background: #f8f8fb; border: 1px solid #e8e8ed;
+    border-radius: 10px; padding: 10px 14px; margin-bottom: 1rem;
+}
+.nq-key-row {
+    display: flex; align-items: center; gap: 8px; margin-bottom: 4px;
+}
+.nq-key-icon { font-size: 14px; }
+.nq-key-val {
+    flex: 1; font-family: 'DM Mono', monospace;
+    font-size: 15px; font-weight: 600; color: #111; letter-spacing: 2px;
+}
+.nq-copy-btn {
+    background: #fff; border: 1px solid #ddd; border-radius: 6px;
+    padding: 3px 10px; font-size: 12px; color: #555;
+    cursor: pointer; font-family: 'Inter', sans-serif;
+    transition: all .18s;
+}
+.nq-copy-btn:hover { border-color: #1a56db; color: #1a56db; }
+.nq-key-label { font-size: 11px; color: #aaa; }
+.nq-steps {
+    border: 1px solid #e8e8ed; border-radius: 10px;
+    margin-bottom: 1rem; overflow: hidden;
+}
+.nq-steps summary {
+    padding: 10px 14px; font-size: 13px; font-weight: 600;
+    color: #555; cursor: pointer; display: flex;
+    justify-content: space-between; list-style: none;
+    user-select: none;
+}
+.nq-steps summary span { color: #1a56db; font-weight: 600; }
+.nq-steps-list {
+    padding: 4px 14px 12px 30px;
+    font-size: 13px; color: #555; line-height: 2;
+    border-top: 1px solid #f0f0f0;
+}
+.nq-paid-btn {
+    width: 100%; padding: 14px;
+    background: #16a34a; color: #fff;
+    border: none; border-radius: 12px;
+    font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700;
+    cursor: pointer; display: flex; align-items: center;
+    justify-content: center; gap: 8px; transition: all .2s;
+}
+.nq-paid-btn:hover { background: #15803d; transform: translateY(-1px); }
+.nq-paid-btn:disabled { opacity: .5; cursor: not-allowed; transform: none; }
+.nq-paid-btn .btn-spin {
+    width: 16px; height: 16px;
+    border: 2px solid rgba(255,255,255,.3);
+    border-top-color: #fff; border-radius: 50%;
+    animation: spin .7s linear infinite; display: none;
+}
+.nq-paid-btn.loading .btn-txt { display: none; }
+.nq-paid-btn.loading .btn-spin { display: block; }
+
+/* ── SCREEN 2: Nequi QR ── */
 .nequi-header {
     display: flex; align-items: center; gap: 12px;
     margin-bottom: 1.5rem;
@@ -654,65 +754,87 @@ body {
         </div>
     </div>
 
-    <!-- SCREEN 2: Ingresa número Nequi -->
+    <!-- SCREEN 2: Pago con Nequi — QR + opciones -->
     <div class="screen" id="screen-nequi">
-        <div class="nequi-header">
-            <div class="nequi-logo"> <img src="img_nequi.jpeg" alt="NEQUI"></div>
-            <div>
-                <div class="nequi-title">Confirma tu número Nequi</div>
-                <div class="nequi-sub">Revisa que sea el número asociado a tu Nequi. Si no es correcto, edítalo.</div>
-            </div>
-        </div>
 
-        <div class="phone-field" id="phone-field-wrap">
-            <div class="phone-label">TELÉFONO</div>
-            <div class="phone-row">
-                <div class="flag-prefix">
-                    <span class="flag-img">🇨🇴</span>
-                    <span>+57</span>
+        <!-- Header Nequi Negocios -->
+        <div class="nq-header">
+            <div class="nq-logo-wrap">
+                <div class="nequi-logo"><img src="img_nequi.jpeg" alt="Nequi"></div>
+                <div class="nq-logo-text">
+                    <div class="nq-title">Pago con Nequi</div>
+                    <div class="nq-sub">Shop · Jhon Meneses</div>
                 </div>
-                <input type="tel" class="phone-input" id="nequi-phone"
-                    placeholder="300 000 0000"
-                    maxlength="10"
-                    inputmode="numeric"
-                    oninput="this.value=this.value.replace(/\D/g,'')">
+            </div>
+            <div class="nq-amount-badge" id="nq-amount-badge">$0 COP</div>
+        </div>
+
+        <!-- QR -->
+        <div class="nq-qr-section">
+            <div class="nq-qr-wrap">
+                <img src="QR_Negocios.jpeg" alt="QR Nequi Negocios" class="nq-qr-img" id="nq-qr-img">
+                <div class="nq-qr-caption">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
+                    Escanea con la cámara de tu celular
+                </div>
             </div>
         </div>
 
-        <div class="phone-note">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg>
-            Recibirás una notificación push en tu teléfono
+        <!-- Divisor -->
+        <div class="nq-divider"><span>o usa el botón</span></div>
+
+        <!-- Botón abrir Nequi -->
+        <button class="nq-open-btn" id="nq-open-btn" onclick="abrirNequi()">
+            <div class="nequi-logo nequi-logo-sm"><img src="img_nequi.jpeg" alt="N"></div>
+            <span id="nq-btn-label">Pagar con Nequi</span>
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </button>
+
+        <!-- Llave / instrucción -->
+        <div class="nq-key-box">
+            <div class="nq-key-row">
+                <span class="nq-key-icon">🔑</span>
+                <span class="nq-key-val" id="nq-key-val">0092068170</span>
+                <button class="nq-copy-btn" onclick="copiarLlave()">Copiar</button>
+            </div>
+            <div class="nq-key-label">Llave Nequi Negocios — úsala si escaneas desde otra app</div>
         </div>
+
+        <!-- Instrucciones colapsables -->
+        <details class="nq-steps">
+            <summary>¿Cómo pagar? <span>Ver pasos</span></summary>
+            <ol class="nq-steps-list">
+                <li>Abre tu app de <strong>Nequi</strong></li>
+                <li>Ve a <strong>Pagar → Escanear QR</strong></li>
+                <li>Escanea el código de arriba</li>
+                <li>Confirma el monto de <strong id="nq-steps-amount">$0 COP</strong></li>
+                <li>Regresa aquí y toca <strong>"Ya realicé el pago"</strong></li>
+            </ol>
+        </details>
+
+        <!-- Botón ya pagué -->
+        <button class="nq-paid-btn" id="nq-paid-btn" onclick="confirmarPago()">
+            <span class="btn-txt">✓ Ya realicé el pago</span>
+            <div class="btn-spin"></div>
+        </button>
+
     </div>
 
-    <!-- SCREEN 3: Esperando confirmación en Nequi -->
+    <!-- SCREEN 3: Pago en verificación -->
     <div class="screen" id="screen-waiting">
         <div class="waiting-box">
             <div class="nequi-phone-anim"><img src="img_nequi_rounded.png" alt="NEQUI"></div>
-            <div class="waiting-title">Revisa tu Nequi</div>
+            <div class="waiting-title">¡Pedido registrado!</div>
             <div class="waiting-msg">
-                Enviamos una notificación push a tu teléfono.<br>
-                <strong>Acepta el pago en la app de Nequi</strong> para completar tu compra.
+                Tu pedido quedó guardado y está esperando confirmación de pago.<br><br>
+                <strong>¿Aún no pagaste?</strong> Vuelve atrás y completa el pago con Nequi.
             </div>
-            <div class="nequi-number-display" id="display-phone">--- --- ----</div>
-
-            <div class="countdown-ring">
-                <svg width="70" height="70" viewBox="0 0 70 70">
-                    <circle class="ring-bg" cx="35" cy="35" r="30"/>
-                    <circle class="ring-fill" id="ring-fill" cx="35" cy="35" r="30"
-                        stroke-dasharray="188.5" stroke-dashoffset="0"/>
-                </svg>
-                <div class="countdown-num" id="countdown-num">120</div>
-            </div>
-
+            <div class="nequi-number-display" id="display-order-id">Pedido #--------</div>
             <div class="status-bar">
-                <div class="dot-anim">
-                    <span></span><span></span><span></span>
-                </div>
-                Esperando confirmación
+                <div class="dot-anim"><span></span><span></span><span></span></div>
+                Verificando pago con Nequi Negocios
             </div>
-
-            <button class="cancel-link" onclick="cancelarEspera()">Cancelar y volver</button>
+            <button class="cancel-link" onclick="cancelarEspera()">Cancelar pedido</button>
         </div>
     </div>
 
@@ -757,9 +879,7 @@ let tipoEntrega   = null;
 let cart          = [];
 let pedidoData    = null;
 let pedidoId      = null;
-let pollingTimer  = null;
-let countdownTimer = null;
-let countdownSecs  = 120;
+let pollingTimer   = null;
 
 const SCREENS = ['screen-entrega','screen-nequi','screen-waiting','screen-result'];
 const TABS    = ['tab-entrega','tab-pago','tab-confirm'];
@@ -917,7 +1037,22 @@ function showScreen(idx) {
     back.style.visibility = (idx === 0 || idx >= 2) ? 'hidden' : 'visible';
 
     if (idx === 0) { next.querySelector('.btn-txt').textContent = 'Continuar'; next.style.display = 'flex'; amountDetail.style.display = 'none'; }
-    if (idx === 1) { next.querySelector('.btn-txt').textContent = 'CONFIRMAR'; next.style.display = 'flex'; amountDetail.style.display = 'block'; renderResumen(); }
+    if (idx === 1) {
+        next.style.display = 'none'; // El botón "Ya pagué" está dentro del screen
+        amountDetail.style.display = 'block';
+        renderResumen();
+        // Actualizar monto en el badge del QR y en los pasos
+        const { total } = getTotals();
+        const fmtTotal = fmt(total);
+        const badge = document.getElementById('nq-amount-badge');
+        const stepsAmt = document.getElementById('nq-steps-amount');
+        if (badge) badge.textContent = fmtTotal + ' COP';
+        if (stepsAmt) stepsAmt.textContent = fmtTotal + ' COP';
+        // Cambiar label del botón según dispositivo
+        const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+        const lbl = document.getElementById('nq-btn-label');
+        if (lbl) lbl.textContent = isMobile ? 'Abrir app Nequi' : 'Ir al portal de Nequi';
+    }
     if (idx === 2) { next.style.display = 'none'; amountDetail.style.display = 'block'; }
     if (idx === 3) { next.style.display = 'none'; amountDetail.style.display = 'none'; }
 }
@@ -927,8 +1062,71 @@ async function goNext() {
         if (!tipoEntrega) { showToast('⚠️ Selecciona cómo quieres recibir tu pedido'); return; }
         if (!validarDomicilio()) { showToast('⚠️ Completa los datos de envío'); return; }
         showScreen(1);
-    } else if (currentScreen === 1) {
-        await iniciarPagoNequi();
+    }
+}
+
+// ── ABRIR NEQUI (deep link móvil / portal web) ──────────────────
+function abrirNequi() {
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isMobile) {
+        // Intentar abrir la app de Nequi directamente
+        const deepLink = 'nequi://';
+        window.location.href = deepLink;
+        // Si la app no está instalada, redirigir a la tienda después de 1.5s
+        setTimeout(() => {
+            if (isAndroid) {
+                window.location.href = 'https://play.google.com/store/apps/details?id=com.nequi.mobilebanking';
+            } else if (isIOS) {
+                window.location.href = 'https://apps.apple.com/co/app/nequi/id1354585028';
+            }
+        }, 1500);
+    } else {
+        // En PC: abrir el portal oficial de Nequi
+        window.open('https://www.nequi.com.co', '_blank');
+    }
+}
+
+// ── COPIAR LLAVE ─────────────────────────────────────────────────
+function copiarLlave() {
+    navigator.clipboard.writeText('0092068170').then(() => {
+        const btn = document.querySelector('.nq-copy-btn');
+        if (btn) { btn.textContent = '✓ Copiado'; setTimeout(() => btn.textContent = 'Copiar', 2000); }
+    });
+}
+
+// ── CONFIRMAR PAGO (Ya pagué) ────────────────────────────────────
+async function confirmarPago() {
+    const btn = document.getElementById('nq-paid-btn');
+    btn.disabled = true;
+    btn.classList.add('loading');
+
+    try {
+        // Guardar pedido en Supabase con estado_pago: pendiente
+        pedidoId = await guardarPedido('nequi-qr');
+
+        // Limpiar carrito y sesión
+        localStorage.removeItem('tienda_cart');
+        localStorage.removeItem('tienda_last_removed_gift');
+        sessionStorage.removeItem('store_pedido');
+        sessionStorage.removeItem('store_user');
+        cart = [];
+
+        // Mostrar pantalla de espera/verificación
+        const idCorto = pedidoId.substring(0, 8).toUpperCase();
+        const displayEl = document.getElementById('display-order-id');
+        if (displayEl) displayEl.textContent = 'Pedido #' + idCorto;
+
+        showScreen(2);
+        iniciarPolling(); // Sigue escuchando si el admin actualiza el estado
+
+    } catch(err) {
+        console.error(err);
+        showToast('❌ Error al registrar. Intenta de nuevo.');
+        btn.disabled = false;
+        btn.classList.remove('loading');
     }
 }
 
@@ -936,7 +1134,7 @@ function goBack() {
     if (currentScreen === 1) showScreen(0);
 }
 
-// ── GUARDAR PEDIDO EN SUPABASE ───────────────────────────────────
+// ── POLLING — consulta Supabase cada 6s ─────────────────────────
 async function guardarPedido(nequiPhone) {
     const { subtotal, descuento, envio, total } = getTotals();
     const ciudad = document.getElementById('ciudad')?.value.trim() || '';
@@ -995,80 +1193,7 @@ async function actualizarEstadoPago(id, estadoPago, estado) {
     });
 }
 
-// ── INICIAR PAGO NEQUI ───────────────────────────────────────────
-async function iniciarPagoNequi() {
-    const phoneRaw = document.getElementById('nequi-phone').value.replace(/\D/g, '');
-
-    if (phoneRaw.length !== 10) {
-        document.getElementById('phone-field-wrap').classList.add('err');
-        showToast('⚠️ Ingresa un número de 10 dígitos');
-        return;
-    }
-
-    document.getElementById('phone-field-wrap').classList.remove('err');
-
-    const btn = document.getElementById('btn-next');
-    btn.disabled = true;
-    btn.classList.add('loading');
-
-    try {
-        // 1. Guardar pedido en Supabase
-        pedidoId = await guardarPedido(phoneRaw);
-
-        // 2. Limpiar carrito y sesión
-        localStorage.removeItem('tienda_cart');
-        localStorage.removeItem('tienda_last_removed_gift');
-        sessionStorage.removeItem('store_pedido');
-        sessionStorage.removeItem('store_user');
-        cart = [];
-
-        // 3. Mostrar pantalla de espera
-        document.getElementById('display-phone').textContent =
-            phoneRaw.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
-
-        showScreen(2);
-        iniciarContador();
-
-        // 4. Simular envío de notificación push Nequi
-        // ⚠️ NOTA PARA PRODUCCIÓN: Aquí se llamaría tu Supabase Edge Function
-        // que hace el POST a api.nequi.com.co/pagos/v2/-/link-qr/pagos/cobros
-        // con el token OAuth de Nequi y el número del cliente.
-        // Por ahora iniciamos polling para detectar cambio manual o auto.
-        iniciarPolling();
-
-    } catch(err) {
-        console.error(err);
-        showToast('❌ Error al procesar. Intenta de nuevo.');
-        btn.disabled = false;
-        btn.classList.remove('loading');
-    }
-}
-
-// ── COUNTDOWN ────────────────────────────────────────────────────
-function iniciarContador() {
-    countdownSecs = 120;
-    const ringEl  = document.getElementById('ring-fill');
-    const numEl   = document.getElementById('countdown-num');
-    const circ    = 188.5;
-
-    clearInterval(countdownTimer);
-    countdownTimer = setInterval(() => {
-        countdownSecs--;
-        numEl.textContent = countdownSecs;
-        ringEl.style.strokeDashoffset = circ * (1 - countdownSecs / 120);
-
-        if (countdownSecs <= 0) {
-            clearInterval(countdownTimer);
-            clearInterval(pollingTimer);
-            actualizarEstadoPago(pedidoId, 'pendiente', null);
-            mostrarResultado('pending');
-        }
-    }, 1000);
-}
-
-// ── POLLING — consulta Supabase cada 5s ──────────────────────────
-// En producción: el webhook de Nequi actualiza Supabase automáticamente.
-// El polling detecta ese cambio y reacciona en la UI.
+// ── POLLING — detecta si el admin actualiza el estado ────────────
 function iniciarPolling() {
     clearInterval(pollingTimer);
     pollingTimer = setInterval(async () => {
@@ -1084,21 +1209,18 @@ function iniciarPolling() {
 
             if (ep === 'pagado') {
                 clearInterval(pollingTimer);
-                clearInterval(countdownTimer);
                 mostrarResultado('success');
             } else if (ep === 'cancelado' || ep === 'rechazado' || ep === 'error') {
                 clearInterval(pollingTimer);
-                clearInterval(countdownTimer);
                 mostrarResultado('failed');
             }
         } catch(e) {}
-    }, 5000);
+    }, 6000);
 }
 
-// ── CANCELAR ESPERA ──────────────────────────────────────────────
+// ── CANCELAR PEDIDO ──────────────────────────────────────────────
 async function cancelarEspera() {
     clearInterval(pollingTimer);
-    clearInterval(countdownTimer);
     if (pedidoId) await actualizarEstadoPago(pedidoId, 'cancelado', 'cancelado');
     mostrarResultado('failed');
 }
